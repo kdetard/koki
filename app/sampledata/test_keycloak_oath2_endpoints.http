@@ -1,0 +1,34 @@
+### Login via traditional mean
+
+# 0. Open Chrome/Firefox DevTools > Choose Network tab
+# 1. Go to https://uiot.ixxc.dev
+# 2. Type any username and password, then click sign in
+# 3. Choose the POST requests ending with `authenticate` > Toggle raw mode (if needed) > Copy the first line (POST /path...) and the Cookie line
+# 4. Replace them below
+
+# This line below
+# @no-redirect
+POST https://uiot.ixxc.dev/auth/realms/master/login-actions/authenticate?session_code=RJ10pILcZFoQ5w4K8FyXcyT5UsqvURPsQTpUiskIVF8&execution=5f582f7e-f45d-4c1b-8f71-9be43e04a19e&client_id=openremote&tab_id=v5SWCqZ_Kao HTTP/1.1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/jxl,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/x-www-form-urlencoded
+Origin: null
+Connection: keep-alive
+Cookie: AUTH_SESSION_ID=6f2459e9-980e-4257-b6fd-e6dea6ddbcbf.bd41842524d3-26288; AUTH_SESSION_ID_LEGACY=6f2459e9-980e-4257-b6fd-e6dea6ddbcbf.bd41842524d3-26288; KC_RESTART=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjYjIzZWEzMC1mOTViLTQxYTYtYjVjOC01ZDIyNjMyNGEyMjMifQ.eyJjaWQiOiJvcGVucmVtb3RlIiwicHR5Ijoib3BlbmlkLWNvbm5lY3QiLCJydXJpIjoiaHR0cHM6Ly91aW90Lml4eGMuZGV2L3N3YWdnZXIvb2F1dGgyLXJlZGlyZWN0Lmh0bWwiLCJhY3QiOiJBVVRIRU5USUNBVEUiLCJub3RlcyI6eyJpc3MiOiJodHRwczovL3Vpb3QuaXh4Yy5kZXYvYXV0aC9yZWFsbXMvbWFzdGVyIiwicmVzcG9uc2VfdHlwZSI6ImNvZGUiLCJyZWRpcmVjdF91cmkiOiJodHRwczovL3Vpb3QuaXh4Yy5kZXYvc3dhZ2dlci9vYXV0aDItcmVkaXJlY3QuaHRtbCIsInN0YXRlIjoiVTJGMElFOWpkQ0F5T0NBeU1ESXpJREEwT2pFMU9qQTNJRWROVkNzd056QXdJQ2hKYm1SdlkyaHBibUVnVkdsdFpTaz0ifX0.iidta761m_aGDX_BCvVAzZd6JMFGhF6DHaPrB7X_HaU
+
+username=user&password=123
+
+### Login via token
+POST https://uiot.ixxc.dev/auth/realms/master/protocol/openid-connect/token
+Host: uiot.ixxc.dev
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/jxl,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Origin: null
+Connection: keep-alive
+Content-Type: application/x-www-form-urlencoded
+
+client_id=openremote&username=user&password=123&grant_type=password

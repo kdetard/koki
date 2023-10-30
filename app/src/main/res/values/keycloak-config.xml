@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="authServerUrl">https://uiot.ixxc.dev/auth</string>
+    <string name="realm">master</string>
+    <string name="clientId">openremote</string>
+    <string name="redirectUri">https://uiot.ixxc.dev/manager</string>
+</resources>
