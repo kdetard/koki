@@ -1,25 +1,20 @@
 package io.github.ktard.koki.di;
 
-import android.content.Context;
-
 import com.tencent.mmkv.MMKV;
 
-import net.gotev.cookiestore.okhttp.JavaNetCookieJar;
-
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
-import io.github.ktard.koki.db.MMKVCookieStore;
+import io.github.ktard.koki.db.MMKVCookieJar;
 import io.github.ktard.koki.network.KeycloakApiService;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Authenticator;
+import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
@@ -32,18 +27,27 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    public static CookieManager provideCookieManager() {
-        return new CookieManager(
-                new MMKVCookieStore(COOKIE_STORE_NAME),
-                CookiePolicy.ACCEPT_ORIGINAL_SERVER
-        );
+    public static CookieJar provideCookieJar() {
+        return new MMKVCookieJar(COOKIE_STORE_NAME);
     }
 
     @Provides
     @Singleton
-    public static OkHttpClient provideOkHttpClient(/*final CookieManager cookieManager, */Authenticator authenticator) {
-        // .cookieJar(new JavaNetCookieJar(cookieManager))
+    public static HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        return new HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
+    }
+
+    @Provides
+    @Singleton
+    public static OkHttpClient provideOkHttpClient(
+            final CookieJar cookieJar,
+            final HttpLoggingInterceptor logging,
+            final Authenticator authenticator
+    ) {
         return new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .addInterceptor(logging)
                 .authenticator(authenticator)
                 .build();
     }
@@ -60,7 +64,7 @@ public class NetworkModule {
                 return response.request();
             }
 
-            // TODO: Refresh your access token if expired
+            /// TODO: Refresh your access token if expired
 
             // Add new header to rejected request and retry it
             return response.request().newBuilder()
@@ -76,7 +80,7 @@ public class NetworkModule {
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
                 .addConverterFactory(MoshiConverterFactory.create())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build();
     }
 

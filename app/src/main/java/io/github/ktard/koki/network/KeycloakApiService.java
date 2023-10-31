@@ -1,25 +1,47 @@
 package io.github.ktard.koki.network;
 
-import io.github.ktard.koki.model.KeycloakToken;
+import io.github.ktard.koki.model.Keycloak.KeycloakToken;
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.adapter.rxjava3.Result;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface KeycloakApiService {
+    @GET
+    Single<ResponseBody> stepOnSignInPage(
+            @Url String url,
+            @Query("client_id") String clientId,
+            @Query("redirect_uri") String username,
+            @Query("response_type") String responseType // only supports "code" for now
+    );
+
+    @GET
+    Single<ResponseBody> stepOnSignUpPage(@Url String url);
+
     @POST
     @FormUrlEncoded
-    Observable<Result<KeycloakToken>> grantNewAccessToken(
+    Single<KeycloakToken> newSession(
             @Url String url,
             @Field("client_id") String clientId,
             @Field("username") String username,
             @Field("password") String password,
-            @Field("grant_type") String grantType // only supports "authorization_code" for now
+            @Field("grant_type") String grantType // only supports "password" for now
+    );
+
+    @POST
+    @FormUrlEncoded
+    Single<ResponseBody> createUser(
+            @Url String url,
+            @Field("username") String username,
+            @Field("email") String email,
+            @Field("password") String password,
+            @Field("password-confirm") String confirmPassword,
+            @Field("register") String register // default is empty
     );
 
     @POST
@@ -32,7 +54,7 @@ public interface KeycloakApiService {
 
     @POST
     @FormUrlEncoded
-    Observable<Result<KeycloakToken>> refreshSession(
+    Single<KeycloakToken> refreshSession(
             @Url String url,
             @Field("client_id") String clientId,
             @Field("refresh_token") String refreshToken,

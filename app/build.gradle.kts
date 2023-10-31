@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.browser)
     implementation(libs.adapter.rxjava3)
+    implementation(libs.logging.interceptor)
+    implementation(libs.jsoup)
     kapt(libs.hilt.android.compiler)
     implementation(libs.moshi)
     implementation(libs.moshi)

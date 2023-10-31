@@ -33,13 +33,13 @@
         android:theme="@style/Theme.Koki"
         tools:targetApi="34">
         <activity
-            android:name=".ui.EmptyActivity"
+            android:name=".ui.RestSignupActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.RestLoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.CustomTabLoginActivity"
+            android:name=".ui.AppAuthLoginActivity"
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"

@@ -1,4 +1,4 @@
-package io.github.ktard.koki.model;
+package io.github.ktard.koki.model.Keycloak;
 
 import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.GrantTypeValues;

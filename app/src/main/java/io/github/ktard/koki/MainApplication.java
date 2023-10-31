@@ -11,6 +11,7 @@ import dagger.hilt.android.HiltAndroidApp;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import rxdogtag2.RxDogTag;
 import rxdogtag2.autodispose2.AutoDisposeConfigurer;
+import timber.log.Timber;
 
 @HiltAndroidApp
 public class MainApplication extends Application {
@@ -22,6 +23,8 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Timber.plant(new Timber.DebugTree());
 
         // Initialise app database
         MMKV.initialize(this);

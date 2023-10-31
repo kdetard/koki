@@ -21,28 +21,32 @@ public class MainActivity extends AppCompatActivity {
 
         RxView
                 //Capture Login Button Click:
-                .clicks(findViewById(R.id.openCustomTabLoginBtn))
-
+                .clicks(findViewById(R.id.openAppAuthLoginBtn))
                 .doOnNext(v -> {
-                    var customTabLoginIntent = new Intent(this, CustomTabLoginActivity.class);
-                    startActivity(customTabLoginIntent);
+                    var appAuthLoginIntent = new Intent(this, AppAuthLoginActivity.class);
+                    startActivity(appAuthLoginIntent);
                 })
-
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-
                 .subscribe();
 
         RxView
                 //Capture Login Button Click:
-                .clicks(findViewById(R.id.openDefaultLoginBtn))
-
+                .clicks(findViewById(R.id.openRestLoginBtn))
                 .doOnNext(v -> {
-                    var defaultLoginIntent = new Intent(this, LoginActivity.class);
-                    startActivity(defaultLoginIntent);
+                    var restLoginIntent = new Intent(this, RestLoginActivity.class);
+                    startActivity(restLoginIntent);
                 })
-
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe();
 
+        RxView
+                //Capture Login Button Click:
+                .clicks(findViewById(R.id.openSignupBtn))
+                .doOnNext(v -> {
+                    var signupIntent = new Intent(this, RestSignupActivity.class);
+                    startActivity(signupIntent);
+                })
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe();
     }
 }

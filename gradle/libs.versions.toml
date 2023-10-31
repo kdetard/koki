@@ -46,12 +46,14 @@ autodispose-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-l
 autodispose-androidx-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-androidx-lifecycle", version = "2.2.1" }
 rxdogtag-autodispose = { group = "com.uber.rxdogtag2", name = "rxdogtag-autodispose", version = "2.0.2" }
 rxdogtag = { group = "com.uber.rxdogtag2", name = "rxdogtag", version = "2.0.2" }
-timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
+timber = { group = "com.jakewharton.timber", name = "timber", version = "4.7.1" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version = "2.9.0" }
 rxjava3-retrofit-adapter = { group = "com.github.akarnokd", name = "rxjava3-retrofit-adapter", version = "3.0.0" }
 androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version = "2.5.0" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.7.0-beta01" }
 adapter-rxjava3 = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version = "2.9.0" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "5.0.0-alpha.11" }
+jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

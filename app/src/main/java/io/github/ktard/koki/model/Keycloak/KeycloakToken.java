@@ -1,4 +1,4 @@
-package io.github.ktard.koki.model;
+package io.github.ktard.koki.model.Keycloak;
 
 import com.squareup.moshi.Json;
 

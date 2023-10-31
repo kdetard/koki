@@ -58,7 +58,7 @@
 
 
     <Button
-        android:id="@+id/customTabLoginBtn"
+        android:id="@+id/appAuthLogin_loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
@@ -67,7 +67,7 @@
         />
 
     <TextView
-        android:id="@+id/keycloakResponse"
+        android:id="@+id/appAuthLogin_keycloakResponse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

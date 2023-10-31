@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerInParent="false"
+    android:layout_centerHorizontal="false"
+    android:layout_centerVertical="false"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
     <Button
-        android:id="@+id/openCustomTabLoginBtn"
+        android:id="@+id/openAppAuthLoginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open Custom Tab login screen"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:text="Open AppAuth login screen" />
+
+    <Button
+        android:id="@+id/openRestLoginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open REST login screen"
+
         />
 
     <Button
-        android:id="@+id/openDefaultLoginBtn"
+        android:id="@+id/openSignupBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open default login screen"
+        android:text="Open REST sign up screen" />
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/openCustomTabLoginBtn"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
