@@ -71,7 +71,7 @@ public class RestSignupActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                                     ((TextView)findViewById(R.id.restSignup_keycloakResponse)).setText(throwable.toString());
                                 })
-                                .onErrorResumeNext(throwable -> Maybe.just(false)))
+                                .onErrorResumeNext(throwable -> Maybe.empty()))
 
                 .doOnNext(r -> {
                     var status = r ? "success" : "error";
