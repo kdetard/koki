@@ -1,16 +1,16 @@
 plugins {
     alias(libs.plugins.com.android.application)
+    alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
-    alias(libs.plugins.com.google.dagger.hilt.android)
 }
 
 android {
-    namespace = "io.github.ktard.koki"
+    namespace = "io.github.kdetard.koki"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.github.ktard.koki"
+        applicationId = "io.github.kdetard.koki"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -44,38 +44,36 @@ android {
 }
 
 dependencies {
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.constraintlayout)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.webkit)
     implementation(libs.appauth)
-    implementation(libs.rxjava)
+    implementation(libs.appcompat)
+    implementation(libs.autodispose)
+    implementation(libs.autodispose.android)
+    implementation(libs.autodispose.lifecycle)
+    implementation(libs.autodispose.androidx.lifecycle)
+    implementation(libs.constraintlayout)
+    implementation(libs.hilt.android)
+    implementation(libs.jsoup)
+    implementation(libs.material)
+    implementation(libs.mmkv)
+    implementation(libs.moshi)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.adapter.rxjava3)
+    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.rxdogtag)
+    implementation(libs.rxdogtag.autodispose)
     implementation(libs.rxbinding)
     implementation(libs.rxbinding.core)
     implementation(libs.rxbinding.appcompat)
     implementation(libs.rxbinding.material)
     implementation(libs.rxbinding.recyclerview)
-    implementation(libs.androidx.webkit)
-    implementation(libs.mmkv)
-    implementation(libs.cookie.store)
-    implementation(libs.cookie.store.okhttp)
-    implementation(libs.retrofit)
-    implementation(libs.cookie.store)
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.browser)
-    implementation(libs.adapter.rxjava3)
-    implementation(libs.logging.interceptor)
-    implementation(libs.jsoup)
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.moshi)
-    implementation(libs.moshi)
-    implementation(libs.autodispose)
-    implementation(libs.autodispose.android)
-    implementation(libs.autodispose.lifecycle)
-    implementation(libs.autodispose.androidx.lifecycle)
-    implementation(libs.rxdogtag.autodispose)
-    implementation(libs.rxdogtag)
+    implementation(libs.rxjava)
     implementation(libs.timber)
-    implementation(libs.converter.moshi)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

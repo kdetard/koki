@@ -1,59 +1,62 @@
 [versions]
 agp = "8.1.2"
-junit = "4.13.2"
+androidbrowserhelper = "2.5.0"
+androidx-browser = "1.7.0-beta01"
 androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
-appcompat = "1.6.1"
-material = "1.10.0"
-constraintlayout = "2.1.4"
-rxbinding = "4.0.0"
-mmkv = "1.3.1"
-cookie-store = "1.5.0"
-retrofit = "2.9.0"
-hilt = "2.48.1"
-webkit = "1.9.0-alpha01"
 appauth = "0.11.1"
-gson = "2.10.1"
-rxjava = "3.1.8"
+appcompat = "1.6.1"
+autodispose = "2.2.1"
+constraintlayout = "2.1.4"
+espresso-core = "3.5.1"
+hilt = "2.48.1"
+jsoup = "1.16.2"
+junit = "4.13.2"
+material = "1.10.0"
+mmkv = "1.3.1"
+moshi = "1.15.0"
 org-jetbrains-kotlin-android = "1.9.10"
+okhttp-logging-interceptor = "5.0.0-alpha.11"
+retrofit = "2.9.0"
+rxbinding = "4.0.0"
+rxdogtag = "2.0.2"
+rxjava = "3.1.8"
+#noinspection GradleDependency
+timber = "4.7.1"
+webkit = "1.9.0-alpha01"
 
 [libraries]
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version.ref = "androidbrowserhelper" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+autodispose = { group = "com.uber.autodispose2", name = "autodispose", version.ref = "autodispose" }
+autodispose-android = { group = "com.uber.autodispose2", name = "autodispose-android", version.ref = "autodispose" }
+autodispose-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-lifecycle", version.ref = "autodispose" }
+autodispose-androidx-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-androidx-lifecycle", version.ref = "autodispose" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp-logging-interceptor" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-adapter-rxjava3 = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version.ref = "retrofit" }
+retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.ref = "rxbinding" }
 rxbinding-core = { group = "com.jakewharton.rxbinding4", name = "rxbinding-core", version.ref = "rxbinding" }
 rxbinding-appcompat = { group = "com.jakewharton.rxbinding4", name = "rxbinding-appcompat", version.ref = "rxbinding" }
 rxbinding-material = { group = "com.jakewharton.rxbinding4", name = "rxbinding-material", version.ref = "rxbinding" }
 rxbinding-recyclerview = { group = "com.jakewharton.rxbinding4", name = "rxbinding-recyclerview", version.ref = "rxbinding" }
-androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
-mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
-cookie-store = { group = "net.gotev", name = "cookie-store", version.ref = "cookie-store" }
-cookie-store-okhttp = { group = "net.gotev", name = "cookie-store-okhttp", version.ref = "cookie-store" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.15.0" }
-autodispose = { group = "com.uber.autodispose2", name = "autodispose", version = "2.2.1" }
-autodispose-android = { group = "com.uber.autodispose2", name = "autodispose-android", version = "2.2.1" }
-autodispose-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-lifecycle", version = "2.2.1" }
-autodispose-androidx-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-androidx-lifecycle", version = "2.2.1" }
-rxdogtag-autodispose = { group = "com.uber.rxdogtag2", name = "rxdogtag-autodispose", version = "2.0.2" }
-rxdogtag = { group = "com.uber.rxdogtag2", name = "rxdogtag", version = "2.0.2" }
-timber = { group = "com.jakewharton.timber", name = "timber", version = "4.7.1" }
-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version = "2.9.0" }
-rxjava3-retrofit-adapter = { group = "com.github.akarnokd", name = "rxjava3-retrofit-adapter", version = "3.0.0" }
-androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version = "2.5.0" }
-androidx-browser = { group = "androidx.browser", name = "browser", version = "1.7.0-beta01" }
-adapter-rxjava3 = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version = "2.9.0" }
-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "5.0.0-alpha.11" }
-jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
+rxdogtag = { group = "com.uber.rxdogtag2", name = "rxdogtag", version.ref = "rxdogtag" }
+rxdogtag-autodispose = { group = "com.uber.rxdogtag2", name = "rxdogtag-autodispose", version.ref = "rxdogtag" }
+rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
@@ -62,4 +65,3 @@ org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "o
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
 
 [bundles]
-
