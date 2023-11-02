@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "io.github.kdetard.koki"
-        minSdk = 29
+        minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -27,12 +27,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 
     afterEvaluate {
@@ -44,9 +45,14 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
     kapt(libs.hilt.android.compiler)
 
+    implementation(libs.androidx.activity)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.palette)
+    implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.webkit)
     implementation(libs.appauth)
     implementation(libs.appcompat)

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="ic_launcher_foreground_gradient_start">#FF9B416B</color>
+    <color name="ic_launcher_foreground_gradient_stop">#FF0A4277</color>
+    <color name="ic_foreground_gradient_start">#FFCA82A4</color>
+    <color name="ic_foreground_gradient_stop">#FF3B97EF</color>
+
+    <color name="window_background">#ffffff</color>
+    <color name="accent">#03A9F4</color>
+    <color name="primary">#2196F3</color>
+    <color name="primary_variant">#1976D2</color>
+    <color name="toolbar">@android:color/white</color>
+    <color name="navigation_bar">@android:color/black</color>
 </resources>

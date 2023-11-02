@@ -5,6 +5,8 @@ import android.net.Uri;
 import com.tencent.mmkv.MMKV;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -72,7 +74,7 @@ public class RxRestKeycloak extends RxKeycloak {
                 .flatMap(r -> service.createUser(r, username, email, password, confirmPassword, ""))
 
                 .flatMapMaybe(r -> {
-                    var content = r.string();
+                    final String content = r.string();
                     if (content.contains("timed out")) {
                         return Maybe.error(new Error("Time out"));
                     }
@@ -90,11 +92,11 @@ public class RxRestKeycloak extends RxKeycloak {
             final @NonNull String attr
     ) {
         try {
-            var redirectUri = Uri.parse(config.authServerUrl);
-            var baseUri = String.format("%s://%s", redirectUri.getScheme(), redirectUri.getHost());
-            var document = Jsoup.parse(resp.string(), baseUri);
-            var linkSelector = document.selectXpath(String.format("%s[@%s]", xPath, attr)).get(0);
-            var signupUrl = linkSelector.attr(String.format("abs:%s", attr));
+            final Uri redirectUri = Uri.parse(config.authServerUrl);
+            final String baseUri = String.format("%s://%s", redirectUri.getScheme(), redirectUri.getHost());
+            final Document document = Jsoup.parse(resp.string(), baseUri);
+            final Element linkSelector = document.selectXpath(String.format("%s[@%s]", xPath, attr)).get(0);
+            final String signupUrl = linkSelector.attr(String.format("abs:%s", attr));
             return Single.just(signupUrl);
         } catch (IndexOutOfBoundsException e) {
             return Single.error(new Error("Cannot find link in request"));

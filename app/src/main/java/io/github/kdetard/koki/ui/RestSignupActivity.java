@@ -74,7 +74,7 @@ public class RestSignupActivity extends AppCompatActivity {
                                 .onErrorResumeNext(throwable -> Maybe.empty()))
 
                 .doOnNext(r -> {
-                    var status = r ? "success" : "error";
+                    final String status = r ? "success" : "error";
                     Timber.d("Sign up %s", status);
                     Toast.makeText(getApplicationContext(), r ? "Success" : "Error", Toast.LENGTH_SHORT).show();
                     ((TextView)findViewById(R.id.restSignup_keycloakResponse)).setText(String.format("Sign up %s!", status));

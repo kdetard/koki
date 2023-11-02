@@ -24,7 +24,7 @@ public class MMKVCookieJar implements CookieJar {
     public MMKVCookieJar(String name) {
         super();
         store = MMKV.mmkvWithID(name, MMKV.MULTI_PROCESS_MODE);
-        var moshi = new Moshi.Builder()
+        final Moshi moshi = new Moshi.Builder()
                 .add(new CookieJsonAdapter())
                 .build();
         cookieJsonAdapter = moshi.adapter(Cookie.class).nullSafe();
@@ -40,8 +40,8 @@ public class MMKVCookieJar implements CookieJar {
 
     @Override
     public void saveFromResponse(@NonNull HttpUrl httpUrl, @NonNull List<Cookie> list) {
-        var url = httpUrl.host();
-        var cookies = new HashSet<>(store.getStringSet(url, new HashSet<>()));
+        final String url = httpUrl.host();
+        final HashSet<String> cookies = new HashSet<>(store.getStringSet(url, new HashSet<>()));
 
         cookies.addAll(
                 list.stream()
@@ -54,12 +54,12 @@ public class MMKVCookieJar implements CookieJar {
     @NonNull
     @Override
     public List<Cookie> loadForRequest(@NonNull HttpUrl httpUrl) {
-        var url = httpUrl.host();
-        var cookies = new HashSet<>(store.getStringSet(url, new HashSet<>()));
+        final String url = httpUrl.host();
+        final HashSet<String> cookies = new HashSet<>(store.getStringSet(url, new HashSet<>()));
 
         return cookies.stream()
                 .map(c -> {
-                    var cookie = tryParse(c);
+                    final Cookie cookie = tryParse(c);
                     if (cookie == null || cookie.expiresAt() < System.currentTimeMillis()) {
                         return null;
                     }

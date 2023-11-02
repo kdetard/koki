@@ -1,9 +1,9 @@
 package io.github.kdetard.koki.di;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import net.openid.appauth.AuthorizationException;
@@ -21,7 +21,7 @@ import io.reactivex.rxjava3.core.Single;
 import timber.log.Timber;
 
 public class RxAppAuthKeycloak extends RxKeycloak {
-    public static Observable<AuthorizationService> service(final Activity context) {
+    public static Observable<AuthorizationService> service(final AppCompatActivity context) {
         return Observable.create(emitter -> {
             final AuthorizationService authService = new AuthorizationService(context);
             emitter.setCancellable(authService::dispose);
@@ -29,7 +29,7 @@ public class RxAppAuthKeycloak extends RxKeycloak {
         });
     }
 
-    public static Single<KeycloakConfig> auth(final Activity activity, final AuthorizationService service, final KeycloakConfig config, final int requestCode) {
+    public static Single<KeycloakConfig> auth(final AppCompatActivity activity, final AuthorizationService service, final KeycloakConfig config, final int requestCode) {
         return fetchConfig(config)
                 .onErrorResumeNext(ex -> {
                     Timber.w(ex, "An error occurred while performing OpenID endpoint discovery.");
@@ -71,7 +71,7 @@ public class RxAppAuthKeycloak extends RxKeycloak {
         return onActivityResult.firstOrError()
                 .filter(r -> r.requestCode == requestCode)
                 .flatMapSingle(r -> {
-                    if (r.resultCode != Activity.RESULT_OK) {
+                    if (r.resultCode != AppCompatActivity.RESULT_OK) {
                         return Single.error(new Exception("User Abandoned Auth."));
                     } else {
                         return Single.just(r);

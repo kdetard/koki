@@ -1,12 +1,16 @@
 [versions]
 agp = "8.1.2"
 androidbrowserhelper = "2.5.0"
-androidx-browser = "1.7.0-beta01"
+androidx-activity = "1.8.0"
+androidx-browser = "1.7.0-rc01"
+androidx-palette = "1.0.0"
+androidx-splashscreen = "1.0.1"
 androidx-test-ext-junit = "1.1.5"
 appauth = "0.11.1"
 appcompat = "1.6.1"
 autodispose = "2.2.1"
 constraintlayout = "2.1.4"
+desugar-jdk-libs = "2.0.4"
 espresso-core = "3.5.1"
 hilt = "2.48.1"
 jsoup = "1.16.2"
@@ -22,11 +26,14 @@ rxdogtag = "2.0.2"
 rxjava = "3.1.8"
 #noinspection GradleDependency
 timber = "4.7.1"
-webkit = "1.9.0-alpha01"
+webkit = "1.9.0-beta01"
 
 [libraries]
 androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version.ref = "androidbrowserhelper" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
+androidx-palette = { group = "androidx.palette", name = "palette", version.ref = "androidx-palette" }
+androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
@@ -36,6 +43,7 @@ autodispose-android = { group = "com.uber.autodispose2", name = "autodispose-and
 autodispose-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-lifecycle", version.ref = "autodispose" }
 autodispose-androidx-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-androidx-lifecycle", version.ref = "autodispose" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
