@@ -5,9 +5,7 @@
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="370"
-    android:viewportHeight="144"
-    style="@style/"
-    >
+    android:viewportHeight="144" >
     <group android:scaleX="0.46"
         android:scaleY="0.17902702"
         android:translateX="99.9"
