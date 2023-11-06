@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -35,6 +36,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 
     afterEvaluate {
         tasks.withType(JavaCompile::class) {
@@ -45,17 +49,25 @@ android {
 }
 
 dependencies {
+    implementation(libs.legacy.support.v4)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.annotation)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.palette)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.webkit)
     implementation(libs.appauth)
-    implementation(libs.appcompat)
     implementation(libs.autodispose)
     implementation(libs.autodispose.android)
     implementation(libs.autodispose.lifecycle)
@@ -82,6 +94,7 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.espresso.core)
 }
 

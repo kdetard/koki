@@ -24,4 +24,32 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.Koki</item>
     </style>
+
+    <style name="NightAdjusted.Theme.Koki.IntroLayout" parent="Theme.Koki">
+        <item name="android:background">@drawable/light_background</item>
+    </style>
+
+    <style name="Theme.Koki.Brand.TextView" parent="Theme.Koki">
+        <item name="android:fontFamily">@font/nicomoji_regular</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Theme.Koki.IntroLayout" parent="NightAdjusted.Theme.Koki.IntroLayout" />
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.CollapsingToolbar.Expanded" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="TextAppearance.CollapsingToolbar.Collapsed" parent="TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+  <!-- Base application theme. -->
+    <style name="Base.Theme.Koki" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
 </resources>

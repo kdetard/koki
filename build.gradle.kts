@@ -5,3 +5,12 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
     alias(libs.plugins.org.jetbrains.kotlin.kapt) apply false
 }
+
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath(libs.androidx.navigation.safeargs)
+    }
+}
