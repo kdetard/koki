@@ -84,8 +84,8 @@ public class RxRestKeycloak extends RxKeycloak {
                     if (content.contains("timed out")) {
                         return Maybe.error(new Error("Time out"));
                     }
-                    if (content.contains("already exists")) {
-                        return Maybe.just(false);
+                    if (content.contains("exists")) {
+                        return Maybe.error(new Error("User already exists"));
                     }
                     return Maybe.just(true);
                 });
