@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.WindowInsetsCompat;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import dagger.hilt.android.AndroidEntryPoint;
-import dev.chrisbanes.insetter.Insetter;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.di.RxRestKeycloak;
@@ -58,14 +56,12 @@ public class SignUpFragment extends OnboardFragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+
+        final View view = requireView();
 
         mKeycloakConfig = KeycloakConfig.getDefaultConfig(view.getContext());
-
-        Insetter.builder()
-                .padding(WindowInsetsCompat.Type.statusBars())
-                .applyToView(view);
 
         RxView
                 //Capture Login Button Click:

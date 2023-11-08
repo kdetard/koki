@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -26,7 +25,6 @@ import javax.inject.Inject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import dagger.hilt.android.AndroidEntryPoint;
-import dev.chrisbanes.insetter.Insetter;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.di.RxRestKeycloak;
@@ -60,16 +58,14 @@ public class SignInFragment extends OnboardFragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+
+        final View view = requireView();
 
         mKeycloakConfig = KeycloakConfig.getDefaultConfig(view.getContext());
 
         final NavController navController = Navigation.findNavController(view);
-
-        Insetter.builder()
-                .padding(WindowInsetsCompat.Type.statusBars())
-                .applyToView(view);
 
         RxView
                 .clicks(view.findViewById(R.id.restLogin_registerBtn))
@@ -117,5 +113,4 @@ public class SignInFragment extends OnboardFragment {
 
                 .subscribe();
     }
-
 }
