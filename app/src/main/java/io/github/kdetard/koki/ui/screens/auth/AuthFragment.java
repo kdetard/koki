@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.jakewharton.rxbinding4.view.RxView;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -36,8 +35,6 @@ public class AuthFragment extends OnboardFragment {
         super.onViewCreated(view, savedInstanceState);
 
         final NavController navController = Navigation.findNavController(view);
-
-        requireBottomSheetBehavior().setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         RxView
                 .clicks(view.findViewById(R.id.authFragment_signInWithGoogleBtn))

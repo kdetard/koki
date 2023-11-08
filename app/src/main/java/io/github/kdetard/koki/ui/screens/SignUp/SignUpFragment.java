@@ -16,7 +16,6 @@ import android.view.autofill.AutofillManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.tencent.mmkv.MMKV;
@@ -64,13 +63,8 @@ public class SignUpFragment extends OnboardFragment {
 
         mKeycloakConfig = KeycloakConfig.getDefaultConfig(view.getContext());
 
-        requireBottomSheetBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
-
         Insetter.builder()
-                // This will add the navigation bars insets as padding to all sides of the view,
-                // maintaining the original padding (from the layout XML, style, etc)
                 .padding(WindowInsetsCompat.Type.statusBars())
-                // This is a shortcut for view.setOnApplyWindowInsetsListener(builder.build())
                 .applyToView(view);
 
         RxView

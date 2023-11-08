@@ -34,7 +34,7 @@
         android:theme="@style/Theme.Koki.Splash"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".ui.AppAuthLoginActivity"
+            android:name=".ui.activities.AppAuthLoginActivity"
             android:theme="@style/Theme.Material3.DynamicColors.DayNight"
             android:exported="false" />
         <activity

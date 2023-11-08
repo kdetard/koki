@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.tencent.mmkv.MMKV;
@@ -68,13 +67,8 @@ public class SignInFragment extends OnboardFragment {
 
         final NavController navController = Navigation.findNavController(view);
 
-        requireBottomSheetBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
-
         Insetter.builder()
-                // This will add the navigation bars insets as padding to all sides of the view,
-                // maintaining the original padding (from the layout XML, style, etc)
                 .padding(WindowInsetsCompat.Type.statusBars())
-                // This is a shortcut for view.setOnApplyWindowInsetsListener(builder.build())
                 .applyToView(view);
 
         RxView
@@ -99,7 +93,7 @@ public class SignInFragment extends OnboardFragment {
                 .doOnNext(v -> {
                     mPassword = ((TextInputEditText)view.findViewById(R.id.restLogin_passwordTxt)).getText().toString();
                     mUsername = ((TextInputEditText)view.findViewById(R.id.restLogin_usernameTxt)).getText().toString();
-                    ((TextView)view.findViewById(R.id.appAuthLogin_keycloakResponse)).setText("");
+                    ((TextView)view.findViewById(R.id.restLogin_keycloakResponse)).setText("");
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -110,13 +104,13 @@ public class SignInFragment extends OnboardFragment {
                         RxRestKeycloak.newSession(apiService, mKeycloakConfig, mUsername, mPassword)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(throwable ->
-                                        ((TextView) view.findViewById(R.id.appAuthLogin_keycloakResponse)).setText(throwable.toString()))
+                                        ((TextView) view.findViewById(R.id.restLogin_keycloakResponse)).setText(throwable.toString()))
                                 .onErrorResumeNext(throwable -> Single.never()))
 
                 //Populate result with the parsed token body:
                 .doOnNext(r -> {
                     final JWT jwt = new JWT(r.accessToken);
-                    ((TextView)view.findViewById(R.id.appAuthLogin_keycloakResponse)).setText(jwt.body);
+                    ((TextView)view.findViewById(R.id.restLogin_keycloakResponse)).setText(jwt.body);
                 })
 
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))

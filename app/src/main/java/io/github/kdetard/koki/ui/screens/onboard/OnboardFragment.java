@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.jakewharton.rxbinding4.view.RxView;
 
@@ -33,9 +36,13 @@ public class OnboardFragment extends BaseFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe();
 
-        requireBottomSheetBehavior(view).setDraggable(false);
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.post(() -> requireBottomSheetBehavior().setPeekHeight(view.getMeasuredHeight()));
     }
 
     protected View requireParent() {
@@ -47,6 +54,10 @@ public class OnboardFragment extends BaseFragment {
     }
 
     protected BottomSheetBehavior<FrameLayout> requireBottomSheetBehavior(View view) {
-        return BottomSheetBehavior.from(view.findViewById(R.id.onboardFragment_actionContainer));
+        return BottomSheetBehavior.from(requireBottomSheet(view));
+    }
+
+    protected FrameLayout requireBottomSheet(View view) {
+        return view.findViewById(R.id.onboardFragment_actionContainer);
     }
 }

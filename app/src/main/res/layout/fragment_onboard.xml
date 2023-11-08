@@ -59,19 +59,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:behavior_draggable="false"
+        app:behavior_fitToContents="true"
         app:behavior_hideable="false"
-        app:behavior_skipCollapsed="true"
-        app:behavior_peekHeight="300dp"
+        app:behavior_saveFlags="all"
         >
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/onboardFragment_actionLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:name="androidx.navigation.fragment.NavHostFragment"
             app:navGraph="@navigation/nav_graph_onboard"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:layout_behavior="@string/bottom_sheet_behavior"
             />
     </FrameLayout>
 

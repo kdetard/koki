@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/padding_16"
     tools:context=".ui.screens.SignIn.SignInFragment">
 
@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/padding_16"
+        android:padding="@dimen/padding_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/restLogin_formLayout"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,8 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
-        app:layout_constraintTop_toBottomOf="@id/restLogin_formLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/restLogin_registerBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -94,16 +93,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signin_create_account"
-        app:layout_constraintTop_toBottomOf="@id/restLogin_loginBtn"
+        app:layout_constraintBottom_toTopOf="@id/restLogin_keycloakResponse"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
-        android:id="@+id/appAuthLogin_keycloakResponse"
+        android:id="@+id/restLogin_keycloakResponse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/restLogin_registerBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
