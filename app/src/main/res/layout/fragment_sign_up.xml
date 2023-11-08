@@ -4,87 +4,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
-    tools:context=".ui.RestSignupActivity">
+    android:paddingHorizontal="@dimen/padding_16"
+    tools:context=".ui.screens.SignUp.SignUpFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/restSignup_usernameLayout"
-        android:layout_width="match_parent"
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/TextAppearance.Material3.TitleLarge"
+        android:id="@+id/restSignup_titleTxt"
+        android:text="@string/signup_title"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/restSignup_emailLayout"
+        android:paddingHorizontal="@dimen/padding_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/restSignup_formLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+        />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/restSignup_usernameTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/username"
-            android:inputType="text"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/restSignup_emailLayout"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/restSignup_formLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/restSignup_passwordLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/restSignup_emailTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/restSignup_passwordLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/restSignup_confirmPasswordLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/restSignup_passwordTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/restSignup_confirmPasswordLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:showDividers="middle"
+        app:divider="@drawable/empty_small_divider"
+        app:layout_constraintTop_toTopOf="@id/restSignup_titleTxt"
         app:layout_constraintBottom_toTopOf="@id/restSignup_signupBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/restSignup_confirmPasswordTxt"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Koki.TextInputLayout"
+            android:id="@+id/restSignup_usernameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username"
+            app:helperText="@string/type_username_help"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/restSignup_usernameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:autofillHints="username"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Koki.TextInputLayout"
+            android:id="@+id/restSignup_emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            app:helperText="@string/type_email_help"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/restSignup_emailTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Koki.TextInputLayout"
+            android:id="@+id/restSignup_passwordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            app:helperText="@string/type_password_help"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/restSignup_passwordTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Koki.TextInputLayout"
+            android:id="@+id/restSignup_confirmPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/comfirm_password"
-            android:inputType="textPassword"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:helperText="@string/retype_password_help"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/restSignup_confirmPasswordTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <Button
         android:id="@+id/restSignup_signupBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_up"
-        app:layout_constraintBottom_toTopOf="@id/restSignup_keycloakResponse"
+        app:layout_constraintTop_toBottomOf="@id/restSignup_formLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -93,7 +122,7 @@
         android:id="@+id/restSignup_keycloakResponse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restSignup_signupBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />

@@ -5,6 +5,22 @@
     android:id="@+id/nav_graph_onboard"
     app:startDestination="@id/authFragment">
 
+    <action
+        android:id="@+id/action_global_authFragment"
+        app:destination="@id/authFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+
+    <action
+        android:id="@+id/action_global_signUpFragment"
+        app:destination="@id/signUpFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+
     <fragment
         android:id="@+id/authFragment"
         android:name="io.github.kdetard.koki.ui.screens.auth.AuthFragment"
@@ -12,10 +28,13 @@
         tools:layout="@layout/fragment_onboard">
         <action
             android:id="@+id/action_authFragment_to_signInFragment"
-            app:destination="@id/signInFragment" />
-        <action
-            android:id="@+id/action_authFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/authFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            />
     </fragment>
 
     <fragment

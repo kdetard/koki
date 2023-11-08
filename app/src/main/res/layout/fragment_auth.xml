@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/authFragment_actionLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/introHeight"
     android:padding="20dp"
     tools:context=".ui.screens.auth.AuthFragment">
 
@@ -16,17 +17,20 @@
         android:text="@string/sign_in_with_google"
         app:icon="@drawable/ic_google_filled_48dp"
         app:iconGravity="textStart"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/authFragment_separatorLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
     <LinearLayout
+        android:id="@+id/authFragment_separatorLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/authFragment_signUpBtn"
-        app:layout_constraintTop_toBottomOf="@+id/authFragment_signInWithGoogleBtn"
+        android:paddingVertical="@dimen/padding_16"
+        app:layout_constraintBottom_toTopOf="@id/authFragment_signUpBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         >
 
         <com.google.android.material.divider.MaterialDivider
@@ -35,6 +39,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:thickness="1dp"
+            app:dividerColor="?attr/colorOnBackground"
             android:layout_marginHorizontal="20dp" />
 
         <TextView
@@ -50,6 +55,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:thickness="1dp"
+            app:dividerColor="?attr/colorOnBackground"
             android:layout_marginHorizontal="20dp"/>
     </LinearLayout>
 
@@ -62,9 +68,10 @@
         app:icon="@drawable/ic_mail_outline_48dp"
         app:iconGravity="textStart"
 
-        app:layout_constraintBottom_toTopOf="@id/authFragment_signInBtn"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <Button
@@ -72,9 +79,8 @@
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
         android:text="@string/sign_in"
-        app:layout_constraintBottom_toTopOf="@id/authFragment_resetPasswordBtn"
+        app:layout_constraintTop_toBottomOf="@id/authFragment_signUpBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="?attr/colorOnPrimaryFixedVariant" />
@@ -85,6 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reset_password"
+        app:layout_constraintTop_toBottomOf="@id/authFragment_signInBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

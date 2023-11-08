@@ -24,8 +24,6 @@
             app:scrimVisibleHeightTrigger="@dimen/toolbar_scrim_visible_height"
             app:expandedTitleMarginStart="@dimen/toolbar_expanded_title_margin"
             app:expandedTitleMarginEnd="@dimen/toolbar_expanded_title_margin"
-            app:expandedTitleTextAppearance="@style/TextAppearance.CollapsingToolbar.Expanded"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.CollapsingToolbar.Collapsed"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:title="@string/app_name">
 
@@ -41,7 +39,6 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            app:tabTextAppearance="@style/TabTextAppearance"
             android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +51,7 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:navGraph="@navigation/nav_graph_main" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

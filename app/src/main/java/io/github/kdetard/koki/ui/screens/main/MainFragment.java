@@ -1,27 +1,20 @@
 package io.github.kdetard.koki.ui.screens.main;
 
-import android.app.PendingIntent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tencent.mmkv.MMKV;
-
 import dagger.hilt.android.AndroidEntryPoint;
 import io.github.kdetard.koki.R;
+import io.github.kdetard.koki.ui.base.BaseFragment;
 
 @AndroidEntryPoint
-public class MainFragment extends Fragment {
+public class MainFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {

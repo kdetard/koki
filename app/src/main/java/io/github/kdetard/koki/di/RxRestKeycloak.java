@@ -61,13 +61,13 @@ public class RxRestKeycloak extends RxKeycloak {
                         "code"
                 ))
 
-                // Extract signup link without session code from signin form
+                // Extract signup link without session code from sign in form
                 .flatMap(r -> extractLinkFromElement(config, r, "//a", "href"))
 
                 // Step on signup page
                 .flatMap(service::stepOnSignUpPage)
 
-                // Extract signup link with session code from signup form
+                // Extract signup link with session code from sign up form
                 .flatMap(r -> extractLinkFromElement(config, r, "//form", "action"))
 
                 // Create new user from the signup link with session code above
@@ -75,6 +75,12 @@ public class RxRestKeycloak extends RxKeycloak {
 
                 .flatMapMaybe(r -> {
                     final String content = r.string();
+                    if (content.contains("Invalid")) {
+                        return Maybe.error(new Error("Some fields are invalid"));
+                    }
+                    if (content.contains("specify")) {
+                        return Maybe.error(new Error("Some fields are empty"));
+                    }
                     if (content.contains("timed out")) {
                         return Maybe.error(new Error("Time out"));
                     }

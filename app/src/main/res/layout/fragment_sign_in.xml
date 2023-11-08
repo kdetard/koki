@@ -4,75 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
+    android:paddingHorizontal="@dimen/padding_16"
     tools:context=".ui.screens.SignIn.SignInFragment">
 
-<!--    To do: BackBTN -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/restLogin_titleTxt"
+        style="@style/TextAppearance.Material3.TitleLarge"
+        android:text="@string/login_title"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/padding_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/restLogin_formLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/restLogin_usernameLayout"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/restLogin_formLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toTopOf="@id/restLogin_passwordLayout"
+        android:orientation="vertical"
+        app:showDividers="middle"
+        app:divider="@drawable/empty_small_divider"
+        app:layout_constraintTop_toTopOf="@id/restLogin_titleTxt"
+        app:layout_constraintBottom_toTopOf="@id/restLogin_loginBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/restLogin_usernameTxt"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/restLogin_usernameLayout"
+            style="@style/Widget.Koki.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/username"
-            android:inputType="text"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="@string/hint_username_or_password"
+            app:helperText="@string/type_username_or_email_help"
+            >
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/restLogin_passwordLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/restLogin_resetPasswordBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/restLogin_usernameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:autofillHints="username|emailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/restLogin_passwordTxt"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/restLogin_passwordLayout"
+            style="@style/Widget.Koki.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
-            android:inputType="textPassword"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:helperText="@string/type_password_help"
+            >
 
-    <Button
-        style="@style/Widget.Material3.Button.TextButton"
-        android:id="@+id/restLogin_resetPasswordBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_reset_password"
-        app:layout_constraintBottom_toTopOf="@+id/restLogin_loginBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/restLogin_passwordTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:autofillHints="password" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/restLogin_resetPasswordBtn"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/padding_16"
+            android:text="@string/login_reset_password"
+            />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <Button
         android:id="@+id/restLogin_loginBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
-        app:layout_constraintBottom_toTopOf="@+id/restLogin_registerBtn"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restLogin_formLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        style="@style/Widget.Material3.Button.TextButton"
         android:id="@+id/restLogin_registerBtn"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Don't have an account? Sign up now!"
-        app:layout_constraintBottom_toTopOf="@+id/appAuthLogin_keycloakResponse"
+        android:text="@string/signin_create_account"
+        app:layout_constraintTop_toBottomOf="@id/restLogin_loginBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -81,8 +103,9 @@
         android:id="@+id/appAuthLogin_keycloakResponse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restLogin_registerBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

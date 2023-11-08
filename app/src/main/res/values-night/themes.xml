@@ -4,12 +4,8 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
     </style>
 
-    <style name="NightAdjusted.Theme.Koki.IntroLayout" parent="Theme.Koki">
+    <style name="NightAdjusted.Widget.Koki.IntroLayout" parent="Theme.Koki">
+        <item name="background">@drawable/night_background</item>
         <item name="android:background">@drawable/night_background</item>
-    </style>
-  <!-- Base application theme. -->
-    <style name="Base.Theme.Koki" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
 </resources>

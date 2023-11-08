@@ -32,18 +32,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Koki.Splash"
-        tools:targetApi="34">
-        <activity
-            android:name=".ui.RestSignupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.RestLoginActivity"
-            android:exported="false" />
+        tools:targetApi="tiramisu">
         <activity
             android:name=".ui.AppAuthLoginActivity"
+            android:theme="@style/Theme.Material3.DynamicColors.DayNight"
             android:exported="false" />
         <activity
             android:name=".ui.activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
