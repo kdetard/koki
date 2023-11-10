@@ -56,10 +56,8 @@ public class SignUpFragment extends OnboardFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        final View view = requireView();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mKeycloakConfig = KeycloakConfig.getDefaultConfig(view.getContext());
 
@@ -97,7 +95,7 @@ public class SignUpFragment extends OnboardFragment {
                     }
                 })
 
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
 
                 .subscribe();
     }

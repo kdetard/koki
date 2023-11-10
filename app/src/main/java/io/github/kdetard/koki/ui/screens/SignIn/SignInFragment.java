@@ -31,6 +31,7 @@ import io.github.kdetard.koki.di.RxRestKeycloak;
 import io.github.kdetard.koki.model.JWT;
 import io.github.kdetard.koki.model.Keycloak.KeycloakConfig;
 import io.github.kdetard.koki.network.KeycloakApiService;
+import io.github.kdetard.koki.ui.screens.auth.AuthFragmentDirections;
 import io.github.kdetard.koki.ui.screens.onboard.OnboardFragment;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -58,10 +59,8 @@ public class SignInFragment extends OnboardFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        final View view = requireView();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mKeycloakConfig = KeycloakConfig.getDefaultConfig(view.getContext());
 
@@ -69,14 +68,14 @@ public class SignInFragment extends OnboardFragment {
 
         RxView
                 .clicks(view.findViewById(R.id.restLogin_registerBtn))
-                .doOnNext(v -> navController.navigate(R.id.action_global_signUpFragment))
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .doOnNext(v -> navController.navigate(AuthFragmentDirections.actionGlobalSignUpFragment()))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe();
 
         RxView
                 .clicks(view.findViewById(R.id.restLogin_resetPasswordBtn))
                 .doOnNext(v -> Toast.makeText(requireContext(), "Function not implemented", Toast.LENGTH_SHORT).show())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe();
 
         RxView
@@ -109,7 +108,7 @@ public class SignInFragment extends OnboardFragment {
                     ((TextView)view.findViewById(R.id.restLogin_keycloakResponse)).setText(jwt.body);
                 })
 
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
 
                 .subscribe();
     }

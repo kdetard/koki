@@ -4,6 +4,8 @@ import static autodispose2.AutoDispose.autoDisposable;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -28,35 +30,27 @@ public class AuthFragment extends OnboardFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        final View view = requireView();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         final NavController navController = Navigation.findNavController(view);
 
         RxView
                 .clicks(view.findViewById(R.id.authFragment_signInWithGoogleBtn))
                 .doOnNext(v -> Toast.makeText(requireContext(), "Function not implemented", Toast.LENGTH_SHORT).show())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe();
 
         RxView
                 .clicks(view.findViewById(R.id.authFragment_signUpBtn))
-                .doOnNext(v -> navController.navigate(R.id.action_global_signUpFragment))
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .doOnNext(v -> navController.navigate(AuthFragmentDirections.actionGlobalSignUpFragment()))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe();
 
         RxView
                 .clicks(view.findViewById(R.id.authFragment_signInBtn))
-                .doOnNext(v -> navController.navigate(R.id.action_authFragment_to_signInFragment))
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe();
-
-        RxView
-                .clicks(view.findViewById(R.id.authFragment_resetPasswordBtn))
-                .doOnNext(v -> Toast.makeText(requireContext(), "Function not implemented", Toast.LENGTH_SHORT).show())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .doOnNext(v -> navController.navigate(AuthFragmentDirections.actionAuthFragmentToSignInFragment()))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe();
     }
 }

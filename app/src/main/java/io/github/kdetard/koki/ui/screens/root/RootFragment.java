@@ -17,6 +17,7 @@ import com.tencent.mmkv.MMKV;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.ui.base.BaseFragment;
+import io.github.kdetard.koki.ui.screens.main.MainFragmentDirections;
 
 @AndroidEntryPoint
 public class RootFragment extends BaseFragment {
@@ -39,10 +40,10 @@ public class RootFragment extends BaseFragment {
 
         final NavController controller = navHostFragment.getNavController();
 
-        if (MMKV.defaultMMKV().getString("accessToken", "").isEmpty() ) {
+        if (MMKV.defaultMMKV().getString("accessToken", "").isEmpty()) {
             final NavDestination dest = navHostFragment.getNavController().getCurrentDestination();
             if (dest != null && dest.equals(controller.findDestination(R.id.mainFragment))) {
-                controller.navigate(R.id.action_global_onboardFragment);
+                controller.navigate(MainFragmentDirections.actionGlobalOnboardFragment());
             }
         }
     }
