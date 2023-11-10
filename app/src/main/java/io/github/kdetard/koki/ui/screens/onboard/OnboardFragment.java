@@ -37,7 +37,7 @@ public class OnboardFragment extends BaseFragment {
 
         Insetter.builder()
                 .paddingTop(WindowInsetsCompat.Type.statusBars(), true)
-                .applyToView(view);
+                .applyToView(view.findViewById(R.id.onboardFragment_appBarLayout));
 
         setInsets(view.findViewById(R.id.onboardFragment_actionContainer));
 
@@ -45,23 +45,24 @@ public class OnboardFragment extends BaseFragment {
     }
 
     private void setInsets(View parent) {
-        final int origPaddingTop = parent.getPaddingTop();
-        final int origPaddingBottom = parent.getPaddingBottom();
-
         Insetter.builder().setOnApplyInsetsListener((view, insets, viewState) -> {
+            final Insets statusBarsInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
             final Insets navigationBarsInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
             final Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
 
-            int paddingBottom = imeInsets.bottom;
-            if (imeInsets.bottom == 0) {
-                paddingBottom = navigationBarsInsets.bottom;
-            }
+            final int paddingTop = imeInsets.bottom > 0 & statusBarsInsets.top > 0
+                    ? statusBarsInsets.top
+                    : 0;
+
+            final int paddingBottom = imeInsets.bottom == 0
+                    ? navigationBarsInsets.bottom
+                    : imeInsets.bottom;
 
             view.setPaddingRelative(
                     view.getPaddingLeft(),
-                    origPaddingTop,
+                    paddingTop,
                     view.getPaddingRight(),
-                    origPaddingBottom + paddingBottom
+                    paddingBottom
             );
         }).applyToView(parent);
     }
