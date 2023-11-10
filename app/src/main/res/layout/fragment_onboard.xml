@@ -5,14 +5,13 @@
     style="@style/Widget.Koki.IntroLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context=".ui.activities.MainActivity"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_16"
         android:paddingHorizontal="20dp"
         android:layout_gravity="top"
         >
@@ -34,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textSize="42sp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/onboardFragment_appBarLayout_langPickerBtn"
             app:layout_constraintBottom_toTopOf="@id/onboardFragment_appBarLayout_brandDescTxt"
             app:layout_constraintStart_toStartOf="parent"
             />
@@ -58,14 +57,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:fitsSystemWindows="true"
+        android:paddingVertical="20dp"
+        android:fitsSystemWindows="false"
         android:background="@drawable/onboard_card_background"
         >
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/onboardFragment_actionLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:name="androidx.navigation.fragment.NavHostFragment"
             app:navGraph="@navigation/nav_graph_onboard"
             android:layout_gravity="fill"

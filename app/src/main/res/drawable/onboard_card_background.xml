@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?attr/colorOnPrimary" />
+    <solid android:color="?attr/colorSurfaceBright" />
     <corners
-        android:topLeftRadius="@dimen/padding_16"
-        android:topRightRadius="@dimen/padding_16"
+        android:topLeftRadius="25dp"
+        android:topRightRadius="25dp"
         />
 </shape>
