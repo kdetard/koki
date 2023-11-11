@@ -31,7 +31,7 @@
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="comfirm_password">Comfirm Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="sign_in">Log in</string>
     <string name="sign_up">Sign up</string>
     <string name="sign_up_with_email">Sign up with email</string>
@@ -72,7 +72,6 @@
         molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
         bibendum, vel congue leo egestas.\n\n
     </string>
-    <string name="onboard_background_desc">Onboard background</string>
     <string name="exit">Exit</string>
     <string name="login_title">Let\'s login</string>
     <string name="signin_create_account">Don\'t have an account? Sign up now!</string>
@@ -83,4 +82,5 @@
     <string name="retype_password_help">Retype your password</string>
     <string name="hint_username_or_password">Username or email</string>
     <string name="type_username_or_email_help">Type your username or email</string>
+    <string name="choose_lang">Choose your language</string>
 </resources>
