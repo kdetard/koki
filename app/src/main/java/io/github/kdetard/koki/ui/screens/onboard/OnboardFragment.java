@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.jakewharton.rxbinding4.view.RxView;
@@ -25,6 +25,7 @@ import io.github.kdetard.koki.ui.base.BaseFragment;
 
 @AndroidEntryPoint
 public class OnboardFragment extends BaseFragment {
+    private static final int OutOfBoundInsetType = 10; /* WindowInsetsCompat.Type.SIZE + 1 */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,32 +47,24 @@ public class OnboardFragment extends BaseFragment {
         return view;
     }
 
+    private Insetter.Builder insetBuilder() {
+        return Insetter.builder()
+                .paddingBottom(WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.ime(), true);
+    }
+
     private void setInsets(View parent) {
-        Insetter.builder().setOnApplyInsetsListener((view, insets, viewState) -> {
-            final Insets statusBarsInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
-            final Insets navigationBarsInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            final Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+        parent.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            final int statusBarInsets = Objects.requireNonNull(ViewCompat.getRootWindowInsets(v))
+                    .getInsets(WindowInsetsCompat.Type.statusBars()).top;
 
-            int mPaddingTop;
-            int mPaddingBottom;
-
-            if (imeInsets.bottom == 0) {
-                mPaddingTop = 0;
-                mPaddingBottom = navigationBarsInsets.bottom;
-                view.setBackgroundColor(0);
-                view.setBackgroundResource(R.drawable.action_container_background);
-            } else {
-                mPaddingTop = statusBarsInsets.top;
-                mPaddingBottom = imeInsets.bottom;
-                view.setBackgroundColor(Objects.requireNonNull(view.getBackgroundTintList()).getDefaultColor());
+            int topInsetType = OutOfBoundInsetType;
+            if (top <= statusBarInsets) {
+                topInsetType = WindowInsetsCompat.Type.statusBars();
             }
 
-            view.setPaddingRelative(
-                    view.getPaddingLeft(),
-                    mPaddingTop,
-                    view.getPaddingRight(),
-                    mPaddingBottom
-            );
-        }).applyToView(parent);
+            insetBuilder()
+                    .paddingTop(topInsetType, true)
+                    .applyToView(v);
+        });
     }
 }
