@@ -2,6 +2,7 @@ package io.github.kdetard.koki.ui.screens.onboard;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -53,6 +54,7 @@ public class OnboardFragment extends BaseFragment {
     }
 
     private void setInsets(View parent) {
+        final Drawable background = parent.getBackground();
         parent.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             final int statusBarInsets = Objects.requireNonNull(ViewCompat.getRootWindowInsets(v))
                     .getInsets(WindowInsetsCompat.Type.statusBars()).top;
@@ -60,6 +62,10 @@ public class OnboardFragment extends BaseFragment {
             int topInsetType = OutOfBoundInsetType;
             if (top <= statusBarInsets) {
                 topInsetType = WindowInsetsCompat.Type.statusBars();
+                v.setBackgroundColor(Objects.requireNonNull(v.getBackgroundTintList()).getDefaultColor());
+            } else {
+                v.setBackgroundColor(0);
+                v.setBackground(background);
             }
 
             insetBuilder()
