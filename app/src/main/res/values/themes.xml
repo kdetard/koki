@@ -10,21 +10,21 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/navigation_bar</item>
         <item name="colorControlActivated">@color/accent</item>
-        <item name="android:autofilledHighlight" tools:targetApi="o">@drawable/round_autofill_highlight</item>
     </style>
 
     <!-- The final theme we use -->
     <style name="Theme.Koki" parent="NightAdjusted.Theme.Koki" />
 
-    <style name="NightAdjusted.Widget.Koki.IntroLayout" parent="Theme.Koki">
-        <item name="background">@drawable/light_background</item>
-        <item name="android:background">@drawable/light_background</item>
+    <style name="NightAdjusted.Widget.Koki.IntroImageView" parent="Theme.Koki">
+        <item name="srcCompat">@drawable/light_background</item>
+        <item name="android:src">@drawable/light_background</item>
     </style>
 
-    <style name="Widget.Koki.IntroLayout" parent="NightAdjusted.Widget.Koki.IntroLayout" />
+    <style name="Widget.Koki.IntroLayout" parent="NightAdjusted.Widget.Koki.IntroImageView" />
 
     <style name="Widget.Koki.TextInputLayout" parent="">
         <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+        <item name="android:autofilledHighlight" tools:targetApi="o">@drawable/round_autofill_highlight</item>
     </style>
 
     <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">

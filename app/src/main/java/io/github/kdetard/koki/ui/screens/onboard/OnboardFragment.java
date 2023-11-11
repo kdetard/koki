@@ -14,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.jakewharton.rxbinding4.view.RxView;
 
+import java.util.Objects;
+
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -36,10 +38,10 @@ public class OnboardFragment extends BaseFragment {
                 .subscribe();
 
         Insetter.builder()
-                .paddingTop(WindowInsetsCompat.Type.statusBars(), true)
+                .paddingTop(WindowInsetsCompat.Type.systemBars(), true)
                 .applyToView(view.findViewById(R.id.onboardFragment_appBarLayout));
 
-        setInsets(view.findViewById(R.id.onboardFragment_actionContainer));
+        setInsets(view.findViewById(R.id.onboardFragment_actionLayout));
 
         return view;
     }
@@ -50,19 +52,25 @@ public class OnboardFragment extends BaseFragment {
             final Insets navigationBarsInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
             final Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
 
-            final int paddingTop = imeInsets.bottom > 0 & statusBarsInsets.top > 0
-                    ? statusBarsInsets.top
-                    : 0;
+            int mPaddingTop;
+            int mPaddingBottom;
 
-            final int paddingBottom = imeInsets.bottom == 0
-                    ? navigationBarsInsets.bottom
-                    : imeInsets.bottom;
+            if (imeInsets.bottom == 0) {
+                mPaddingTop = 0;
+                mPaddingBottom = navigationBarsInsets.bottom;
+                view.setBackgroundColor(0);
+                view.setBackgroundResource(R.drawable.action_container_background);
+            } else {
+                mPaddingTop = statusBarsInsets.top;
+                mPaddingBottom = imeInsets.bottom;
+                view.setBackgroundColor(Objects.requireNonNull(view.getBackgroundTintList()).getDefaultColor());
+            }
 
             view.setPaddingRelative(
                     view.getPaddingLeft(),
-                    paddingTop,
+                    mPaddingTop,
                     view.getPaddingRight(),
-                    paddingBottom
+                    mPaddingBottom
             );
         }).applyToView(parent);
     }

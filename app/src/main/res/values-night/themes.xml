@@ -4,8 +4,8 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
     </style>
 
-    <style name="NightAdjusted.Widget.Koki.IntroLayout" parent="Theme.Koki">
-        <item name="background">@drawable/night_background</item>
-        <item name="android:background">@drawable/night_background</item>
+    <style name="NightAdjusted.Widget.Koki.IntroImageView" parent="Theme.Koki">
+        <item name="srcCompat">@drawable/night_background</item>
+        <item name="android:src">@drawable/night_background</item>
     </style>
 </resources>
