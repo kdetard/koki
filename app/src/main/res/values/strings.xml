@@ -73,7 +73,7 @@
         bibendum, vel congue leo egestas.\n\n
     </string>
     <string name="exit">Exit</string>
-    <string name="login_title">Let\'s login</string>
+    <string name="login_title">Let\'s log in</string>
     <string name="signin_create_account">Don\'t have an account? Sign up now!</string>
     <string name="type_password_help">Type your password</string>
     <string name="type_username_help">Type your username</string>
