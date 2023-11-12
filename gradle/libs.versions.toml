@@ -30,6 +30,8 @@ retrofit = "2.9.0"
 rxbinding = "4.0.0"
 rxdogtag = "2.0.2"
 rxjava = "3.1.8"
+simple-stack = "2.8.0"
+simple-stack-extensions = "2.3.3"
 #noinspection GradleDependency
 timber = "4.7.1"
 webkit = "1.9.0-beta01"
@@ -81,6 +83,8 @@ rxbinding-recyclerview = { group = "com.jakewharton.rxbinding4", name = "rxbindi
 rxdogtag = { group = "com.uber.rxdogtag2", name = "rxdogtag", version.ref = "rxdogtag" }
 rxdogtag-autodispose = { group = "com.uber.rxdogtag2", name = "rxdogtag-autodispose", version.ref = "rxdogtag" }
 rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
+simple-stack = { group = "com.github.Zhuinden", name = "simple-stack", version.ref = "simple-stack" }
+simple-stack-extensions = { group = "com.github.Zhuinden", name = "simple-stack-extensions", version.ref = "simple-stack-extensions" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]

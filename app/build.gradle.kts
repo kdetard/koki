@@ -91,6 +91,8 @@ dependencies {
     implementation(libs.rxbinding.material)
     implementation(libs.rxbinding.recyclerview)
     implementation(libs.rxjava)
+    implementation(libs.simple.stack)
+    implementation(libs.simple.stack.extensions)
     implementation(libs.timber)
 
     testImplementation(libs.junit)
