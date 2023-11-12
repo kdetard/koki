@@ -88,8 +88,8 @@ public class OnboardFragment extends BaseFragment {
         final int orientationInsetType = isLandscape ? LandscapeInsetType : OutOfBoundInsetType;
 
         Insetter.builder()
-                .paddingLeft(orientationInsetType, true)
-                .paddingRight(orientationInsetType, true)
+                .paddingLeft(orientationInsetType, false)
+                .paddingRight(orientationInsetType, false)
                 .applyToView(requireActivity().findViewById(R.id.rootFragment_actionLayout));
     }
 }
