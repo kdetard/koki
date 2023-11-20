@@ -1,4 +1,4 @@
-package io.github.kdetard.koki.ui;
+package io.github.kdetard.koki.ui.activities;
 
 import static autodispose2.AutoDispose.autoDisposable;
 

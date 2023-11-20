@@ -25,25 +25,22 @@
         android:name=".MainApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:enableOnBackInvokedCallback="true"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Koki"
-        tools:targetApi="34">
+        android:theme="@style/Theme.Koki.Splash"
+        tools:targetApi="tiramisu">
         <activity
-            android:name=".ui.RestSignupActivity"
+            android:name=".ui.activities.AppAuthLoginActivity"
+            android:theme="@style/Theme.Material3.DynamicColors.DayNight"
             android:exported="false" />
         <activity
-            android:name=".ui.RestLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.AppAuthLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

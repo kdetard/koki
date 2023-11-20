@@ -15,6 +15,18 @@
     <!-- The final theme we use -->
     <style name="Theme.Koki" parent="NightAdjusted.Theme.Koki" />
 
+    <style name="NightAdjusted.Widget.Koki.IntroImageView" parent="Theme.Koki">
+        <item name="srcCompat">@drawable/light_background</item>
+        <item name="android:src">@drawable/light_background</item>
+    </style>
+
+    <style name="Widget.Koki.IntroLayout" parent="NightAdjusted.Widget.Koki.IntroImageView" />
+
+    <style name="Widget.Koki.TextInputLayout" parent="">
+        <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+        <item name="android:autofilledHighlight" tools:targetApi="o">@drawable/round_autofill_highlight</item>
+    </style>
+
     <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
@@ -23,5 +35,13 @@
     <style name="Theme.Koki.Splash" parent="NightAdjusted.Theme.Splash">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.Koki</item>
+    </style>
+
+    <style name="Theme.Koki.Brand.TextAppearance" parent="">
+        <item name="fontFamily">@font/nicomoji_regular</item>
+        <item name="android:fontFamily">@font/nicomoji_regular</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 </resources>
