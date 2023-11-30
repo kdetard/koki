@@ -1,21 +1,21 @@
 plugins {
-    alias(libs.plugins.com.android.application)
-    alias(libs.plugins.com.google.dagger.hilt.android)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.org.jetbrains.kotlin.kapt)
-    id("androidx.navigation.safeargs")
+    alias(libs.plugins.application)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
     namespace = "io.github.kdetard.koki"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "io.github.kdetard.koki"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = libs.versions.minsdk.get().toInt()
+        compileSdk = libs.versions.compilesdk.get().toInt()
+        targetSdk = libs.versions.targetsdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +25,10 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/rxjava.properties")
     }
 
     compileOptions {
@@ -51,20 +55,18 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-    kapt(libs.hilt.android.compiler)
-
     implementation(libs.androidx.activity)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.rxjava3)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment)
-    implementation(libs.androidx.navigation.dynamic.features.fragment)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.palette)
+    implementation(libs.androidx.preference)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.transition)
     implementation(libs.androidx.webkit)
@@ -73,6 +75,9 @@ dependencies {
     implementation(libs.autodispose.android)
     implementation(libs.autodispose.lifecycle)
     implementation(libs.autodispose.androidx.lifecycle)
+    implementation(libs.conductor)
+    implementation(libs.conductor.androidx.transition)
+    implementation(libs.conductor.viewpager2)
     implementation(libs.hilt.android)
     implementation(libs.insetter)
     implementation(libs.jsoup)
@@ -91,17 +96,19 @@ dependencies {
     implementation(libs.rxbinding.material)
     implementation(libs.rxbinding.recyclerview)
     implementation(libs.rxjava)
-    implementation(libs.simple.stack)
-    implementation(libs.simple.stack.extensions)
     implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.espresso.core)
+
+    debugImplementation(libs.leakcanary)
+
+    kapt(libs.hilt.android.compiler)
 }
 
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    useBuildCache = true
 }

@@ -83,4 +83,7 @@
     <string name="hint_username_or_password">Username or email</string>
     <string name="type_username_or_email_help">Type your username or email</string>
     <string name="choose_lang">Choose your language</string>
+    <string name="home">Home</string>
+    <string name="general_todo_msg">Todo</string>
+    <string name="backup_type_app_label">Koki</string>
 </resources>

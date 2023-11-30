@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/authFragment_actionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20dp"
+    tools:context=".feature.auth.AuthController">
+
+    <Button
+        style="@style/Widget.Material3.Button.Icon"
+        android:id="@+id/authController_signInWithGoogleBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_in_with_google"
+        app:icon="@drawable/ic_google_filled_48dp"
+        app:iconGravity="textStart"
+
+        android:layout_marginBottom="@dimen/padding_8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/authController_signUpBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <Button
+        android:id="@+id/authController_signUpBtn"
+        style="@style/Widget.Material3.Button.TonalButton.Icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up_with_email"
+        app:icon="@drawable/ic_mail_outline_48dp"
+        app:iconGravity="textStart"
+
+        android:layout_marginBottom="@dimen/padding_8"
+        app:layout_constraintTop_toBottomOf="@id/authController_signInWithGoogleBtn"
+        app:layout_constraintBottom_toTopOf="@id/authController_signInBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <Button
+        android:id="@+id/authController_signInBtn"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_in"
+
+        app:layout_constraintTop_toBottomOf="@id/authController_signUpBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

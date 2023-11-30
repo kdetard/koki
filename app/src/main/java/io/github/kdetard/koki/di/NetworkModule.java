@@ -1,5 +1,6 @@
 package io.github.kdetard.koki.di;
 
+import com.squareup.moshi.Moshi;
 import com.tencent.mmkv.MMKV;
 
 import javax.inject.Singleton;
@@ -8,8 +9,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
-import io.github.kdetard.koki.db.MMKVCookieJar;
-import io.github.kdetard.koki.network.KeycloakApiService;
+import io.github.kdetard.koki.keycloak.KeycloakApiService;
+import io.github.kdetard.koki.network.MMKVCookieJar;
+import io.github.kdetard.koki.openremote.OpenRemoteService;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Authenticator;
 import okhttp3.CookieJar;
@@ -21,7 +23,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 @Module
 @InstallIn(SingletonComponent.class)
-public class NetworkModule {
+public abstract class NetworkModule {
     public static final String BASE_URL = "https://uiot.ixxc.dev";
     public static final String COOKIE_STORE_NAME = "kookies"; // get it? ;D
 
@@ -75,11 +77,11 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    public static Retrofit provideRetrofit(final OkHttpClient okHttpClient) {
+    public static Retrofit provideRetrofit(final OkHttpClient okHttpClient, final Moshi moshi) {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build();
     }
@@ -88,5 +90,11 @@ public class NetworkModule {
     @Singleton
     public static KeycloakApiService provideKeycloakApiService(final Retrofit retrofit) {
         return retrofit.create(KeycloakApiService.class);
+    }
+
+    @Provides
+    @Singleton
+    public static OpenRemoteService provideOpenRemoteService(final Retrofit retrofit) {
+        return retrofit.create(OpenRemoteService.class);
     }
 }

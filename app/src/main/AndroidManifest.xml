@@ -22,7 +22,7 @@
     </queries>
 
     <application
-        android:name=".MainApplication"
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -34,11 +34,7 @@
         android:theme="@style/Theme.Koki.Splash"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".ui.activities.AppAuthLoginActivity"
-            android:theme="@style/Theme.Material3.DynamicColors.DayNight"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".feature.main.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize"
             android:exported="true">
