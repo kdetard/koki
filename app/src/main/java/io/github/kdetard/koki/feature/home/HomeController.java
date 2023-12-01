@@ -4,24 +4,15 @@ import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.appbar.AppBarLayout;
-
 import io.github.kdetard.koki.R;
-import io.github.kdetard.koki.feature.base.ToolbarProvider;
 import io.github.kdetard.koki.databinding.ControllerHomeBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 
-public class HomeController extends BaseController implements ToolbarProvider {
+public class HomeController extends BaseController {
     ControllerHomeBinding binding;
 
     public HomeController() {
         super(R.layout.controller_home);
-    }
-
-    public AppBarLayout getAppBarLayout() { return binding.appBar; }
-
-    public Toolbar getToolbar() {
-        return binding.toolbar;
     }
 
     @Override

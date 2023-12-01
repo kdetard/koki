@@ -2,7 +2,6 @@ package io.github.kdetard.koki.feature.onboard;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -33,9 +32,7 @@ public class OnboardController extends BaseController implements OnConfiguration
 
     ControllerOnboardBinding binding;
 
-    public OnboardController() {
-        super(R.layout.controller_onboard);
-    }
+    public OnboardController() { super(R.layout.controller_onboard); }
 
     @Override
     public void onViewCreated(View view) {

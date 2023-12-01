@@ -112,6 +112,6 @@ public class FormUtils {
         if (password.length() < 8) {
             error = "Password must be over 8 characters";
         }
-        return new FormResult<>(password, error);
+        return new FormResult<>(password, error, false);
     }
 }

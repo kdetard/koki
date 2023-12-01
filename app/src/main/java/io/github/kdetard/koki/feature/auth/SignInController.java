@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.datastore.rxjava3.RxDataStore;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding4.view.RxView;
@@ -19,6 +21,7 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
 import io.github.kdetard.koki.R;
+import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.databinding.ControllerSignInBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
@@ -38,6 +41,7 @@ public class SignInController extends BaseController {
     @InstallIn(SingletonComponent.class)
     interface SignInEntryPoint {
         KeycloakApiService apiService();
+        RxDataStore<Settings> settings();
     }
 
     SignInEntryPoint entryPoint;
@@ -95,8 +99,14 @@ public class SignInController extends BaseController {
                         password,
                         SignInFormResult<TextInputLayout>::new
                 )
-                .doOnNext(result -> binding.signInControllerLoginBtn.setEnabled(
-                        result.getUserName().isSuccess() && result.getPassword().isSuccess()))
+                .doOnNext(result -> {
+                    final boolean validSignIn = result.getUserName().isSuccess() && (result.getPassword().isSuccess() || result.getPassword().isStrict());
+                    binding.signInControllerLoginBtn.setEnabled(validSignIn);
+                    if (validSignIn) {
+                        mUsername = result.getUserName().getText();
+                        mPassword = result.getPassword().getText();
+                    }
+                })
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
@@ -109,11 +119,10 @@ public class SignInController extends BaseController {
                 //Clear Results
                 .doOnNext(v -> {
                     binding.signInControllerLoginBtn.setEnabled(false);
+                    binding.signInControllerLoginBtn.setText("Logging in...");
                     binding.signInControllerKeycloakResponse.setText("");
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
-
-                .subscribeOn(AndroidSchedulers.mainThread())
 
                 //Start Auth:
                 .flatMapSingle(v ->
@@ -122,16 +131,17 @@ public class SignInController extends BaseController {
                                 .doOnError(throwable -> {
                                     ((TextView) view.findViewById(R.id.signInController_keycloakResponse)).setText(throwable.toString());
                                     binding.signInControllerLoginBtn.setEnabled(true);
+                                    binding.signInControllerLoginBtn.setText("Log in");
                                 })
                                 .onErrorResumeNext(throwable -> Single.never()))
 
                 //Populate result with the parsed token body:
                 .doOnNext(r -> {
-                    /*MMKV.defaultMMKV().putString("accessToken", r.accessToken);
-                    Navigation.findNavController(requireParentFragment().requireParentFragment().requireView())
-                            .navigate(OnboardFragmentDirections.actionGlobalMainFragment());*/
                     final JWT jwt = new JWT(r.accessToken);
-                    ((TextView)view.findViewById(R.id.signInController_keycloakResponse)).setText(jwt.body);
+                    binding.signInControllerKeycloakResponse.setText(jwt.body);
+                    binding.signInControllerLoginBtn.setText("Logged in...");
+                    entryPoint.settings().updateDataAsync(s ->
+                            Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
                 })
 
                 .to(autoDisposable(getScopeProvider()))

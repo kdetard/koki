@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.ControllerChangeType;
-import com.google.android.material.appbar.AppBarLayout;
 
 import autodispose2.lifecycle.LifecycleScopeProvider;
 
@@ -44,15 +43,15 @@ public abstract class BaseController extends Controller implements ToolbarProvid
     public LifecycleScopeProvider<ControllerEvent> getScopeProvider() { return ControllerScopeProvider.from(this); }
 
     public Toolbar getToolbar() {
-        ToolbarProvider provider = ((ToolbarProvider)getParentController());
+        ToolbarProvider provider = ((ToolbarProvider)getActivity());
         if (provider != null) {
             return provider.getToolbar();
         }
         return null;
     }
 
-    public AppBarLayout getAppBarLayout() {
-        ToolbarProvider provider = ((ToolbarProvider)getParentController());
+    public ExpandedAppBarLayout getAppBarLayout() {
+        ToolbarProvider provider = ((ToolbarProvider)getActivity());
         if (provider != null) {
             return provider.getAppBarLayout();
         }

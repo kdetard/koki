@@ -6,10 +6,10 @@ import android.os.Build;
 import android.view.View;
 import android.view.autofill.AutofillManager;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
+import androidx.datastore.rxjava3.RxDataStore;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jakewharton.rxbinding4.widget.RxTextView;
@@ -23,6 +23,7 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
 import io.github.kdetard.koki.R;
+import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.databinding.ControllerSignUpBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
@@ -42,6 +43,7 @@ public class SignUpController extends BaseController {
     @InstallIn(SingletonComponent.class)
     interface SignUpEntryPoint {
         KeycloakApiService apiService();
+        RxDataStore<Settings> settings();
     }
 
     public SignUpController() { super(R.layout.controller_sign_up); }
@@ -140,13 +142,15 @@ public class SignUpController extends BaseController {
 
         RxView
                 //Capture Login Button Click:
-                .clicks(view.findViewById(R.id.signUpController_signupBtn))
+                .clicks(binding.signUpControllerSignupBtn)
 
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
 
                 //Clear Results
                 .doOnNext(v -> {
-                    ((TextView)view.findViewById(R.id.signUpController_keycloakResponse)).setText("Signing up...");
+                    binding.signUpControllerSignupBtn.setEnabled(false);
+                    binding.signUpControllerSignupBtn.setText("Signing up...");
+                    binding.signUpControllerKeycloakResponse.setText("");
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -157,17 +161,16 @@ public class SignUpController extends BaseController {
                                 .doOnError(throwable -> {
                                     Timber.d("Sign up error");
                                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-                                    ((TextView)view.findViewById(R.id.signUpController_keycloakResponse)).setText(throwable.toString());
+                                    binding.signUpControllerSignupBtn.setEnabled(false);
+                                    binding.signUpControllerSignupBtn.setText("Sign up");
+                                    binding.signUpControllerKeycloakResponse.setText(throwable.toString());
                                 })
                                 .onErrorResumeNext(throwable -> Maybe.empty()))
 
                 .doOnNext(r -> {
-                    /*MMKV.mmkvWithID("prefs").putBoolean("loggedIn", true);
-                    Navigation.findNavController(requireParentFragment().requireParentFragment().requireView())
-                            .navigate(OnboardFragmentDirections.actionGlobalMainFragment());*/
                     Timber.d("Sign up success");
                     Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-                    ((TextView)view.findViewById(R.id.signUpController_keycloakResponse)).setText("Sign up success!");
+                    binding.signUpControllerSignupBtn.setText("Sign up success!");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         view.getContext().getSystemService(AutofillManager.class).commit();
                     }
