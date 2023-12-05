@@ -121,8 +121,7 @@ public class SignInController extends BaseController {
                 //Clear Results
                 .doOnNext(v -> {
                     binding.signInControllerLoginBtn.setEnabled(false);
-                    binding.signInControllerLoginBtn.setText("Logging in...");
-                    binding.signInControllerKeycloakResponse.setText("");
+                    binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logging_in));
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -131,17 +130,16 @@ public class SignInController extends BaseController {
                         RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(throwable -> {
-                                    ((TextView) view.findViewById(R.id.signInController_keycloakResponse)).setText(throwable.toString());
+                                    binding.signInControllerUsernameLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
+                                    binding.signInControllerPasswordLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
                                     binding.signInControllerLoginBtn.setEnabled(true);
-                                    binding.signInControllerLoginBtn.setText("Log in");
+                                    binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.sign_in));
                                 })
                                 .onErrorResumeNext(throwable -> Single.never()))
 
                 //Populate result with the parsed token body:
                 .doOnNext(r -> {
-                    final JWT jwt = new JWT(r.accessToken);
-                    binding.signInControllerKeycloakResponse.setText(jwt.body);
-                    binding.signInControllerLoginBtn.setText("Logged in...");
+                    binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logged_in));
                     entryPoint.settings().updateDataAsync(s ->
                             Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
                 })

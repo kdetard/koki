@@ -33,6 +33,9 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_in">Log in</string>
+    <string name="logged_in">Logged in...</string>
+    <string name="logging_in">Logging in...</string>
+    <string name="wrong_username_password">Wrong Username or Password</string>
     <string name="sign_up">Sign up</string>
     <string name="sign_up_with_email">Sign up with email</string>
     <string name="sign_in_with_google">Continue with Google</string>
