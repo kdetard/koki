@@ -2,7 +2,6 @@ package io.github.kdetard.koki.feature.onboard;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Toast;
@@ -24,13 +23,25 @@ import io.github.kdetard.koki.databinding.ControllerOnboardBinding;
 import io.github.kdetard.koki.feature.auth.AuthController;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.feature.base.OnConfigurationListener;
+import io.github.kdetard.koki.utils.InsetUtils;
 
 public class OnboardController extends BaseController implements OnConfigurationListener {
-    private static final int LandscapeInsetType = WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.navigationBars();
-    private static final int PortraitInsetType = WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.ime();
-    private static final int OutOfBoundInsetType = 10; /* WindowInsetsCompat.Type.SIZE + 1 */
-
     ControllerOnboardBinding binding;
+    Drawable actionLayoutBackground;
+    View.OnLayoutChangeListener actionLayoutChangeListener = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+        final int statusBarInsets = Objects.requireNonNull(ViewCompat.getRootWindowInsets(v))
+                .getInsets(WindowInsetsCompat.Type.statusBars()).top;
+
+        final boolean isBehindStatusBar = top <= statusBarInsets;
+        final int topInsetType = isBehindStatusBar ? WindowInsetsCompat.Type.statusBars() : InsetUtils.OutOfBoundInsetType;
+
+        toggleBackgroundTint(v, actionLayoutBackground, isBehindStatusBar);
+
+        Insetter.builder()
+                .paddingTop(topInsetType, true)
+                .paddingBottom(InsetUtils.PortraitInsetType, true)
+                .applyToView(v);
+    };
 
     public OnboardController() { super(R.layout.controller_onboard); }
 
@@ -58,23 +69,15 @@ public class OnboardController extends BaseController implements OnConfiguration
         setPortraitInsets(binding.onboardControllerActionLayout);
     }
 
-    private static void setPortraitInsets(View actionLayout) {
-        final Drawable background = actionLayout.getBackground();
+    private void setPortraitInsets(View actionLayout) {
+        actionLayoutBackground = actionLayout.getBackground();
+        actionLayout.addOnLayoutChangeListener(actionLayoutChangeListener);
+    }
 
-        actionLayout.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            final int statusBarInsets = Objects.requireNonNull(ViewCompat.getRootWindowInsets(v))
-                    .getInsets(WindowInsetsCompat.Type.statusBars()).top;
-
-            final boolean isBehindStatusBar = top <= statusBarInsets;
-            final int topInsetType = isBehindStatusBar ? WindowInsetsCompat.Type.statusBars() : OutOfBoundInsetType;
-
-            toggleBackgroundTint(v, background, isBehindStatusBar);
-
-            Insetter.builder()
-                    .paddingTop(topInsetType, true)
-                    .paddingBottom(PortraitInsetType, true)
-                    .applyToView(v);
-        });
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
+        binding.onboardControllerActionLayout.removeOnLayoutChangeListener(actionLayoutChangeListener);
     }
 
     private static void toggleBackgroundTint(View view, Drawable originalBackground, boolean predicate) {
@@ -84,16 +87,5 @@ public class OnboardController extends BaseController implements OnConfiguration
             view.setBackgroundColor(0);
             view.setBackground(originalBackground);
         }
-    }
-
-    @Override
-    public void onConfigurationChange(@NonNull Configuration newConfig) {
-        final boolean isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
-        final int orientationInsetType = isLandscape ? LandscapeInsetType : OutOfBoundInsetType;
-
-        Insetter.builder()
-                .paddingLeft(orientationInsetType, false)
-                .paddingRight(orientationInsetType, false)
-                .applyToView(binding.getRoot());
     }
 }

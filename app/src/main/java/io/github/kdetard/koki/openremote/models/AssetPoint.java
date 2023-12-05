@@ -1,4 +1,4 @@
-package io.github.kdetard.koki.openremote.Asset;
+package io.github.kdetard.koki.openremote.models;
 
 import java.util.Collections;
 import java.util.List;

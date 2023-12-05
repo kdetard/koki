@@ -8,21 +8,24 @@ androidbrowserhelper = "2.5.0"
 androidx-activity = "1.8.1"
 androidx-annotation = "1.7.0"
 androidx-appcompat = "1.6.1"
-androidx-browser = "1.8.0-alpha01"
+androidx-browser = "1.8.0-beta01"
 androidx-constraintlayout = "2.1.4"
 androidx-datastore = "1.1.0-alpha07"
-androidx-fragment = "1.7.0-alpha06"
+androidx-fragment = "1.7.0-alpha07"
 androidx-lifecycle = "2.6.2"
 androidx-palette = "1.0.0"
+androidx-paging = "3.2.1"
 androidx-preference = "1.2.1"
+androidx-room = "2.6.1"
 androidx-splashscreen = "1.0.1"
-androidx-transition = "1.5.0-alpha04"
+androidx-transition = "1.5.0-alpha05"
 androidx-test-ext-junit = "1.1.5"
 appauth = "0.11.1"
 autodispose = "2.2.1"
 conductor = "4.0.0-preview-4"
 desugar-jdk-libs = "2.0.4"
 espresso-core = "3.5.1"
+fastadapter = "5.7.0"
 hilt = "2.48.1"
 insetter = "0.6.1"
 jsoup = "1.16.2"
@@ -43,7 +46,7 @@ rxdogtag = "2.0.2"
 rxjava = "3.1.8"
 #noinspection GradleDependency
 timber = "4.7.1"
-webkit = "1.9.0-rc01"
+webkit = "1.10.0-alpha01"
 
 [libraries]
 androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version.ref = "androidbrowserhelper" }
@@ -60,6 +63,9 @@ androidx-fragment = { group = "androidx.fragment", name = "fragment", version.re
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-palette = { group = "androidx.palette", name = "palette", version.ref = "androidx-palette" }
+androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "androidx-paging" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
+androidx-paging-rxjava3 = { group = "androidx.paging", name = "paging-rxjava3", version.ref = "androidx-paging" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "androidx-preference" }
 androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-transition = { group = "androidx.transition", name = "transition", version.ref = "androidx-transition" }
@@ -75,6 +81,9 @@ conductor-androidx-transition = { group = "com.bluelinelabs", name = "conductor-
 conductor-viewpager2 = { group = "com.bluelinelabs", name = "conductor-viewpager2", version.ref = "conductor" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+fastadapter = { group = "com.mikepenz", name = "fastadapter", version.ref = "fastadapter" }
+fastadapter-extensions-expandable = { group = "com.mikepenz", name = "fastadapter-extensions-expandable", version.ref = "fastadapter" }
+fastadapter-extensions-binding = { group = "com.mikepenz", name = "fastadapter-extensions-binding", version.ref = "fastadapter" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 insetter = { group = "dev.chrisbanes.insetter", name = "insetter", version.ref = "insetter" }

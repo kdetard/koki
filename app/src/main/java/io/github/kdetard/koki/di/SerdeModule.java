@@ -12,7 +12,7 @@ import io.github.kdetard.koki.network.models.CookieJsonAdapter;
 
 @Module
 @InstallIn(SingletonComponent.class)
-public class SerializeModule {
+public class SerdeModule {
     @Provides
     @Singleton
     public static Moshi provideMoshi() {

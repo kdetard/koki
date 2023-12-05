@@ -84,6 +84,7 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
         android:textStyle="bold"
+        android:enabled="false"
         app:layout_constraintBottom_toTopOf="@id/signInController_registerBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

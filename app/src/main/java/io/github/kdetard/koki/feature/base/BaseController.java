@@ -13,10 +13,13 @@ import androidx.appcompat.widget.Toolbar;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.ControllerChangeType;
+import com.google.android.material.navigation.NavigationBarView;
 
 import autodispose2.lifecycle.LifecycleScopeProvider;
+import dev.chrisbanes.insetter.Insetter;
+import io.github.kdetard.koki.utils.InsetUtils;
 
-public abstract class BaseController extends Controller implements ToolbarProvider, OnConfigurationListener {
+public abstract class BaseController extends Controller implements NavigationProvider, OnConfigurationListener {
     private final int layoutRes;
 
     public BaseController(int layoutRes) {
@@ -42,8 +45,16 @@ public abstract class BaseController extends Controller implements ToolbarProvid
 
     public LifecycleScopeProvider<ControllerEvent> getScopeProvider() { return ControllerScopeProvider.from(this); }
 
+    public View getRoot() {
+        NavigationProvider provider = ((NavigationProvider)getActivity());
+        if (provider != null) {
+            return provider.getRoot();
+        }
+        return null;
+    }
+
     public Toolbar getToolbar() {
-        ToolbarProvider provider = ((ToolbarProvider)getActivity());
+        NavigationProvider provider = ((NavigationProvider)getActivity());
         if (provider != null) {
             return provider.getToolbar();
         }
@@ -51,9 +62,17 @@ public abstract class BaseController extends Controller implements ToolbarProvid
     }
 
     public ExpandedAppBarLayout getAppBarLayout() {
-        ToolbarProvider provider = ((ToolbarProvider)getActivity());
+        NavigationProvider provider = ((NavigationProvider)getActivity());
         if (provider != null) {
             return provider.getAppBarLayout();
+        }
+        return null;
+    }
+
+    public NavigationBarView getNavBar() {
+        NavigationProvider provider = ((NavigationProvider)getActivity());
+        if (provider != null) {
+            return provider.getNavBar();
         }
         return null;
     }
@@ -101,5 +120,13 @@ public abstract class BaseController extends Controller implements ToolbarProvid
     }
 
     @Override
-    public void onConfigurationChange(@NonNull Configuration newConfig) {}
+    public void onConfigurationChange(@NonNull Configuration newConfig) {
+        final boolean isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        final int orientationInsetType = isLandscape ? InsetUtils.LandscapeInsetType : InsetUtils.OutOfBoundInsetType;
+
+        Insetter.builder()
+                .paddingLeft(orientationInsetType, false)
+                .paddingRight(orientationInsetType, false)
+                .applyToView(getRoot());
+    }
 }

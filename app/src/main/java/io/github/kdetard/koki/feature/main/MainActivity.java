@@ -12,12 +12,12 @@ import androidx.datastore.rxjava3.RxDataStore;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.google.android.material.navigation.NavigationBarView;
 
 import javax.inject.Inject;
 
@@ -27,19 +27,18 @@ import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.databinding.ActivityMainBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.feature.base.ExpandedAppBarLayout;
-import io.github.kdetard.koki.feature.base.ToolbarProvider;
+import io.github.kdetard.koki.feature.base.NavigationProvider;
 import io.github.kdetard.koki.feature.home.HomeController;
 import io.github.kdetard.koki.feature.onboard.OnboardController;
 import io.github.kdetard.koki.feature.onboard.OnboardEvent;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.core.Flowable;
 import timber.log.Timber;
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity implements ToolbarProvider {
+public class MainActivity extends AppCompatActivity implements NavigationProvider {
     @Inject
-    PublishSubject<OnboardEvent> onboardEvent;
+    Flowable<OnboardEvent> onboardEvent;
 
     @Inject
     RxDataStore<Settings> settings;
@@ -62,47 +61,45 @@ public class MainActivity extends AppCompatActivity implements ToolbarProvider {
                 .setPopRootControllerMode(Router.PopRootControllerMode.NEVER)
                 .setOnBackPressedDispatcherEnabled(true);
 
-        if (router.hasRootController()) return;
+        binding.getRoot().getViewTreeObserver().addOnPreDrawListener(router::hasRootController);
 
         onboardEvent
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(e -> {
                     switch (e) {
                         case LOGGED_IN:
-                            getAppBarLayout().setVisibility(View.VISIBLE);
+                            hideNavigation(false);
                             router.setRoot(RouterTransaction.with(new HomeController()));
                             break;
                         case LOGGED_OUT:
-                            getAppBarLayout().setVisibility(View.GONE);
+                            hideNavigation(true);
                             router.setRoot(RouterTransaction.with(new OnboardController()));
                             break;
                     }
                 })
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getLifecycle())))
                 .subscribe();
-
-        settings.data()
-                 .doOnNext(currentSettings -> {
-                     final boolean isLoggedOut = currentSettings.getLoggedOut();
-                     final boolean accessTokenIsEmpty = currentSettings.getAccessToken().isEmpty();
-                     if (isLoggedOut || accessTokenIsEmpty) {
-                         if (isLoggedOut && accessTokenIsEmpty) {
-                             runOnUiThread(() -> Toast.makeText(getApplicationContext(), "You are required to relogin", Toast.LENGTH_SHORT).show());
-                         }
-                         settings.updateDataAsync(newSettings ->
-                                 Single.just(newSettings.toBuilder().setLoggedOut(true).setAccessToken("").build()));
-                         onboardEvent.onNext(OnboardEvent.LOGGED_OUT);
-                     } else {
-                         onboardEvent.onNext(OnboardEvent.LOGGED_IN);
-                     }
-                 })
-                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getLifecycle())))
-                 .subscribe();
     }
+
+    public View getRoot() { return binding.getRoot(); }
 
     public ExpandedAppBarLayout getAppBarLayout() { return binding.appBar; }
 
     public Toolbar getToolbar() { return binding.toolbar; }
+
+    public NavigationBarView getNavBar() { return (NavigationBarView) binding.bottomNav; }
+
+    private void hideNavigation(boolean predicate) {
+        final int visibility = predicate ? View.GONE : View.VISIBLE;
+        getAppBarLayout().setVisibility(visibility);
+        getNavBar().setVisibility(visibility);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding.getRoot().getViewTreeObserver().removeOnPreDrawListener(router::hasRootController);
+    }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {

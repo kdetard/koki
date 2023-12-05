@@ -80,8 +80,10 @@ public class SignInController extends BaseController {
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
-        Observable<FormResult<TextInputLayout>> username = FormUtils.textChanges(binding.signInControllerUsernameLayout, FormUtils::isValidUsernameOrEmail);
-        Observable<FormResult<TextInputLayout>> password = FormUtils.textChanges(binding.signInControllerPasswordLayout, FormUtils::isValidPassword);
+        Observable<FormResult<TextInputLayout>> username =
+                FormUtils.textChanges(binding.signInControllerUsernameLayout, FormUtils::isValidUsernameOrEmail);
+        Observable<FormResult<TextInputLayout>> password =
+                FormUtils.textChanges(binding.signInControllerPasswordLayout, FormUtils::isValidPassword);
 
         username
                 .doOnNext(v -> v.getInputLayout().setError(v.getError()))
