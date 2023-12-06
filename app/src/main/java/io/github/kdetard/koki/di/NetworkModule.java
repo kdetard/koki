@@ -71,10 +71,10 @@ public abstract class NetworkModule {
     @Provides
     @Singleton
     public static Authenticator provideAuthenticator() {
-        MMKV kv = MMKV.defaultMMKV(MMKV.MULTI_PROCESS_MODE, null);
+        final var kv = MMKV.defaultMMKV(MMKV.MULTI_PROCESS_MODE, null);
 
         return (route, response) -> {
-            String accessToken = kv.getString("accessToken", "");
+            final var accessToken = kv.getString("accessToken", "");
 
             if (accessToken.isEmpty()) {
                 return response.request();

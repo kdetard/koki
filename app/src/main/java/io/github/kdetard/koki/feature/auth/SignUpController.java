@@ -5,8 +5,6 @@ import static autodispose2.AutoDispose.autoDisposable;
 import android.os.Build;
 import android.view.View;
 import android.view.autofill.AutofillManager;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.datastore.rxjava3.RxDataStore;
 
@@ -28,15 +26,14 @@ import io.github.kdetard.koki.databinding.ControllerSignUpBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
+import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
-import io.github.kdetard.koki.utils.FormResult;
 import io.github.kdetard.koki.utils.FormUtils;
 import io.github.kdetard.koki.utils.SignUpFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
-import timber.log.Timber;
+import io.reactivex.rxjava3.core.Single;
 
 public class SignUpController extends BaseController {
     @EntryPoint
@@ -72,13 +69,13 @@ public class SignUpController extends BaseController {
 
         mKeycloakConfig = KeycloakConfig.getDefaultConfig(getApplicationContext());
 
-        Observable<FormResult<TextInputLayout>> username = FormUtils.textChanges(binding.signUpControllerUsernameLayout, FormUtils::isValidUsername);
-        Observable<FormResult<TextInputLayout>> email = FormUtils.textChanges(binding.signUpControllerEmailLayout, FormUtils::isValidEmail);
+        final var username = FormUtils.textChanges(binding.signUpControllerUsernameLayout, FormUtils::isValidUsername);
+        final var email = FormUtils.textChanges(binding.signUpControllerEmailLayout, FormUtils::isValidEmail);
 
-        TextInputLayout passwordLayout = binding.signUpControllerPasswordLayout;
-        Observable<FormResult<TextInputLayout>> password = FormUtils.textChanges(passwordLayout, FormUtils::isValidPassword);
+        final var passwordLayout = binding.signUpControllerPasswordLayout;
+        final var password = FormUtils.textChanges(passwordLayout, FormUtils::isValidPassword);
 
-        TextInputLayout confirmPasswordLayout = binding.signUpControllerConfirmPasswordLayout;
+        final var confirmPasswordLayout = binding.signUpControllerConfirmPasswordLayout;
 
         username
                 .doOnNext(v -> v.getInputLayout().setError(v.getError()))
@@ -107,8 +104,8 @@ public class SignUpController extends BaseController {
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(v -> {
-                    // hacky workarounds for password revalidation
-                    final EditText passwordEditText = passwordLayout.getEditText();
+                    // workarounds for password revalidation
+                    final var passwordEditText = passwordLayout.getEditText();
                     Objects.requireNonNull(passwordEditText).setText(passwordEditText.getText());
                 })
                 .to(autoDisposable(getScopeProvider()))
@@ -122,7 +119,7 @@ public class SignUpController extends BaseController {
                         SignUpFormResult<TextInputLayout>::new
                 )
                 .doOnNext(result -> {
-                    final String confirmPasswordTxt = confirmPasswordLayout.getEditText().getText().toString();
+                    final var confirmPasswordTxt = confirmPasswordLayout.getEditText().getText().toString();
                     final boolean validSignUp = result.getUsername().isSuccess()
                             && result.getEmail().isSuccess()
                             && result.getPassword().isSuccess()
@@ -141,12 +138,11 @@ public class SignUpController extends BaseController {
                 .subscribe();
 
         RxView
-                //Capture Login Button Click:
                 .clicks(binding.signUpControllerSignupBtn)
 
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
 
-                //Clear Results
+                // Clear results
                 .doOnNext(v -> {
                     binding.signUpControllerSignupBtn.setEnabled(false);
                     binding.signUpControllerSignupBtn.setText("Signing up...");
@@ -154,23 +150,42 @@ public class SignUpController extends BaseController {
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
-                //Start Auth:
-                .flatMapMaybe(v ->
+                // Start sign up
+                .flatMapSingle(v ->
                         RxRestKeycloak.createUser(entryPoint.apiService(), mKeycloakConfig, mUsername, mEmail, mPassword, mConfirmPassword)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnError(throwable -> {
-                                    Timber.d("Sign up error");
-                                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-                                    binding.signUpControllerSignupBtn.setEnabled(false);
-                                    binding.signUpControllerSignupBtn.setText("Sign up");
-                                    binding.signUpControllerKeycloakResponse.setText(throwable.toString());
-                                })
-                                .onErrorResumeNext(throwable -> Maybe.empty()))
+                                .observeOn(AndroidSchedulers.mainThread()))
 
+                // Handle sign up
+                .flatMapSingle(r -> {
+                    switch (r) {
+                        case SUCCESS -> {
+                            binding.signUpControllerSignupBtn.setText("Sign up success!");
+                            MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
+                            return RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnError(throwable -> {
+                                        setAllError(binding, "Cannot sign in with new account. Error: " + throwable.getMessage());
+                                        binding.signUpControllerSignupBtn.setText("Sign up");
+                                    })
+                                    .onErrorResumeNext(throwable -> Single.never());
+                        }
+                        case USERNAME_EXISTS -> binding.signUpControllerUsernameLayout.setError(r.toString());
+                        case EMAIL_EXISTS -> binding.signUpControllerEmailLayout.setError(r.toString());
+                        default -> setAllError(binding, r.toString());
+                    }
+
+                    binding.signUpControllerSignupBtn.setText("Sign up");
+
+                    return Single.never();
+                })
+
+                // Handle login with new session
                 .doOnNext(r -> {
-                    Timber.d("Sign up success");
-                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-                    binding.signUpControllerSignupBtn.setText("Sign up success!");
+                    final var jwt = new JWT(r.accessToken);
+                    binding.signUpControllerKeycloakResponse.setText(jwt.body);
+                    binding.signUpControllerSignupBtn.setText("Logged in...");
+                    entryPoint.settings().updateDataAsync(s ->
+                            Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         view.getContext().getSystemService(AutofillManager.class).commit();
                     }
@@ -179,5 +194,12 @@ public class SignUpController extends BaseController {
                 .to(autoDisposable(getScopeProvider()))
 
                 .subscribe();
+    }
+
+    private static void setAllError(ControllerSignUpBinding binding, String error) {
+        binding.signUpControllerUsernameLayout.setError("");
+        binding.signUpControllerEmailLayout.setError("");
+        binding.signUpControllerPasswordLayout.setError("");
+        binding.signUpControllerConfirmPasswordLayout.setError(error);
     }
 }

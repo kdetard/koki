@@ -56,20 +56,20 @@ public class FormUtils {
 
     @NonNull
     public static String handleInput(EditText editText, Function<String, String> callback) {
-        String inputStr = editText.getText().toString();
-        String callbackStr = callback.apply(inputStr);
+        var inputStr = editText.getText().toString();
+        var callbackStr = callback.apply(inputStr);
         if (callbackStr == null) return inputStr;
         editText.setError(callbackStr);
         return "";
     }
 
     public static FormResult<TextInputLayout> isValidUsernameOrEmail(String usernameOrEmail, TextInputLayout inputLayout) {
-        final FormResult<String> stringFormResult = isValidUsernameOrEmail(usernameOrEmail);
+        final var stringFormResult = isValidUsernameOrEmail(usernameOrEmail);
         return new FormResult<>(inputLayout, usernameOrEmail, stringFormResult.getError());
     }
 
     public static FormResult<String> isValidUsernameOrEmail(String usernameOrEmail) {
-        String error = isValidUsername(usernameOrEmail).getError();
+        var error = isValidUsername(usernameOrEmail).getError();
         if (usernameOrEmail.contains("@")) {
             error = isValidEmail(usernameOrEmail).getError();
         }
@@ -77,12 +77,12 @@ public class FormUtils {
     }
 
     public static FormResult<TextInputLayout> isValidUsername(String username, TextInputLayout inputLayout) {
-        final FormResult<String> stringFormResult = isValidUsername(username);
+        final var stringFormResult = isValidUsername(username);
         return new FormResult<>(inputLayout, username, stringFormResult.getError());
     }
 
     public static FormResult<String> isValidUsername(String username) {
-        String error = "";
+        var error = "";
         if (username.isEmpty()) {
             error = "Username is empty";
         }
@@ -90,12 +90,12 @@ public class FormUtils {
     }
 
     public static FormResult<TextInputLayout> isValidEmail(String email, TextInputLayout inputLayout) {
-        final FormResult<String> stringFormResult = isValidEmail(email);
+        final var stringFormResult = isValidEmail(email);
         return new FormResult<>(inputLayout, email, stringFormResult.getError());
     }
 
     public static FormResult<String> isValidEmail(String email) {
-        String error = "";
+        var error = "";
         if (!email.matches(EmailRegex)) {
             error = "Invalid email";
         }
@@ -103,12 +103,12 @@ public class FormUtils {
     }
 
     public static FormResult<TextInputLayout> isValidPassword(String password, TextInputLayout inputLayout) {
-        final FormResult<String> stringFormResult = isValidPassword(password);
+        final var stringFormResult = isValidPassword(password);
         return new FormResult<>(inputLayout, password, stringFormResult.getError());
     }
 
     public static FormResult<String> isValidPassword(String password) {
-        String error = "";
+        var error = "";
         if (password.length() < 8) {
             error = "Password must be over 8 characters";
         }

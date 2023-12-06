@@ -8,7 +8,7 @@ import okhttp3.Cookie;
 public class CookieJsonAdapter {
     @FromJson
     Cookie cookieFromJson(CookieJson cookieJson) {
-        final Cookie.Builder cookieBuilder = new Cookie.Builder()
+        final var cookieBuilder = new Cookie.Builder()
                 .name(cookieJson.name)
                 .value(cookieJson.value)
                 .expiresAt(cookieJson.expiresAt)

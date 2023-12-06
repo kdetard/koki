@@ -1,10 +1,9 @@
 [versions]
-minsdk = "21"
+minsdk = "24"
 compilesdk = "34"
 targetsdk = "34"
 
-agp = "8.1.4"
-androidbrowserhelper = "2.5.0"
+agp = "8.2.0"
 androidx-activity = "1.8.1"
 androidx-annotation = "1.7.0"
 androidx-appcompat = "1.6.1"
@@ -14,26 +13,22 @@ androidx-datastore = "1.1.0-alpha07"
 androidx-fragment = "1.7.0-alpha07"
 androidx-lifecycle = "2.6.2"
 androidx-palette = "1.0.0"
-androidx-paging = "3.2.1"
 androidx-preference = "1.2.1"
-androidx-room = "2.6.1"
 androidx-splashscreen = "1.0.1"
 androidx-transition = "1.5.0-alpha05"
 androidx-test-ext-junit = "1.1.5"
 appauth = "0.11.1"
 autodispose = "2.2.1"
 conductor = "4.0.0-preview-4"
-desugar-jdk-libs = "2.0.4"
 espresso-core = "3.5.1"
 fastadapter = "5.7.0"
 hilt = "2.48.1"
 insetter = "0.6.1"
-jsoup = "1.16.2"
+jsoup = "1.17.1"
 junit = "4.13.2"
 leakcanary = "2.12"
-manifold = "2023.1.31"
 material = "1.10.0"
-mmkv = "1.3.1"
+mmkv = "1.3.2"
 moshi = "1.15.0"
 kotlin-android = "2.0.0-Beta1"
 kotlin-ksp = "2.0.0-Beta1-1.0.14"
@@ -46,10 +41,8 @@ rxdogtag = "2.0.2"
 rxjava = "3.1.8"
 #noinspection GradleDependency
 timber = "4.7.1"
-webkit = "1.10.0-alpha01"
 
 [libraries]
-androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version.ref = "androidbrowserhelper" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
@@ -63,14 +56,10 @@ androidx-fragment = { group = "androidx.fragment", name = "fragment", version.re
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-palette = { group = "androidx.palette", name = "palette", version.ref = "androidx-palette" }
-androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "androidx-paging" }
-androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
-androidx-paging-rxjava3 = { group = "androidx.paging", name = "paging-rxjava3", version.ref = "androidx-paging" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "androidx-preference" }
 androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-transition = { group = "androidx.transition", name = "transition", version.ref = "androidx-transition" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
 autodispose = { group = "com.uber.autodispose2", name = "autodispose", version.ref = "autodispose" }
 autodispose-android = { group = "com.uber.autodispose2", name = "autodispose-android", version.ref = "autodispose" }
@@ -79,7 +68,6 @@ autodispose-androidx-lifecycle = { group = "com.uber.autodispose2", name = "auto
 conductor = { group = "com.bluelinelabs", name = "conductor", version.ref = "conductor" }
 conductor-androidx-transition = { group = "com.bluelinelabs", name = "conductor-androidx-transition", version.ref = "conductor" }
 conductor-viewpager2 = { group = "com.bluelinelabs", name = "conductor-viewpager2", version.ref = "conductor" }
-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 fastadapter = { group = "com.mikepenz", name = "fastadapter", version.ref = "fastadapter" }
 fastadapter-extensions-expandable = { group = "com.mikepenz", name = "fastadapter-extensions-expandable", version.ref = "fastadapter" }
@@ -87,19 +75,11 @@ fastadapter-extensions-binding = { group = "com.mikepenz", name = "fastadapter-e
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 insetter = { group = "dev.chrisbanes.insetter", name = "insetter", version.ref = "insetter" }
-jsoup = { group = "org.jsoup", name = "jsoup", version = "1.17.1" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-manifold = { group = "systems.manifold", name = "manifold", version.ref = "manifold" }
-manifold-rt = { group = "systems.manifold", name = "manifold-rt", version.ref = "manifold" }
-manifold-exceptions = { group = "systems.manifold", name = "manifold-exceptions", version.ref = "manifold" }
-manifold-ext = { group = "systems.manifold", name = "manifold-ext", version.ref = "manifold" }
-manifold-ext-rt = { group = "systems.manifold", name = "manifold-ext-rt", version.ref = "manifold" }
-manifold-props = { group = "systems.manifold", name = "manifold-props", version.ref = "manifold" }
-manifold-props-rt = { group = "systems.manifold", name = "manifold-props-rt", version.ref = "manifold" }
-manifold-strings = { group = "systems.manifold", name = "manifold-strings", version.ref = "manifold" }
-mmkv = { group = "com.tencent", name = "mmkv", version = "1.3.2" }
+mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp-logging-interceptor" }
 protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }

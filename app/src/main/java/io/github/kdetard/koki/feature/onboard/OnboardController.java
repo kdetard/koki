@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.Router.PopRootControllerMode;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.jakewharton.rxbinding4.view.RxView;
@@ -49,7 +48,7 @@ public class OnboardController extends BaseController implements OnConfiguration
     public void onViewCreated(View view) {
         binding = ControllerOnboardBinding.bind(view);
 
-        Router childRouter = getChildRouter(binding.onboardControllerActionLayoutContainerView)
+        final var childRouter = getChildRouter(binding.onboardControllerActionLayoutContainerView)
                 .setPopRootControllerMode(PopRootControllerMode.POP_ROOT_CONTROLLER_BUT_NOT_VIEW);
 
         if (!childRouter.hasRootController()) {

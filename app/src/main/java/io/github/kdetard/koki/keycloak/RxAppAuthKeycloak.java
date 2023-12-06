@@ -1,6 +1,5 @@
 package io.github.kdetard.koki.keycloak;
 
-import android.content.Intent;
 import android.net.Uri;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +22,7 @@ import timber.log.Timber;
 public class RxAppAuthKeycloak extends RxKeycloak {
     public static Observable<AuthorizationService> service(final AppCompatActivity context) {
         return Observable.create(emitter -> {
-            final AuthorizationService authService = new AuthorizationService(context);
+            final var authService = new AuthorizationService(context);
             emitter.setCancellable(authService::dispose);
             emitter.onNext(authService);
         });
@@ -44,11 +43,11 @@ public class RxAppAuthKeycloak extends RxKeycloak {
                         ).build())
                 )
                 .flatMap(authRequest -> Single.create(emitter -> {
-                    final CustomTabsIntent customTabsIntent = service.createCustomTabsIntentBuilder()
+                    final var customTabsIntent = service.createCustomTabsIntentBuilder()
                             .setInitialActivityHeightPx(500)
                             .setCloseButtonPosition(CustomTabsIntent.CLOSE_BUTTON_POSITION_END)
                             .build();
-                    final Intent authIntent = service.getAuthorizationRequestIntent(authRequest, customTabsIntent);
+                    final var authIntent = service.getAuthorizationRequestIntent(authRequest, customTabsIntent);
                     activity.startActivityForResult(authIntent, requestCode);
                     emitter.onSuccess(config);
                 }));
@@ -78,8 +77,8 @@ public class RxAppAuthKeycloak extends RxKeycloak {
                     }
                 })
                 .flatMapSingle(r -> {
-                    final AuthorizationException ex = AuthorizationException.fromIntent(r.data);
-                    final AuthorizationResponse response = AuthorizationResponse.fromIntent(r.data);
+                    final var ex = AuthorizationException.fromIntent(r.data);
+                    final var response = AuthorizationResponse.fromIntent(r.data);
                     if (ex != null) {
                         return Single.error(ex);
                     } else {
