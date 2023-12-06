@@ -6,9 +6,9 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_in">Log in</string>
     <string name="sign_out">Sign out</string>
-    <string name="logged_in">Logged in...</string>
-    <string name="logging_in">Logging in...</string>
-    <string name="signing_up">Signing up...</string>
+    <string name="logged_in">Logged in…</string>
+    <string name="logging_in">Logging in…</string>
+    <string name="signing_up">Signing up…</string>
     <string name="signup_success">Sign up success!</string>
     <string name="signup_empty_response">Empty response</string>
     <string name="signup_invalid_fields">Invalid fields</string>
