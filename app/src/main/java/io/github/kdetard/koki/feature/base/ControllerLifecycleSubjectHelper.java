@@ -28,7 +28,7 @@ public class ControllerLifecycleSubjectHelper {
             initialState = ControllerEvent.CREATE;
         }
 
-        final BehaviorSubject<ControllerEvent> subject = BehaviorSubject.createDefault(initialState);
+        final var subject = BehaviorSubject.createDefault(initialState);
 
         controller.addLifecycleListener(new Controller.LifecycleListener() {
             @Override

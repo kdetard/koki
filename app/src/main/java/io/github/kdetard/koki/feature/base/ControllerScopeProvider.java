@@ -12,20 +12,13 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 public class ControllerScopeProvider implements LifecycleScopeProvider<ControllerEvent> {
     private static final CorrespondingEventsFunction<ControllerEvent> CORRESPONDING_EVENTS =
-            lastEvent -> {
-                switch (lastEvent) {
-                    case CREATE:
-                    case DETACH:
-                        return ControllerEvent.DESTROY;
-                    case CONTEXT_AVAILABLE:
-                        return ControllerEvent.CONTEXT_UNAVAILABLE;
-                    case CREATE_VIEW:
-                        return ControllerEvent.DESTROY_VIEW;
-                    case ATTACH:
-                        return ControllerEvent.DETACH;
-                    default:
+            lastEvent -> switch (lastEvent) {
+                case CREATE, DETACH -> ControllerEvent.DESTROY;
+                case CONTEXT_AVAILABLE -> ControllerEvent.CONTEXT_UNAVAILABLE;
+                case CREATE_VIEW -> ControllerEvent.DESTROY_VIEW;
+                case ATTACH -> ControllerEvent.DETACH;
+                default ->
                         throw new OutsideScopeException("Cannot bind to Controller lifecycle when outside of it.");
-                }
             };
 
     @NonNull

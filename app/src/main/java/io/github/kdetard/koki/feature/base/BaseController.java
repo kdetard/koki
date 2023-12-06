@@ -46,7 +46,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     public LifecycleScopeProvider<ControllerEvent> getScopeProvider() { return ControllerScopeProvider.from(this); }
 
     public View getRoot() {
-        NavigationProvider provider = ((NavigationProvider)getActivity());
+        final var provider = ((NavigationProvider)getActivity());
         if (provider != null) {
             return provider.getRoot();
         }
@@ -54,7 +54,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public Toolbar getToolbar() {
-        NavigationProvider provider = ((NavigationProvider)getActivity());
+        final var provider = ((NavigationProvider)getActivity());
         if (provider != null) {
             return provider.getToolbar();
         }
@@ -62,7 +62,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public ExpandedAppBarLayout getAppBarLayout() {
-        NavigationProvider provider = ((NavigationProvider)getActivity());
+        final var provider = ((NavigationProvider)getActivity());
         if (provider != null) {
             return provider.getAppBarLayout();
         }
@@ -70,7 +70,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public NavigationBarView getNavBar() {
-        NavigationProvider provider = ((NavigationProvider)getActivity());
+        final var provider = ((NavigationProvider)getActivity());
         if (provider != null) {
             return provider.getNavBar();
         }
@@ -104,7 +104,7 @@ public abstract class BaseController extends Controller implements NavigationPro
             return;
         }
 
-        Controller parentController = getParentController();
+        var parentController = getParentController();
         while (parentController != null) {
             if (parentController instanceof BaseController && ((BaseController) parentController).title != null) {
                 return;

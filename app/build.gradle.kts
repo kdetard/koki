@@ -9,10 +9,11 @@ plugins {
 android {
     namespace = "io.github.kdetard.koki"
 
+    compileSdk = libs.versions.compilesdk.get().toInt()
+
     defaultConfig {
         applicationId = "io.github.kdetard.koki"
         minSdk = libs.versions.minsdk.get().toInt()
-        compileSdk = libs.versions.compilesdk.get().toInt()
         targetSdk = libs.versions.targetsdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
@@ -34,16 +35,20 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
+
     buildFeatures {
         viewBinding = true
+        // Disable some unused things
+        aidl = false
+        renderScript = false
+        shaders = false
     }
 
     afterEvaluate {
@@ -55,8 +60,6 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
     implementation(libs.androidx.activity)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.appcompat)
@@ -73,7 +76,6 @@ dependencies {
     implementation(libs.androidx.preference)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.transition)
-    implementation(libs.androidx.webkit)
     implementation(libs.appauth)
     implementation(libs.autodispose)
     implementation(libs.autodispose.android)

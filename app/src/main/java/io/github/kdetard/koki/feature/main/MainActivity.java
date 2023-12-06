@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Conductor;
-import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.google.android.material.navigation.NavigationBarView;
@@ -67,14 +66,14 @@ public class MainActivity extends AppCompatActivity implements NavigationProvide
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(e -> {
                     switch (e) {
-                        case LOGGED_IN:
+                        case LOGGED_IN -> {
                             hideNavigation(false);
                             router.setRoot(RouterTransaction.with(new HomeController()));
-                            break;
-                        case LOGGED_OUT:
+                        }
+                        case LOGGED_OUT -> {
                             hideNavigation(true);
                             router.setRoot(RouterTransaction.with(new OnboardController()));
-                            break;
+                        }
                     }
                 })
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getLifecycle())))
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationProvide
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        final Controller controller = router.getBackstack().get(router.getBackstackSize() - 1).controller();
+        final var controller = router.getBackstack().get(router.getBackstackSize() - 1).controller();
         try {
             ((BaseController) controller).onConfigurationChange(newConfig);
         } catch (NullPointerException e) {

@@ -3,7 +3,6 @@ package io.github.kdetard.koki.feature.auth;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.datastore.rxjava3.RxDataStore;
@@ -29,7 +28,6 @@ import io.github.kdetard.koki.keycloak.RxRestKeycloak;
 import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
-import io.github.kdetard.koki.utils.FormResult;
 import io.github.kdetard.koki.utils.FormUtils;
 import io.github.kdetard.koki.utils.SignInFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -80,10 +78,8 @@ public class SignInController extends BaseController {
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
-        Observable<FormResult<TextInputLayout>> username =
-                FormUtils.textChanges(binding.signInControllerUsernameLayout, FormUtils::isValidUsernameOrEmail);
-        Observable<FormResult<TextInputLayout>> password =
-                FormUtils.textChanges(binding.signInControllerPasswordLayout, FormUtils::isValidPassword);
+        final var username = FormUtils.textChanges(binding.signInControllerUsernameLayout, FormUtils::isValidUsernameOrEmail);
+        final var password = FormUtils.textChanges(binding.signInControllerPasswordLayout, FormUtils::isValidPassword);
 
         username
                 .doOnNext(v -> v.getInputLayout().setError(v.getError()))
@@ -113,31 +109,29 @@ public class SignInController extends BaseController {
                 .subscribe();
 
         RxView
-                //Capture Login Button Click:
                 .clicks(binding.signInControllerLoginBtn)
 
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
 
-                //Clear Results
+                // Clear results
                 .doOnNext(v -> {
                     binding.signInControllerLoginBtn.setEnabled(false);
                     binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logging_in));
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
-                //Start Auth:
+                // Start auth
                 .flatMapSingle(v ->
                         RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(throwable -> {
-                                    binding.signInControllerUsernameLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
-                                    binding.signInControllerPasswordLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
+                                    binding.signInControllerKeycloakResponse.setText(throwable.toString());
                                     binding.signInControllerLoginBtn.setEnabled(true);
                                     binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.sign_in));
                                 })
                                 .onErrorResumeNext(throwable -> Single.never()))
 
-                //Populate result with the parsed token body:
+                // Populate result with the parsed token body:
                 .doOnNext(r -> {
                     binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logged_in));
                     entryPoint.settings().updateDataAsync(s ->

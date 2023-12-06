@@ -5,20 +5,17 @@ import android.net.Uri;
 import com.tencent.mmkv.MMKV;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.Objects;
 
+import io.github.kdetard.koki.feature.auth.SignUpResult;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.models.KeycloakGrantType;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
 
@@ -39,7 +36,7 @@ public class RxRestKeycloak extends RxKeycloak {
                 ));
     }
 
-    public static @NonNull Maybe<Boolean> createUser(
+    public static @NonNull Single<SignUpResult> createUser(
             final KeycloakApiService service,
             final KeycloakConfig config,
             final String username,
@@ -62,45 +59,57 @@ public class RxRestKeycloak extends RxKeycloak {
                 // Extract signup link without session code from sign in form
                 .flatMap(r -> extractLinkFromElement(config, r, "//a", "href"))
 
+                .doOnSuccess(r -> Timber.d("Sign up link (no session code): %s", r))
+
                 // Step on signup page
                 .flatMap(service::stepOnSignUpPage)
 
                 // Extract signup link with session code from sign up form
                 .flatMap(r -> extractLinkFromElement(config, r, "//form", "action"))
 
+                .doOnSuccess(r -> Timber.d("Sign up link (with session code): %s", r))
+
                 // Create new user from the signup link with session code above
                 .flatMap(r -> service.createUser(r, username, email, password, confirmPassword, ""))
 
-                // TODO: try to login instead of checking sign up page.
-                .flatMapMaybe(r -> {
-                    final Response raw = r.raw();
-                    try {
-                        if (!raw.request().url().url().getPath().contains("/manager/")) {
-                            return Maybe.error(new Error("Not redirected to manager"));
+                .onErrorResumeNext(e -> {
+                    Timber.w(e, "Error occurred while creating user");
+                    return Single.error(new Error(SignUpResult.UNKNOWN.toString()));
+                })
+
+                // check sign up result
+                .flatMap(r -> {
+                    var result = SignUpResult.UNKNOWN;
+
+                    if (r.body() == null) {
+                        result = SignUpResult.NULL;
+                    }
+                    else {
+                        final var body = r.body().string();
+                        if (body.isEmpty()) {
+                            result = SignUpResult.EMPTY;
                         }
-                    } finally {
-                        raw.close();
+                        if (body.contains("Invalid")) {
+                            result = SignUpResult.INVALID;
+                        }
+                        if (body.contains("specify")) {
+                            result = SignUpResult.SPECIFY;
+                        }
+                        if (body.contains("timed out")) {
+                            result = SignUpResult.TIMEOUT;
+                        }
+                        if (body.contains("Username already")) {
+                            result = SignUpResult.USERNAME_EXISTS;
+                        }
+                        if (body.contains("Email already")) {
+                            result = SignUpResult.EMAIL_EXISTS;
+                        }
+                        if (body.contains("Welcome to Keycloak")) {
+                            result = SignUpResult.SUCCESS;
+                        }
                     }
 
-                    final ResponseBody body = r.body();
-                    if (body == null || body.string().isEmpty()) {
-                        return Maybe.error(new Error("Empty response"));
-                    }
-
-                    final String content = body.string();
-                    if (content.contains("Invalid")) {
-                        return Maybe.error(new Error("Some fields are invalid"));
-                    }
-                    if (content.contains("specify")) {
-                        return Maybe.error(new Error("Some fields are empty"));
-                    }
-                    if (content.contains("timed out")) {
-                        return Maybe.error(new Error("Time out"));
-                    }
-                    if (content.contains("exists")) {
-                        return Maybe.error(new Error("User already exists"));
-                    }
-                    return Maybe.just(true);
+                    return Single.just(result);
                 });
     }
 
@@ -111,11 +120,11 @@ public class RxRestKeycloak extends RxKeycloak {
             final @NonNull String attr
     ) {
         try {
-            final Uri redirectUri = Uri.parse(config.authServerUrl);
-            final String baseUri = String.format("%s://%s", redirectUri.getScheme(), redirectUri.getHost());
-            final Document document = Jsoup.parse(resp.string(), baseUri);
-            final Element linkSelector = document.selectXpath(String.format("%s[@%s]", xPath, attr)).get(0);
-            final String signupUrl = linkSelector.attr(String.format("abs:%s", attr));
+            final var redirectUri = Uri.parse(config.authServerUrl);
+            final var baseUri = String.format("%s://%s", redirectUri.getScheme(), redirectUri.getHost());
+            final var document = Jsoup.parse(resp.string(), baseUri);
+            final var linkSelector = document.selectXpath(String.format("%s[@%s]", xPath, attr)).get(0);
+            final var signupUrl = linkSelector.attr(String.format("abs:%s", attr));
             return Single.just(signupUrl);
         } catch (IndexOutOfBoundsException e) {
             return Single.error(new Error("Cannot find link in request"));
