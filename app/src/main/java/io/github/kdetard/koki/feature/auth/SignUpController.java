@@ -26,7 +26,6 @@ import io.github.kdetard.koki.databinding.ControllerSignUpBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
-import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
 import io.github.kdetard.koki.utils.FormUtils;
@@ -145,8 +144,7 @@ public class SignUpController extends BaseController {
                 // Clear results
                 .doOnNext(v -> {
                     binding.signUpControllerSignupBtn.setEnabled(false);
-                    binding.signUpControllerSignupBtn.setText("Signing up...");
-                    binding.signUpControllerKeycloakResponse.setText("");
+                    binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.signing_up));
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -159,13 +157,13 @@ public class SignUpController extends BaseController {
                 .flatMapSingle(r -> {
                     switch (r) {
                         case SUCCESS -> {
-                            binding.signUpControllerSignupBtn.setText("Sign up success!");
+                            binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.signup_success));
                             MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                             return RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .doOnError(throwable -> {
                                         setAllError(binding, "Cannot sign in with new account. Error: " + throwable.getMessage());
-                                        binding.signUpControllerSignupBtn.setText("Sign up");
+                                        binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.sign_up));
                                     })
                                     .onErrorResumeNext(throwable -> Single.never());
                         }
@@ -174,16 +172,14 @@ public class SignUpController extends BaseController {
                         default -> setAllError(binding, r.toString());
                     }
 
-                    binding.signUpControllerSignupBtn.setText("Sign up");
+                    binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.sign_up));
 
                     return Single.never();
                 })
 
                 // Handle login with new session
                 .doOnNext(r -> {
-                    final var jwt = new JWT(r.accessToken);
-                    binding.signUpControllerKeycloakResponse.setText(jwt.body);
-                    binding.signUpControllerSignupBtn.setText("Logged in...");
+                    binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.logging_in));
                     entryPoint.settings().updateDataAsync(s ->
                             Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

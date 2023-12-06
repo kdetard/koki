@@ -35,24 +35,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Koki.TextInputLayout"
-            android:id="@+id/signUpController_usernameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/username"
-            app:helperText="@string/type_username_help"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/signUpController_usernameTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:autofillHints="username"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Koki.TextInputLayout"
             android:id="@+id/signUpController_emailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,6 +48,24 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:autofillHints="emailAddress"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Koki.TextInputLayout"
+            android:id="@+id/signUpController_usernameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username"
+            app:helperText="@string/type_username_help"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signUpController_usernameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:autofillHints="username"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,15 +114,6 @@
         android:text="@string/sign_up"
         android:textStyle="bold"
         android:enabled="false"
-        app:layout_constraintBottom_toTopOf="@id/signUpController_keycloakResponse"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/signUpController_keycloakResponse"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

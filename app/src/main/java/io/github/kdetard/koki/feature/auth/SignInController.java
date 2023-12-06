@@ -25,7 +25,6 @@ import io.github.kdetard.koki.databinding.ControllerSignInBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
-import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
 import io.github.kdetard.koki.utils.FormUtils;
@@ -125,7 +124,8 @@ public class SignInController extends BaseController {
                         RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(throwable -> {
-                                    binding.signInControllerKeycloakResponse.setText(throwable.toString());
+                                    binding.signInControllerUsernameLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
+                                    binding.signInControllerPasswordLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
                                     binding.signInControllerLoginBtn.setEnabled(true);
                                     binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.sign_in));
                                 })

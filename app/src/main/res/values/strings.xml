@@ -8,6 +8,16 @@
     <string name="sign_out">Sign out</string>
     <string name="logged_in">Logged in...</string>
     <string name="logging_in">Logging in...</string>
+    <string name="signing_up">Signing up...</string>
+    <string name="signup_success">Sign up success!</string>
+    <string name="signup_empty_response">Empty response</string>
+    <string name="signup_invalid_fields">Invalid fields</string>
+    <string name="signup_empty_fields">Empty fields</string>
+    <string name="signup_timeout">Timeout</string>
+    <string name="signup_email_exists">Email already exists</string>
+    <string name="signup_username_exists">Username already exists</string>
+    <string name="signup_null">Null response</string>
+    <string name="signup_unknown">Unknown error occurred</string>
     <string name="wrong_username_password">Wrong Username or Password</string>
     <string name="sign_up">Sign up</string>
     <string name="sign_up_with_email">Sign up with email</string>
