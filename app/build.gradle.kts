@@ -1,21 +1,24 @@
 plugins {
-    alias(libs.plugins.com.android.application)
-    alias(libs.plugins.com.google.dagger.hilt.android)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.org.jetbrains.kotlin.kapt)
-    id("androidx.navigation.safeargs")
+    alias(libs.plugins.application)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.protobuf)
 }
 
 android {
     namespace = "io.github.kdetard.koki"
-    compileSdk = 34
+
+    compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
         applicationId = "io.github.kdetard.koki"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = libs.versions.minsdk.get().toInt()
+        targetSdk = libs.versions.targetsdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,17 +30,25 @@ android {
         }
     }
 
+    packaging {
+        resources.excludes.add("META-INF/rxjava.properties")
+    }
+
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
+
     buildFeatures {
         viewBinding = true
+        // Disable some unused things
+        aidl = false
+        renderScript = false
+        shaders = false
     }
 
     afterEvaluate {
@@ -49,30 +60,33 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-    kapt(libs.hilt.android.compiler)
-
     implementation(libs.androidx.activity)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.rxjava3)
+    implementation(libs.androidx.datastore.rxjava3)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment)
-    implementation(libs.androidx.navigation.dynamic.features.fragment)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.palette)
+    implementation(libs.androidx.preference)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.transition)
-    implementation(libs.androidx.webkit)
     implementation(libs.appauth)
     implementation(libs.autodispose)
     implementation(libs.autodispose.android)
     implementation(libs.autodispose.lifecycle)
     implementation(libs.autodispose.androidx.lifecycle)
+    implementation(libs.conductor)
+    implementation(libs.conductor.androidx.transition)
+    implementation(libs.conductor.viewpager2)
+    implementation(libs.fastadapter)
+    implementation(libs.fastadapter.extensions.binding)
+    implementation(libs.fastadapter.extensions.expandable)
     implementation(libs.hilt.android)
     implementation(libs.insetter)
     implementation(libs.jsoup)
@@ -80,6 +94,7 @@ dependencies {
     implementation(libs.mmkv)
     implementation(libs.moshi)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.protobuf.javalite)
     implementation(libs.retrofit)
     implementation(libs.retrofit.adapter.rxjava3)
     implementation(libs.retrofit.converter.moshi)
@@ -91,17 +106,35 @@ dependencies {
     implementation(libs.rxbinding.material)
     implementation(libs.rxbinding.recyclerview)
     implementation(libs.rxjava)
-    implementation(libs.simple.stack)
-    implementation(libs.simple.stack.extensions)
     implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.espresso.core)
+
+    debugImplementation(libs.leakcanary)
+
+    kapt(libs.hilt.android.compiler)
 }
 
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    useBuildCache = true
+}
+
+protobuf {
+    protoc {
+        artifact = libs.protobuf.protoc.get().toString()
+    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

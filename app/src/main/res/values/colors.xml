@@ -11,4 +11,6 @@
     <color name="primary_variant">#1976D2</color>
     <color name="toolbar">@android:color/white</color>
     <color name="navigation_bar">?attr/colorOnPrimary</color>
+
+    <color name="md_black_1000_54">#8A000000</color>
 </resources>
