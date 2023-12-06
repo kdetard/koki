@@ -1,28 +1,32 @@
 package io.github.kdetard.koki.feature.auth;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
+import dagger.hilt.internal.aggregatedroot.codegen._io_github_kdetard_koki_App;
+import io.github.kdetard.koki.R;
+
 public enum SignUpResult {
-    EMPTY("Empty response"),
-    INVALID("Invalid fields"),
-    SPECIFY("Empty fields"),
-    TIMEOUT("Timeout"),
-    EMAIL_EXISTS("Email already exists"),
-    USERNAME_EXISTS("Username already exists"),
-    NULL("Null response"),
-    UNKNOWN("Unknown error occurred"),
-    SUCCESS("Success"),
+    EMPTY(R.string.signup_empty_response),
+    INVALID(R.string.signup_invalid_fields),
+    SPECIFY(R.string.signup_empty_fields),
+    TIMEOUT(R.string.signup_timeout),
+    EMAIL_EXISTS(R.string.signup_email_exists),
+    USERNAME_EXISTS(R.string.signup_username_exists),
+    NULL(R.string.signup_null),
+    UNKNOWN(R.string.signup_unknown),
+    SUCCESS(R.string.signup_success),
     ;
 
-    private final String text;
+    private final int resId;
 
-    SignUpResult(final String text) {
-        this.text = text;
+    SignUpResult(final int resId) {
+        this.resId = resId;
     }
 
     @NonNull
-    @Override
-    public String toString() {
-        return text;
+    public String getText(Context context) {
+        return context.getString(resId);
     }
 }

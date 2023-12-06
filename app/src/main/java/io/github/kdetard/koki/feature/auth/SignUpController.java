@@ -167,8 +167,8 @@ public class SignUpController extends BaseController {
                                     })
                                     .onErrorResumeNext(throwable -> Single.never());
                         }
-                        case USERNAME_EXISTS -> binding.signUpControllerUsernameLayout.setError(r.toString());
-                        case EMAIL_EXISTS -> binding.signUpControllerEmailLayout.setError(r.toString());
+                        case USERNAME_EXISTS -> binding.signUpControllerUsernameLayout.setError(r.getText(getApplicationContext()));
+                        case EMAIL_EXISTS -> binding.signUpControllerEmailLayout.setError(r.getText(getApplicationContext()));
                         default -> setAllError(binding, r.toString());
                     }
 
