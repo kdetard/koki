@@ -3,8 +3,23 @@
     <group android:id="@+id/group_feature">
         <item
             android:checked="true"
-            android:id="@+id/nav_lhome"
-            android:icon="@drawable/ic_home_24dp"
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_selector_24dp"
             android:title="@string/home" />
+
+        <item
+            android:id="@+id/nav_assets"
+            android:icon="@drawable/ic_assets_selector_24dp"
+            android:title="@string/assets" />
+
+        <item
+            android:id="@+id/nav_monitoring"
+            android:icon="@drawable/ic_monitoring_selector_24dp"
+            android:title="@string/monitoring" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_selector_24dp"
+            android:title="@string/settings" />
     </group>
 </menu>

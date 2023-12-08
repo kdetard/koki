@@ -2,8 +2,10 @@ package io.github.kdetard.koki.di;
 
 import android.content.Context;
 
+import androidx.datastore.rxjava3.RxDataStore;
+
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import com.tencent.mmkv.MMKV;
 
 import java.io.File;
 
@@ -14,18 +16,22 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
+import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
+import io.github.kdetard.koki.keycloak.models.KeycloakToken;
 import io.github.kdetard.koki.network.MMKVCookieJar;
 import io.github.kdetard.koki.openremote.OpenRemoteService;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.CookieJar;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import timber.log.Timber;
 
 @Module
 @InstallIn(SingletonComponent.class)
@@ -58,34 +64,45 @@ public abstract class NetworkModule {
             final Cache cache,
             final CookieJar cookieJar,
             final HttpLoggingInterceptor logging,
-            final Authenticator authenticator
+            final Interceptor authenticator
     ) {
         return new OkHttpClient.Builder()
                 .cache(cache)
                 .cookieJar(cookieJar)
                 .addInterceptor(logging)
-                .authenticator(authenticator)
+                .addInterceptor(authenticator)
                 .build();
     }
 
     @Provides
     @Singleton
-    public static Authenticator provideAuthenticator() {
-        final var kv = MMKV.defaultMMKV(MMKV.MULTI_PROCESS_MODE, null);
+    public static Interceptor provideAuthenticator(
+            final JsonAdapter<KeycloakToken> keycloakTokenJsonAdapter,
+            final RxDataStore<Settings> settings
+    ) {
+        return chain -> {
+            var request = chain.request();
 
-        return (route, response) -> {
-            final var accessToken = kv.getString("accessToken", "");
-
-            if (accessToken.isEmpty()) {
-                return response.request();
+            if (!request.url().host().equals("uiot.ixxc.dev")) {
+                return chain.proceed(request);
             }
 
-            /// TODO: Refresh your access token if expired
+            final var keycloakTokenJson = settings.data()
+                    .map(Settings::getKeycloakTokenJson)
+                    .map(json -> json.isEmpty() ? "{}" : json)
+                    .blockingFirst();
+            final var keycloakToken = keycloakTokenJsonAdapter.fromJson(keycloakTokenJson);
 
-            // Add new header to rejected request and retry it
-            return response.request().newBuilder()
-                    .header("Authorization", String.format("Bearer %s", accessToken))
-                    .build();
+
+            if (keycloakToken != null) {
+                Timber.d("Authenticator called with accessToken: %s", keycloakToken.accessToken);
+                // Add new header to rejected request and retry it
+                request = chain.request().newBuilder()
+                        .header("Authorization", String.format("%s %s", keycloakToken.tokenType, keycloakToken.accessToken))
+                        .build();
+            }
+
+            return chain.proceed(request);
         };
     }
 

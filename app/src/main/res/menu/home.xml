@@ -4,7 +4,7 @@
     <item
         android:title="@string/home"
         android:enabled="true"
-        android:icon="@drawable/ic_home_24dp"
+        android:icon="@drawable/ic_home_outline_24dp"
         android:id="@+id/tab_home" />
 
 </menu>

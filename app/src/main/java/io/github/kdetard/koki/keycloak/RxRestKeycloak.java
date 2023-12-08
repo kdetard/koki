@@ -33,7 +33,11 @@ public class RxRestKeycloak extends RxKeycloak {
                         username,
                         password,
                         KeycloakGrantType.PASSWORD
-                ));
+                ))
+                .onErrorResumeNext(e -> {
+                    Timber.w(e, "Error occurred while signing in");
+                    return Single.error(e);
+                });
     }
 
     public static @NonNull Single<SignUpResult> createUser(
@@ -49,10 +53,10 @@ public class RxRestKeycloak extends RxKeycloak {
                 // Step on sign in page
                 .flatMap(authRequest ->
                     service.stepOnSignInPage(
-                        // uiot.ixxc.dev/auth/..../auth
+                        // uiot.ixxc.dev/auth/..../auth?client_id=...
                         Objects.requireNonNull(authRequest.configuration.authorizationEndpoint).toString(),
                         config.client,
-                        config.authServerUrl,
+                        config.redirectUri,
                         "code"
                 ))
 
@@ -74,7 +78,7 @@ public class RxRestKeycloak extends RxKeycloak {
 
                 .onErrorResumeNext(e -> {
                     Timber.w(e, "Error occurred while creating user");
-                    return Single.error(new Error(SignUpResult.UNKNOWN.toString()));
+                    return Single.error(e);
                 })
 
                 // check sign up result
@@ -104,7 +108,7 @@ public class RxRestKeycloak extends RxKeycloak {
                         if (body.contains("Email already")) {
                             result = SignUpResult.EMAIL_EXISTS;
                         }
-                        if (body.contains("Welcome to Keycloak")) {
+                        if (body.contains("UiOt - Map")) {
                             result = SignUpResult.SUCCESS;
                         }
                     }

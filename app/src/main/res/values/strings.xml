@@ -86,4 +86,7 @@
     <string name="home">Home</string>
     <string name="general_todo_msg">Todo</string>
     <string name="backup_type_app_label">Koki</string>
+    <string name="assets">Assets</string>
+    <string name="settings">Settings</string>
+    <string name="monitoring">Monitor</string>
 </resources>

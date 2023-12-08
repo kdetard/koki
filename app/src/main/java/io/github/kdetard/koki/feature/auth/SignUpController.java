@@ -11,6 +11,7 @@ import androidx.datastore.rxjava3.RxDataStore;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jakewharton.rxbinding4.widget.RxTextView;
+import com.squareup.moshi.JsonAdapter;
 import com.tencent.mmkv.MMKV;
 
 import java.util.Objects;
@@ -29,16 +30,19 @@ import io.github.kdetard.koki.keycloak.RxRestKeycloak;
 import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
+import io.github.kdetard.koki.keycloak.models.KeycloakToken;
 import io.github.kdetard.koki.utils.FormUtils;
 import io.github.kdetard.koki.utils.SignUpFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import timber.log.Timber;
 
 public class SignUpController extends BaseController {
     @EntryPoint
     @InstallIn(SingletonComponent.class)
     interface SignUpEntryPoint {
+        JsonAdapter<KeycloakToken> keycloakTokenJsonAdapter();
         KeycloakApiService apiService();
         RxDataStore<Settings> settings();
     }
@@ -153,7 +157,12 @@ public class SignUpController extends BaseController {
                 // Start sign up
                 .flatMapSingle(v ->
                         RxRestKeycloak.createUser(entryPoint.apiService(), mKeycloakConfig, mUsername, mEmail, mPassword, mConfirmPassword)
-                                .observeOn(AndroidSchedulers.mainThread()))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(throwable -> {
+                                    setAllError(binding, "Cannot sign up. Error: " + throwable.getMessage());
+                                    binding.signUpControllerSignupBtn.setText("Sign up");
+                                })
+                                .onErrorResumeNext(throwable -> Single.never()))
 
                 // Handle sign up
                 .flatMapSingle(r -> {
@@ -181,11 +190,15 @@ public class SignUpController extends BaseController {
 
                 // Handle login with new session
                 .doOnNext(r -> {
-                    final var jwt = new JWT(r.accessToken);
-                    binding.signUpControllerKeycloakResponse.setText(jwt.body);
+                    final var accessTokenJwt = new JWT(r.accessToken);
+                    Timber.d("Access token JWT: %s", accessTokenJwt);
+
                     binding.signUpControllerSignupBtn.setText("Logged in...");
+
+                    final var keycloakToken = entryPoint.keycloakTokenJsonAdapter().toJson(r);
                     entryPoint.settings().updateDataAsync(s ->
-                            Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
+                            Single.just(s.toBuilder().setKeycloakTokenJson(keycloakToken).build()));
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         view.getContext().getSystemService(AutofillManager.class).commit();
                     }
@@ -197,9 +210,9 @@ public class SignUpController extends BaseController {
     }
 
     private static void setAllError(ControllerSignUpBinding binding, String error) {
-        binding.signUpControllerUsernameLayout.setError("");
-        binding.signUpControllerEmailLayout.setError("");
-        binding.signUpControllerPasswordLayout.setError("");
+        binding.signUpControllerUsernameLayout.setError(" ");
+        binding.signUpControllerEmailLayout.setError(" ");
+        binding.signUpControllerPasswordLayout.setError(" ");
         binding.signUpControllerConfirmPasswordLayout.setError(error);
     }
 }

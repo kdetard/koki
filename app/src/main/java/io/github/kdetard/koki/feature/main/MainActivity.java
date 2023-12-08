@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Conductor;
+import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.google.android.material.navigation.NavigationBarView;
@@ -22,14 +23,18 @@ import javax.inject.Inject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import dagger.hilt.android.AndroidEntryPoint;
+import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.databinding.ActivityMainBinding;
+import io.github.kdetard.koki.feature.assets.AssetsController;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.feature.base.ExpandedAppBarLayout;
 import io.github.kdetard.koki.feature.base.NavigationProvider;
 import io.github.kdetard.koki.feature.home.HomeController;
+import io.github.kdetard.koki.feature.monitoring.MonitoringController;
 import io.github.kdetard.koki.feature.onboard.OnboardController;
 import io.github.kdetard.koki.feature.onboard.OnboardEvent;
+import io.github.kdetard.koki.feature.settings.SettingsController;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import timber.log.Timber;
@@ -78,6 +83,27 @@ public class MainActivity extends AppCompatActivity implements NavigationProvide
                 })
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getLifecycle())))
                 .subscribe();
+
+        getNavBar().setOnItemSelectedListener(item -> {
+            final int itemId = item.getItemId();
+            Controller controller = null;
+            if (itemId == R.id.nav_home) {
+                controller = new HomeController();
+            } else if (itemId == R.id.nav_assets) {
+                controller = new AssetsController();
+            } else if (itemId == R.id.nav_monitoring) {
+                controller = new MonitoringController();
+            } else if (itemId == R.id.nav_settings) {
+                controller = new SettingsController();
+            }
+
+            if (controller != null) {
+                router.setRoot(RouterTransaction.with(controller));
+                return true;
+            }
+
+            return false;
+        });
     }
 
     public View getRoot() { return binding.getRoot(); }
