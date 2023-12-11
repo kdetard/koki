@@ -16,9 +16,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jakewharton.rxbinding4.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding4.widget.RxTextView;
-import com.patrykandpatrick.vico.core.axis.AxisPosition;
-import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter;
-import com.patrykandpatrick.vico.core.chart.values.ChartValues;
 import com.patrykandpatrick.vico.core.entry.FloatEntry;
 
 import java.text.SimpleDateFormat;
@@ -135,14 +132,6 @@ public class MonitoringController extends BaseController {
                     Toast.makeText(view.getContext(), String.format("An error occurred %s", throwable.getMessage()), Toast.LENGTH_LONG).show())
             .onErrorComplete()
             .doOnNext(datapoints -> {
-                var horizontalAxisFormatter = new AxisValueFormatter<AxisPosition.Horizontal>() {
-                    @NonNull
-                    @Override
-                    public CharSequence formatValue(float v, @NonNull ChartValues _chartValues) {
-                        return chartTimeFormat.format(new Date((long) v));
-                    }
-                };
-
                 binding.monitorChart.setModel(
                         entryModelOf(datapoints.stream()
                                 .map(d -> new FloatEntry(d.timestamp(), d.value()))
@@ -162,6 +151,7 @@ public class MonitoringController extends BaseController {
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
         datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
+        datePicker = null;
     }
 
     @Override
