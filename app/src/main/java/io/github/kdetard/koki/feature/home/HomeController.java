@@ -5,6 +5,7 @@ import static autodispose2.AutoDispose.autoDisposable;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.datastore.rxjava3.RxDataStore;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import dagger.hilt.EntryPoint;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
+import dev.chrisbanes.insetter.Insetter;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.aqicn.AqicnService;
@@ -22,6 +24,7 @@ import io.github.kdetard.koki.databinding.ControllerHomeBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.openmeteo.OpenMeteoService;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class HomeController extends BaseController {
     @EntryPoint
@@ -34,6 +37,8 @@ public class HomeController extends BaseController {
 
     ControllerHomeBinding binding;
     HomeEntryPoint entryPoint;
+    Disposable meteoDisposable;
+    Disposable aqicnDisposable;
 
     public HomeController() {
         super(R.layout.controller_home);
@@ -43,7 +48,28 @@ public class HomeController extends BaseController {
     public void onViewCreated(View view) {
         super.onViewCreated(view);
         entryPoint = EntryPointAccessors.fromApplication(Objects.requireNonNull(getApplicationContext()), HomeEntryPoint.class);
+
         binding = ControllerHomeBinding.bind(view);
+
+        invalidate();
+
+        Insetter.builder()
+                .padding(WindowInsetsCompat.Type.statusBars())
+                .applyToView(binding.homeAppbar.homeAppbarContainer);
+
+        binding.homeSwipeRefresh.setOnRefreshListener(this::invalidate);
+    }
+
+    private void invalidate() {
+        if (aqicnDisposable != null) {
+            aqicnDisposable.dispose();
+            aqicnDisposable = null;
+        }
+
+        if (meteoDisposable != null) {
+            meteoDisposable.dispose();
+            meteoDisposable = null;
+        }
 
         binding.homeAppbar.homeGreeting.setText("Hello, user"/* + entryPoint.settings().data().map(Settings::getUsername).blockingGet() + "!""*/);
         binding.homeAppbar.homeWeekday.setText(LocalDate.now().getDayOfWeek().name());
@@ -63,18 +89,20 @@ public class HomeController extends BaseController {
         binding.homeHumidityCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_humidity_card);
         binding.homeHumidityCard.itemIndexDescription.setText("...");
 
-        entryPoint.settings()
+        aqicnDisposable = entryPoint.settings()
                 .data()
                 .map(Settings::getAqicnToken)
                 .map(token -> token == null || token.isEmpty() ? "667e41e2d287e249d41093d8c589f5d2184cc458" : token)
                 .flatMapSingle(token -> entryPoint.aqicnService().fromCityOrStationId("A37081", token))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(_r -> binding.homeSwipeRefresh.setRefreshing(false))
                 .doOnNext(response -> binding.homeAqCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "Current index is %d", (int) response.data().aqi())))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
-        entryPoint.openMeteoService().getWeather()
+        meteoDisposable = entryPoint.openMeteoService().getWeather()
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(_r -> binding.homeSwipeRefresh.setRefreshing(false))
                 .doOnSuccess(response -> {
                     binding.homeAppbar.homeTemperatureIndex.setText(String.format(Locale.getDefault(), "%.1f%s", response.current().temperature2m(), response.currentUnits().temperature2m()));
                     binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), "Feels like %.1f%s", response.current().apparentTemperature(), response.currentUnits().apparentTemperature()));

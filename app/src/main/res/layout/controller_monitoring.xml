@@ -1,13 +1,12 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/monitor_selection_field"
@@ -91,18 +90,19 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-
         <com.patrykandpatrick.vico.views.chart.ChartView
             android:id="@+id/monitor_chart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:chart="line"
             android:paddingVertical="@dimen/padding_16"
             app:layout_constraintTop_toBottomOf="@id/monitor_selection_field"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:chart="line"
+            app:showStartAxis="true"
+            app:showBottomAxis="true"
             />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

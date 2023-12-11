@@ -8,9 +8,9 @@ import io.github.kdetard.koki.R;
 
 public enum WeatherAttributes {
     HUMIDITY(R.string.humidity_with_unit, "humidity"),
-    RAIN(R.string.rain_with_unit, "rain"),
+    RAIN(R.string.rain_with_unit, "rainfall"),
     TEMPERATURE(R.string.temperature_with_unit, "temperature"),
-    WIND_SPEED(R.string.wind_speed_with_unit, "wind_speed");
+    WIND_SPEED(R.string.wind_speed_with_unit, "windSpeed");
 
     private final int autoCompletionResId;
     @NonNull
@@ -25,4 +25,7 @@ public enum WeatherAttributes {
     public String getText(final Context context) {
         return context.getString(autoCompletionResId);
     }
+
+    @NonNull
+    public String getOpenRemoteString() { return openRemoteString; }
 }

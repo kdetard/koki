@@ -4,5 +4,5 @@ import com.squareup.moshi.Json;
 
 public record Datapoint(
     @Json(name = "x") long timestamp,
-    @Json(name = "y") double value
+    @Json(name = "y") float value
 ) {}

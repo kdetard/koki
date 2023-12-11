@@ -23,4 +23,14 @@ public enum TimeFrameOptions {
     public String getText(final Context context) {
         return context.getString(resId);
     }
+
+    public long toMillis() {
+        return switch (this) {
+            case HOUR -> 60 * 60;
+            case DAY -> 24 * TimeFrameOptions.HOUR.toMillis();
+            case WEEK -> 7 * TimeFrameOptions.DAY.toMillis();
+            case MONTH -> 31 * TimeFrameOptions.WEEK.toMillis();
+            case YEAR -> 365 * TimeFrameOptions.MONTH.toMillis();
+        };
+    }
 }
