@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="map_base_url" translatable="false">https://api.mapbox.com</string>
+    <string name="map_style_streets_light" translatable="false">https://api.maptiler.com/maps/streets-v2/style.json</string>
+    <string name="map_style_streets_dark" translatable="false">https://api.maptiler.com/maps/streets-v2-dark/style.json</string>
+    <string name="map_style_satellite" translatable="false">https://api.maptiler.com/maps/satellite/style.json</string>
+</resources>

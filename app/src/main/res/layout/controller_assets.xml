@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+        <!--<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>-->
+
+    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+        android:id="@+id/assets_overview_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <ImageView
+            android:id="@+id/back_shadow"
+            android:layout_width="6dp"
+            android:alpha="0.25"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            android:src="@drawable/shape_gradient_start_shadow"
+            android:importantForAccessibility="no" />
+
+    </com.bluelinelabs.conductor.ChangeHandlerFrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

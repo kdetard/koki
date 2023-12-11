@@ -19,8 +19,6 @@ import io.github.kdetard.koki.datastore.SettingsSerializer;
 import io.github.kdetard.koki.feature.onboard.OnboardEvent;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Single;
-import timber.log.Timber;
 
 @Module
 @InstallIn(SingletonComponent.class)
@@ -51,9 +49,9 @@ public class AppModule {
             final SettingsSerializer settingsSerializer
     ) {
         return new RxDataStoreBuilder<>(
-                context,
-                "settings.pb",
-                settingsSerializer
+            context,
+            "settings.pb",
+            settingsSerializer
         ).build();
     }
 }

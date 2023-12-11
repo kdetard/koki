@@ -5,11 +5,15 @@ import java.util.List;
 import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
 import io.github.kdetard.koki.openremote.models.Dashboard;
+import io.github.kdetard.koki.openremote.models.Datapoint;
+import io.github.kdetard.koki.openremote.models.DatapointQuery;
 import io.github.kdetard.koki.openremote.models.Realm;
 import io.reactivex.rxjava3.core.Single;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface OpenRemoteService {
     @POST("/api/master/asset/query")
@@ -24,4 +28,11 @@ public interface OpenRemoteService {
 
     @GET("/realm/accessible")
     Single<List<Realm>> getRealms();
+
+    @POST("/api/master/asset/datapoint/{assetId}/attribute/{attributeName}")
+    Single<List<Datapoint>> getDatapoint(
+        @Path("assetId") String assetId,
+        @Path("attributeName") String attributeName,
+        @Body DatapointQuery body
+    );
 }

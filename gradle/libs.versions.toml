@@ -29,6 +29,7 @@ jsoup = "1.17.1"
 junit = "4.13.2"
 leakcanary = "2.12"
 maplibre = "10.2.0"
+maplibre-android-plugin = "2.0.2"
 material = "1.10.0"
 mmkv = "1.3.2"
 moshi = "1.15.0"
@@ -44,6 +45,7 @@ rxdogtag = "2.0.2"
 rxjava = "3.1.8"
 #noinspection GradleDependency
 timber = "4.7.1"
+vico = "1.13.1"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -74,15 +76,18 @@ conductor-androidx-transition = { group = "com.bluelinelabs", name = "conductor-
 conductor-viewpager2 = { group = "com.bluelinelabs", name = "conductor-viewpager2", version.ref = "conductor" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 fastadapter = { group = "com.mikepenz", name = "fastadapter", version.ref = "fastadapter" }
-fastadapter-extensions-expandable = { group = "com.mikepenz", name = "fastadapter-extensions-expandable", version.ref = "fastadapter" }
 fastadapter-extensions-binding = { group = "com.mikepenz", name = "fastadapter-extensions-binding", version.ref = "fastadapter" }
+fastadapter-extensions-expandable = { group = "com.mikepenz", name = "fastadapter-extensions-expandable", version.ref = "fastadapter" }
+fastadapter-extensions-ui = { group = "com.mikepenz", name = "fastadapter-extensions-ui", version.ref = "fastadapter" }
+fastadapter-extensions-utils = { group = "com.mikepenz", name = "fastadapter-extensions-utils", version.ref = "fastadapter" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 insetter = { group = "dev.chrisbanes.insetter", name = "insetter", version.ref = "insetter" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
-maplibre = { group = "org.maplibre.gl", name = "android-sdk", version.ref = "maplibre" }
+maplibre-android-sdk = { group = "org.maplibre.gl", name = "android-sdk", version.ref = "maplibre" }
+maplibre-android-plugin-annotation-v9 = { group = "org.maplibre.gl", name = "android-plugin-annotation-v9", version.ref = "maplibre-android-plugin" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
@@ -102,6 +107,10 @@ rxdogtag = { group = "com.uber.rxdogtag2", name = "rxdogtag", version.ref = "rxd
 rxdogtag-autodispose = { group = "com.uber.rxdogtag2", name = "rxdogtag-autodispose", version.ref = "rxdogtag" }
 rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+# Houses the core logic for charts and other elements. Included in all other modules.
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+# For the view system.
+vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref = "vico" }
 
 [plugins]
 application = { id = "com.android.application", version.ref = "agp" }

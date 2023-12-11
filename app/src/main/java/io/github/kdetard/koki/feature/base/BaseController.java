@@ -17,9 +17,13 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import autodispose2.lifecycle.LifecycleScopeProvider;
 import dev.chrisbanes.insetter.Insetter;
-import io.github.kdetard.koki.utils.InsetUtils;
+import io.github.kdetard.koki.controller.ControllerEvent;
+import io.github.kdetard.koki.controller.ControllerScopeProvider;
+import io.github.kdetard.koki.controller.ControllerUtils;
+import io.github.kdetard.koki.controller.OnConfigurationChangeListener;
+import io.github.kdetard.koki.inset.InsetUtils;
 
-public abstract class BaseController extends Controller implements NavigationProvider, OnConfigurationListener {
+public abstract class BaseController extends Controller implements ActivityLayoutProvider, OnConfigurationChangeListener {
     private final int layoutRes;
 
     public BaseController(int layoutRes) {
@@ -46,7 +50,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     public LifecycleScopeProvider<ControllerEvent> getScopeProvider() { return ControllerScopeProvider.from(this); }
 
     public View getRoot() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getRoot();
         }
@@ -54,7 +58,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public Toolbar getToolbar() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getToolbar();
         }
@@ -62,7 +66,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public ExpandedAppBarLayout getAppBarLayout() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getAppBarLayout();
         }
@@ -70,7 +74,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public NavigationBarView getNavBar() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getNavBar();
         }

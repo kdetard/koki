@@ -5,32 +5,31 @@ import static autodispose2.AutoDispose.autoDisposable;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.datastore.rxjava3.RxDataStore;
 
+import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import dagger.hilt.EntryPoint;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
 import io.github.kdetard.koki.R;
+import io.github.kdetard.koki.Settings;
+import io.github.kdetard.koki.aqicn.AqicnService;
 import io.github.kdetard.koki.databinding.ControllerHomeBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
-import io.github.kdetard.koki.openremote.OpenRemoteService;
-import io.github.kdetard.koki.openremote.models.Asset;
-import io.github.kdetard.koki.openremote.models.ConsoleAsset;
-import io.github.kdetard.koki.openremote.models.GroupAsset;
-import io.github.kdetard.koki.openremote.models.HTTPAgentAsset;
-import io.github.kdetard.koki.openremote.models.LightAsset;
-import io.github.kdetard.koki.openremote.models.MQTTAgentAsset;
-import io.github.kdetard.koki.openremote.models.WeatherAsset;
-import timber.log.Timber;
+import io.github.kdetard.koki.openmeteo.OpenMeteoService;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 public class HomeController extends BaseController {
     @EntryPoint
     @InstallIn(SingletonComponent.class)
     interface HomeEntryPoint {
-        OpenRemoteService service();
+        RxDataStore<Settings> settings();
+        AqicnService aqicnService();
+        OpenMeteoService openMeteoService();
     }
 
     ControllerHomeBinding binding;
@@ -46,37 +45,41 @@ public class HomeController extends BaseController {
         entryPoint = EntryPointAccessors.fromApplication(Objects.requireNonNull(getApplicationContext()), HomeEntryPoint.class);
         binding = ControllerHomeBinding.bind(view);
 
-        entryPoint.service().getAssets()
-                .map(assets -> assets.stream()
-                        .filter(asset -> asset.attributes().location() != null && asset.attributes().location().value() != null)
-                        .collect(Collectors.toList()))
-                .doOnSuccess(assets -> {
-                    Timber.d("Assets: %s", assets.size());
-                    for (var asset : assets) {
-                        Timber.d("Asset id: %s", asset.id());
-                        Timber.d("Asset type: %s", asset.type());
-                        Timber.d("Asset location: %s", asset.attributes().location().value());
-                        Timber.d("Asset name: %s", asset.name());
-                    }
-                })
+        binding.homeAppbar.homeGreeting.setText("Hello, user"/* + entryPoint.settings().data().map(Settings::getUsername).blockingGet() + "!""*/);
+        binding.homeAppbar.homeWeekday.setText(LocalDate.now().getDayOfWeek().name());
+
+        binding.homeAqCard.itemChartTitle.setText(R.string.air_quality_title);
+        binding.homeAqCard.itemChartIcon.setImageResource(R.drawable.ic_aq_24dp);
+        binding.homeAqCard.itemChartInfo.setBackgroundResource(R.drawable.bg_base_card);
+        binding.homeAqCard.itemIndexDescription.setText("...");
+
+        binding.homeRainCard.itemIndexTitle.setText(R.string.rain_fall_title);
+        binding.homeRainCard.itemIndexIcon.setImageResource(R.drawable.ic_rainy_24dp);
+        binding.homeRainCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
+        binding.homeRainCard.itemIndexDescription.setText("...");
+
+        binding.homeHumidityCard.itemIndexTitle.setText(R.string.humidity_title);
+        binding.homeHumidityCard.itemIndexIcon.setImageResource(R.drawable.ic_humidity_percentage_24dp);
+        binding.homeHumidityCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_humidity_card);
+        binding.homeHumidityCard.itemIndexDescription.setText("...");
+
+        entryPoint.settings()
+                .data()
+                .map(Settings::getAqicnToken)
+                .map(token -> token == null || token.isEmpty() ? "667e41e2d287e249d41093d8c589f5d2184cc458" : token)
+                .flatMapSingle(token -> entryPoint.aqicnService().fromCityOrStationId("A37081", token))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(response -> binding.homeAqCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "Current index is %d", (int) response.data().aqi())))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
-        entryPoint.service().getDashboards()
-                .doOnSuccess(dashboards -> {
-                    Timber.d("Dashboards: %s", dashboards.size());
-                    for (var dashboard : dashboards) {
-                        Timber.d("Dashboard name: %s", dashboard.displayName());
-                        if (dashboard.template().widgets() != null) {
-                            dashboard.template().widgets()
-                                    .stream()
-                                    .findFirst()
-                                    .map(widget -> {
-                                        Timber.d("Widget type: %s", widget.type());
-                                        return widget;
-                                    });
-                        }
-                    }
+        entryPoint.openMeteoService().getWeather()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(response -> {
+                    binding.homeAppbar.homeTemperatureIndex.setText(String.format(Locale.getDefault(), "%.1f%s", response.current().temperature2m(), response.currentUnits().temperature2m()));
+                    binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), "Feels like %.1f%s", response.current().apparentTemperature(), response.currentUnits().apparentTemperature()));
+                    binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "%d%s expected in the next %d minutes", (int) response.current().rain(), response.currentUnits().rain(), response.current().interval() / 60));
+                    binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "The dew point is %d%s right now", (int) response.current().relativeHumidity2m(), response.currentUnits().relativeHumidity2m()));
                 })
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();

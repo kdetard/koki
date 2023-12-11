@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    app:cardElevation="1dp"
+    app:strokeWidth="2dp"
+    app:cardCornerRadius="23dp"
+    >
+
+    <com.patrykandpatrick.vico.views.chart.ChartView
+        android:id="@+id/item_chart_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:chart="line"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_chart_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient_top_shadow"
+        >
+
+        <ImageView
+            android:id="@+id/item_chart_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="5dp"
+            android:background="@drawable/bg_round_icon"
+            android:contentDescription="@string/item_chart_overview"
+            android:layout_marginTop="@dimen/padding_16"
+            android:layout_marginEnd="@dimen/padding_16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="?attr/colorOnPrimary"
+            tools:src="@drawable/ic_aq_24dp"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.Material3.HeadlineSmall"
+            android:id="@+id/item_chart_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginHorizontal="@dimen/padding_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/item_index_description"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            tools:text="@string/air_quality_title"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.Material3.BodyMedium"
+            android:id="@+id/item_index_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="@dimen/padding_16"
+            android:layout_marginHorizontal="@dimen/padding_16"
+            app:layout_constraintStart_toStartOf="@id/item_chart_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            tools:text="@string/level_of_air"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

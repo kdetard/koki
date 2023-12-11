@@ -1,6 +1,10 @@
 package io.github.kdetard.koki.openremote.models;
 
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+
 import java.util.List;
+
+import io.github.kdetard.koki.map.SymbolUtils;
 
 public record MQTTAgentAsset(
     String id,
@@ -33,5 +37,16 @@ public record MQTTAgentAsset(
         Json lastWillUpload,
         GeoJsonPoint location,
         BooleanAttribute secureMode
-    ) implements AssetAttribute {}
+    ) implements AssetAttribute {
+        @Override
+        public SymbolOptions toSymbol() {
+            return location().value().toSymbol()
+                    .withIconImage(SymbolUtils.MQTT_SYMBOL);
+        }
+
+        @Override
+        public Integer toIconResource() {
+            return SymbolUtils.ICONS.get(SymbolUtils.MQTT_SYMBOL);
+        }
+    }
 }

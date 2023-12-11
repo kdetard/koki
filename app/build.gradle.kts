@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.application)
     alias(libs.plugins.hilt.android)
@@ -21,6 +23,7 @@ android {
         multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "MAPTILER_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("MAPTILER_API_KEY")}\"")
     }
 
     buildTypes {
@@ -49,6 +52,7 @@ android {
         aidl = false
         renderScript = false
         shaders = false
+        buildConfig = true
     }
 
     afterEvaluate {
@@ -88,10 +92,20 @@ dependencies {
     implementation(libs.fastadapter)
     implementation(libs.fastadapter.extensions.binding)
     implementation(libs.fastadapter.extensions.expandable)
+    implementation(libs.fastadapter.extensions.ui)
+    implementation(libs.fastadapter.extensions.utils)
     implementation(libs.hilt.android)
     implementation(libs.insetter)
     implementation(libs.jsoup)
-    implementation(libs.maplibre)
+
+    implementation(libs.maplibre.android.sdk) {
+        exclude(libs.timber.get().group, libs.timber.get().name)
+    }
+
+    implementation(libs.maplibre.android.plugin.annotation.v9) {
+        exclude(libs.timber.get().group, libs.timber.get().name)
+    }
+
     implementation(libs.material)
     implementation(libs.mmkv)
     implementation(libs.moshi)
@@ -110,6 +124,8 @@ dependencies {
     implementation(libs.rxbinding.recyclerview)
     implementation(libs.rxjava)
     implementation(libs.timber)
+    implementation(libs.vico.core)
+    implementation(libs.vico.views)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

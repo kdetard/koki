@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="@drawable/bg_appbar_home"
+        android:contentDescription="@string/home_appbar_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        app:cardBackgroundColor ="#66FFFFFF"
+        app:cardElevation="8dp"
+        app:strokeColor="#99FFFFFF"
+        app:strokeWidth="3dp"
+        app:shapeAppearance="@style/cartview"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/padding_8"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/home_greeting"
+                style="@style/TextAppearance.Material3.TitleLarge"
+                android:textStyle="bold"
+                android:textColor="#522D6A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_8"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@string/hi_title"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Material3.HeadlineMedium"
+                android:id="@+id/home_weekday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                app:layout_constraintTop_toBottomOf="@id/home_greeting"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/home_weather_icon"
+                tools:text="@string/day_title"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Koki.IndexMedium"
+                android:id="@+id/home_temperature_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                app:layout_constraintTop_toBottomOf="@id/home_weekday"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/home_weather_icon"
+                tools:text="@string/temperature_txt"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:id="@+id/home_temperature_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                app:layout_constraintTop_toBottomOf="@id/home_temperature_index"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/home_weather_icon"
+                tools:text="@string/Temperature_range"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/home_weather_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_rain"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

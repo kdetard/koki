@@ -2,6 +2,7 @@ package io.github.kdetard.koki.feature.settings;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import io.github.kdetard.koki.R;
@@ -13,6 +14,11 @@ public class SettingsController extends BaseController {
     @Override
     public void onViewCreated(View view) {
         super.onViewCreated(view);
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
     }
 
     @Override

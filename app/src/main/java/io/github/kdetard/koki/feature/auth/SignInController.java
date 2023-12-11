@@ -23,7 +23,6 @@ import dagger.hilt.components.SingletonComponent;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.Settings;
 import io.github.kdetard.koki.databinding.ControllerSignInBinding;
-import io.github.kdetard.koki.databinding.ControllerSignUpBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
@@ -31,8 +30,8 @@ import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
-import io.github.kdetard.koki.utils.FormUtils;
-import io.github.kdetard.koki.utils.SignInFormResult;
+import io.github.kdetard.koki.form.FormUtils;
+import io.github.kdetard.koki.form.SignInFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -122,7 +121,6 @@ public class SignInController extends BaseController {
                 .doOnNext(v -> {
                     binding.signInControllerLoginBtn.setEnabled(false);
                     binding.signInControllerLoginBtn.setText("Logging in...");
-                    binding.signInControllerKeycloakResponse.setText("");
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 

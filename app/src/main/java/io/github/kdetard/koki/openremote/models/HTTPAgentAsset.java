@@ -1,7 +1,10 @@
 package io.github.kdetard.koki.openremote.models;
 
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+
 import java.util.List;
-import java.util.Map;
+
+import io.github.kdetard.koki.map.SymbolUtils;
 
 public record HTTPAgentAsset(
     String id,
@@ -30,7 +33,18 @@ public record HTTPAgentAsset(
         BooleanAttribute agentDisabled,
         ConnectionStatus agentStatus,
         PositiveInteger pollingMillis
-    ) implements AssetAttribute {}
+    ) implements AssetAttribute {
+        @Override
+        public SymbolOptions toSymbol() {
+            return location().value().toSymbol()
+                .withIconImage(SymbolUtils.HTTP_SYMBOL);
+        }
+
+        @Override
+        public Integer toIconResource() {
+            return SymbolUtils.ICONS.get(SymbolUtils.HTTP_SYMBOL);
+        }
+    }
 
     public record DataMetadata(
         Boolean readOnly,

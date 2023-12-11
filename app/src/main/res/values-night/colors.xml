@@ -2,6 +2,8 @@
 <resources>
     <color name="ic_foreground_gradient_start">#FF9B416B</color>
     <color name="ic_foreground_gradient_stop">#FF0A4277</color>
+    <color name="appbar_home_gradient_start">#8E24AA</color>
+    <color name="appbar_home_gradient_stop">#880E4F</color>
 
     <color name="window_background">#000000</color>
     <color name="primary">#1976D2</color>

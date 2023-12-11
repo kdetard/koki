@@ -2,7 +2,6 @@ package io.github.kdetard.koki.feature.auth;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
-import android.os.Build;
 import android.view.View;
 import android.view.autofill.AutofillManager;
 
@@ -31,8 +30,8 @@ import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
-import io.github.kdetard.koki.utils.FormUtils;
-import io.github.kdetard.koki.utils.SignUpFormResult;
+import io.github.kdetard.koki.form.FormUtils;
+import io.github.kdetard.koki.form.SignUpFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -150,7 +149,6 @@ public class SignUpController extends BaseController {
                 .doOnNext(v -> {
                     binding.signUpControllerSignupBtn.setEnabled(false);
                     binding.signUpControllerSignupBtn.setText("Signing up...");
-                    binding.signUpControllerKeycloakResponse.setText("");
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -199,9 +197,7 @@ public class SignUpController extends BaseController {
                     entryPoint.settings().updateDataAsync(s ->
                             Single.just(s.toBuilder().setKeycloakTokenJson(keycloakToken).build()));
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        view.getContext().getSystemService(AutofillManager.class).commit();
-                    }
+                    view.getContext().getSystemService(AutofillManager.class).commit();
                 })
 
                 .to(autoDisposable(getScopeProvider()))
