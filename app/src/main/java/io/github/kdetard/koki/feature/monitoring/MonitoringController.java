@@ -5,9 +5,9 @@ import static autodispose2.AutoDispose.autoDisposable;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.jakewharton.rxbinding4.view.RxView;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,6 +16,7 @@ import dagger.hilt.EntryPoint;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
+import dev.chrisbanes.insetter.Insetter;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.databinding.ControllerMonitoringBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
@@ -43,6 +44,11 @@ public class MonitoringController extends BaseController {
         entryPoint = EntryPointAccessors.fromApplication(Objects.requireNonNull(getApplicationContext()), MonitoringEntryPoint.class);
 
         binding = ControllerMonitoringBinding.bind(view);
+
+        Insetter.builder()
+                .padding(WindowInsetsCompat.Type.statusBars())
+                .applyToView(binding.getRoot());
+
         datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select ending date")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
