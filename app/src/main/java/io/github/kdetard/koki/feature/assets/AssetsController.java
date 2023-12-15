@@ -25,6 +25,7 @@ import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.databinding.ControllerAssetsBinding;
 import io.github.kdetard.koki.feature.map.MapController;
 import io.github.kdetard.koki.openremote.OpenRemoteService;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 public class AssetsController extends MapController {
     @EntryPoint
@@ -67,6 +68,13 @@ public class AssetsController extends MapController {
                 .build());
 
         entryPoint.service().getAssets()
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorComplete(throwable -> {
+                    childRouter.pushController(RouterTransaction.with(new AssetsUnavailableController())
+                            .pushChangeHandler(new FadeChangeHandler())
+                            .popChangeHandler(new FadeChangeHandler()));
+                    return true;
+                })
                 .doOnSuccess(assets -> {
                     var locationAssets = assets.stream()
                             .filter(asset -> asset.attributes().location() != null && asset.attributes().location().value() != null);
