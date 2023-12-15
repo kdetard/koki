@@ -123,4 +123,6 @@
     <string name="rain_with_unit">Rainfall (mm)</string>
     <string name="temperature_with_unit">Temperature (°C)</string>
     <string name="wind_speed_with_unit">Wind speed (km/h)</string>
+    <string name="reset_password_action">Send me a reset link</string>
+    <string name="assets_unavailable">Assets are unavailable right now</string>
 </resources>

@@ -102,6 +102,10 @@ public class HomeController extends BaseController {
 
         meteoDisposable = entryPoint.openMeteoService().getWeather()
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorComplete(throwable -> {
+                    // handleError(getApplicationContext(), throwable);
+                    return true;
+                })
                 .doOnSuccess(_r -> binding.homeSwipeRefresh.setRefreshing(false))
                 .doOnSuccess(response -> {
                     binding.homeAppbar.homeTemperatureIndex.setText(String.format(Locale.getDefault(), "%.1f%s", response.current().temperature2m(), response.currentUnits().temperature2m()));

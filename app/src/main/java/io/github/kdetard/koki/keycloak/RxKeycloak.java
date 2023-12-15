@@ -10,7 +10,7 @@ import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.reactivex.rxjava3.core.Single;
 import timber.log.Timber;
 
-public class RxKeycloak {
+public abstract class RxKeycloak {
     public static Single<AuthorizationServiceConfiguration> fetchConfig(final KeycloakConfig config) {
         return Single.create(emitter ->
                 AuthorizationServiceConfiguration.fetchFromUrl(

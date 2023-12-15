@@ -123,15 +123,15 @@ public class SignUpController extends BaseController {
                 )
                 .doOnNext(result -> {
                     final var confirmPasswordTxt = confirmPasswordLayout.getEditText().getText().toString();
-                    final boolean validSignUp = result.getUsername().isSuccess()
-                            && result.getEmail().isSuccess()
-                            && result.getPassword().isSuccess()
-                            && confirmPasswordTxt.equals(result.getPassword().getText());
+                    final boolean validSignUp = result.username().isSuccess()
+                            && result.email().isSuccess()
+                            && result.password().isSuccess()
+                            && confirmPasswordTxt.equals(result.password().getText());
 
                     if (validSignUp) {
-                        mUsername = result.getUsername().getText();
-                        mEmail = result.getEmail().getText();
-                        mPassword = result.getPassword().getText();
+                        mUsername = result.username().getText();
+                        mEmail = result.email().getText();
+                        mPassword = result.password().getText();
                         mConfirmPassword = confirmPasswordTxt;
                     }
 

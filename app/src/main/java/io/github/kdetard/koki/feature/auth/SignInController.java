@@ -3,7 +3,6 @@ package io.github.kdetard.koki.feature.auth;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.datastore.rxjava3.RxDataStore;
 
@@ -78,7 +77,7 @@ public class SignInController extends BaseController {
 
         RxView
                 .clicks(binding.signInControllerResetPasswordBtn)
-                .doOnNext(v -> Toast.makeText(getApplicationContext(), "Function not implemented", Toast.LENGTH_SHORT).show())
+                .doOnNext(v -> getRouter().pushController(RouterTransaction.with(new ResetPasswordController())))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
@@ -102,11 +101,11 @@ public class SignInController extends BaseController {
                         SignInFormResult<TextInputLayout>::new
                 )
                 .doOnNext(result -> {
-                    final boolean validSignIn = result.getUserName().isSuccess() && (result.getPassword().isSuccess() || result.getPassword().isStrict());
+                    final boolean validSignIn = result.userName().isSuccess() && (result.password().isSuccess() || result.password().isStrict());
                     binding.signInControllerLoginBtn.setEnabled(validSignIn);
                     if (validSignIn) {
-                        mUsername = result.getUserName().getText();
-                        mPassword = result.getPassword().getText();
+                        mUsername = result.userName().getText();
+                        mPassword = result.password().getText();
                     }
                 })
                 .to(autoDisposable(getScopeProvider()))

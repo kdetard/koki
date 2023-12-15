@@ -100,8 +100,8 @@ public abstract class MapController extends BaseController implements OnLowMemor
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onDestroyView(@NonNull View view) {
+        super.onDestroyView(view);
         getMapView().onDestroy();
     }
 

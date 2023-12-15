@@ -9,7 +9,8 @@ import org.jsoup.Jsoup;
 import java.io.IOException;
 import java.util.Objects;
 
-import io.github.kdetard.koki.feature.auth.SignUpResult;
+import io.github.kdetard.koki.keycloak.models.ResetPasswordResult;
+import io.github.kdetard.koki.keycloak.models.SignUpResult;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.models.KeycloakGrantType;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
@@ -61,7 +62,7 @@ public class RxRestKeycloak extends RxKeycloak {
                 ))
 
                 // Extract signup link without session code from sign in form
-                .flatMap(r -> extractLinkFromElement(config, r, "//a", "href"))
+                .flatMap(r -> extractLinkFromElement(config, r, "(//a)[1]", "href"))
 
                 .doOnSuccess(r -> Timber.d("Sign up link (no session code): %s", r))
 
@@ -90,6 +91,7 @@ public class RxRestKeycloak extends RxKeycloak {
                     }
                     else {
                         final var body = r.body().string();
+                        r.body().close();
                         if (body.isEmpty()) {
                             result = SignUpResult.EMPTY;
                         }
@@ -110,6 +112,75 @@ public class RxRestKeycloak extends RxKeycloak {
                         }
                         if (body.contains("UiOt - Map")) {
                             result = SignUpResult.SUCCESS;
+                        }
+                    }
+
+                    return Single.just(result);
+                });
+    }
+
+    public static @NonNull Single<ResetPasswordResult> resetPassword(
+            final KeycloakApiService service,
+            final KeycloakConfig config,
+            final String usernameOrEmail
+    ) {
+        return buildRequest(config)
+
+                // Step on sign in page
+                .flatMap(authRequest ->
+                        service.stepOnSignInPage(
+                                // uiot.ixxc.dev/auth/..../auth?client_id=...
+                                Objects.requireNonNull(authRequest.configuration.authorizationEndpoint).toString(),
+                                config.client,
+                                config.redirectUri,
+                                "code"
+                        ))
+
+                // Extract password reset link without session code from sign in form
+                .flatMap(r -> extractLinkFromElement(config, r, "(//a)[2]", "href"))
+
+                .doOnSuccess(r -> Timber.d("Reset password link (no session code): %s", r))
+
+                // Step on signup page
+                .flatMap(service::stepOnSignUpPage)
+
+                // Extract password reset link with session code from password reset form
+                .flatMap(r -> extractLinkFromElement(config, r, "//form", "action"))
+
+                .doOnSuccess(r -> Timber.d("Reset password link (with session code): %s", r))
+
+                // Reset password from the password reset link with session code above
+                .flatMap(r -> service.resetPassword(r, usernameOrEmail, ""))
+
+                .onErrorResumeNext(e -> {
+                    Timber.w(e, "Error occurred while resetting password");
+                    return Single.error(e);
+                })
+
+                // check sign up result
+                .flatMap(r -> {
+                    var result = ResetPasswordResult.UNKNOWN;
+
+                    if (r.body() == null) {
+                        result = ResetPasswordResult.NULL;
+                    }
+                    else {
+                        final var body = r.body().string();
+                        r.body().close();
+                        if (body.isEmpty()) {
+                            result = ResetPasswordResult.EMPTY;
+                        }
+                        if (body.contains("Failed to send mail")) {
+                            result = ResetPasswordResult.FAILED_TO_SEND_MAIL;
+                        }
+                        if (body.contains("specify")) {
+                            result = ResetPasswordResult.SPECIFY;
+                        }
+                        if (body.contains("timed out")) {
+                            result = ResetPasswordResult.TIMEOUT;
+                        }
+                        if (body.contains("should receive")) {
+                            result = ResetPasswordResult.SUCCESS;
                         }
                     }
 

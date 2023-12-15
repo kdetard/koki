@@ -1,14 +1,12 @@
-package io.github.kdetard.koki.feature.auth;
+package io.github.kdetard.koki.keycloak.models;
 
 import androidx.annotation.NonNull;
 
-public enum SignUpResult {
+public enum ResetPasswordResult {
     EMPTY("Empty response"),
-    INVALID("Invalid fields"),
+    FAILED_TO_SEND_MAIL("Failed to send mail"),
     SPECIFY("Empty fields"),
     TIMEOUT("Timeout"),
-    EMAIL_EXISTS("Email already exists"),
-    USERNAME_EXISTS("Username already exists"),
     NULL("Null response"),
     UNKNOWN("Unknown error occurred"),
     SUCCESS("Success"),
@@ -16,7 +14,7 @@ public enum SignUpResult {
 
     private final String text;
 
-    SignUpResult(final String text) {
+    ResetPasswordResult(final String text) {
         this.text = text;
     }
 

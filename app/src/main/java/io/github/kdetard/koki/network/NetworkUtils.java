@@ -69,4 +69,20 @@ public class NetworkUtils {
         }
         return result;
     }
+
+    public static void handleError(@NonNull Context context, @NonNull Throwable throwable) {
+        Timber.e(throwable, "Network Error");
+        if (throwable instanceof IOException) {
+            if (!hasNetwork(context)) {
+                // No Internet Connection
+                Timber.e("No Internet Connection");
+            } else {
+                // Other IOException
+                Timber.e("Other IOException");
+            }
+        } else {
+            // Other Throwable
+            Timber.e("Other Throwable");
+        }
+    }
 }
