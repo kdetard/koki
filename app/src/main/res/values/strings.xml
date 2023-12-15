@@ -125,4 +125,8 @@
     <string name="wind_speed_with_unit">Wind speed (km/h)</string>
     <string name="reset_password_action">Send me a reset link</string>
     <string name="assets_unavailable">Assets are unavailable right now</string>
+    <string name="assets_search_hint">Search assets</string>
+    <string name="description">Description</string>
+    <string name="assets_detail_icon">Asset icon</string>
+    <string name="assets_title">Asset title</string>
 </resources>

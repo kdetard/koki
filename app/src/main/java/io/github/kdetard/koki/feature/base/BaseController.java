@@ -9,11 +9,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.ControllerChangeType;
 import com.google.android.material.navigation.NavigationBarView;
+
+import java.util.Objects;
 
 import autodispose2.lifecycle.LifecycleScopeProvider;
 import dev.chrisbanes.insetter.Insetter;
@@ -101,6 +105,10 @@ public abstract class BaseController extends Controller implements ActivityLayou
                 configureMenu(getToolbar());
             }
         }
+    }
+
+    public FragmentManager getSupportFragmentManager() {
+        return ((FragmentActivity) Objects.requireNonNull(getActivity())).getSupportFragmentManager();
     }
 
     public void configureToolbar(Toolbar toolbar) {

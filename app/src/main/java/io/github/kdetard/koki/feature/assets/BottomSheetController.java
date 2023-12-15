@@ -18,7 +18,7 @@ public abstract class BottomSheetController extends BaseController {
         super(layoutRes);
     }
     
-    BottomSheetBehavior<View> behavior;
+    private BottomSheetBehavior<View> behavior;
     boolean isExpanding = false;
 
     public void onViewCreated(View view, View bottomSheet) {

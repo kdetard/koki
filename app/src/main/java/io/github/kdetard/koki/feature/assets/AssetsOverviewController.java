@@ -28,6 +28,8 @@ public class AssetsOverviewController extends BottomSheetController implements O
 
     FastItemAdapter<AssetItem> adapter;
 
+    GridLayoutManager gridLayoutManager;
+
     public AssetsOverviewController() {
         super(R.layout.controller_assets_overview);
         assetsSubject = PublishSubject.create();
@@ -41,7 +43,7 @@ public class AssetsOverviewController extends BottomSheetController implements O
 
         adapter = new FastItemAdapter<>();
 
-        var gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
+        gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
 
         binding.assetsOverviewRecycler.setNestedScrollingEnabled(false);
         binding.assetsOverviewRecycler.setHasFixedSize(true);
@@ -49,7 +51,7 @@ public class AssetsOverviewController extends BottomSheetController implements O
         binding.assetsOverviewRecycler.setAdapter(adapter);
 
         RxView.layoutChanges(binding.assetsOverviewRecycler)
-                .doOnNext(u -> behavior.setMaxHeight(binding.assetsOverviewRecycler.getMeasuredHeight()))
+                .doOnNext(u -> getBehavior().setMaxHeight(binding.assetsOverviewRecycler.getMeasuredHeight()))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 

@@ -70,18 +70,31 @@ public class AssetsController extends MapController {
         entryPoint.service().getAssets()
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorComplete(throwable -> {
-                    childRouter.pushController(RouterTransaction.with(new AssetsUnavailableController())
-                            .pushChangeHandler(new FadeChangeHandler())
-                            .popChangeHandler(new FadeChangeHandler()));
+                    childRouter.pushController(RouterTransaction.with(new AssetsUnavailableController()));
                     return true;
                 })
                 .doOnSuccess(assets -> {
                     var locationAssets = assets.stream()
-                            .filter(asset -> asset.attributes().location() != null && asset.attributes().location().value() != null);
+                            .filter(asset -> asset.attributes().location() != null && asset.attributes().location().value() != null)
+                            .collect(Collectors.toList());
 
-                    var symbols = locationAssets.map(a -> a.attributes().toSymbol());
+                    var symbols = locationAssets.stream().map(a -> a.attributes().toSymbol());
 
                     getSymbolManager().create(symbols.collect(Collectors.toList()));
+
+                    getSymbolManager().addClickListener(symbol -> {
+                        mapboxMap.setCameraPosition(new CameraPosition.Builder()
+                                .target(symbol.getLatLng())
+                                .zoom(17.0)
+                                .tilt(mapboxMap.getCameraPosition().tilt)
+                                .bearing(mapboxMap.getCameraPosition().bearing)
+                                .build());
+
+                        childRouter.pushController(RouterTransaction.with(
+                                new AssetsDetailsController(locationAssets.stream().skip(symbol.getId()).findFirst().orElse(null))));
+
+                        return false;
+                    });
 
                     childRouter.getBackstack()
                             .stream()

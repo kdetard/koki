@@ -45,8 +45,9 @@ public record WeatherAsset(
         }
 
         @Override
-        public Integer toIconResource() {
-            return SymbolUtils.ICONS.get(SymbolUtils.WEATHER_SYMBOL);
-        }
+        public Integer toIconResource() { return SymbolUtils.ICONS.get(SymbolUtils.WEATHER_SYMBOL); }
+
+        @Override
+        public Integer toTintResource() { return SymbolUtils.TINTS.get(SymbolUtils.WEATHER_SYMBOL); }
     }
 }

@@ -41,6 +41,15 @@ public class SymbolUtils {
         entry(MQTT_SYMBOL, R.drawable.ic_rss_feed_24dp)
     );
 
+    public static final Map<String, Integer> TINTS = Map.ofEntries(
+        entry(DEFAULT_SYMBOL, R.color.bgcolor),
+        entry(WEATHER_SYMBOL, R.color.or_weather_symbol),
+        entry(LIGHT_SYMBOL, R.color.or_light_symbol),
+        entry(GROUP_SYMBOL, R.color.or_group_symbol),
+        entry(HTTP_SYMBOL, R.color.or_http_symbol),
+        entry(MQTT_SYMBOL, R.color.or_mqtt_symbol)
+    );
+
     public static Style.Builder toBuilder(Context context) {
         var builder = new Style.Builder();
         for (Map.Entry<String, Integer> entry : SYMBOLS.entrySet()) {

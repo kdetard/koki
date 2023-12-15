@@ -48,5 +48,8 @@ public record MQTTAgentAsset(
         public Integer toIconResource() {
             return SymbolUtils.ICONS.get(SymbolUtils.MQTT_SYMBOL);
         }
+
+        @Override
+        public Integer toTintResource() { return SymbolUtils.TINTS.get(SymbolUtils.MQTT_SYMBOL); }
     }
 }

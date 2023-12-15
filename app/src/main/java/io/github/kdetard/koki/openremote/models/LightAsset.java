@@ -40,6 +40,9 @@ public record LightAsset(
         public Integer toIconResource() {
             return SymbolUtils.ICONS.get(SymbolUtils.LIGHT_SYMBOL);
         }
+
+        @Override
+        public Integer toTintResource() { return SymbolUtils.TINTS.get(SymbolUtils.LIGHT_SYMBOL); }
     }
 
     public record LightAgentLink(

@@ -36,5 +36,8 @@ public record GroupAsset(
         public Integer toIconResource() {
             return SymbolUtils.ICONS.get(SymbolUtils.GROUP_SYMBOL);
         }
+
+        @Override
+        public Integer toTintResource() { return SymbolUtils.TINTS.get(SymbolUtils.GROUP_SYMBOL); }
     }
 }

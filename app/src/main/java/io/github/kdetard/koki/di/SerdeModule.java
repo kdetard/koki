@@ -42,4 +42,10 @@ public class SerdeModule {
     public static JsonAdapter<KeycloakToken> provideKeycloakTokenJsonAdapter(final Moshi moshi) {
         return moshi.adapter(KeycloakToken.class).nullSafe();
     }
+
+    @Provides
+    @Singleton
+    public static JsonAdapter<Object> provideObjectJsonAdapter(final Moshi moshi) {
+        return moshi.adapter(Object.class).nullSafe();
+    }
 }

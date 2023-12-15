@@ -26,7 +26,7 @@ public enum TimeFrameOptions {
 
     public long toMillis() {
         return switch (this) {
-            case HOUR -> 60 * 60;
+            case HOUR -> 60 * 60 * 1000;
             case DAY -> 24 * TimeFrameOptions.HOUR.toMillis();
             case WEEK -> 7 * TimeFrameOptions.DAY.toMillis();
             case MONTH -> 31 * TimeFrameOptions.WEEK.toMillis();

@@ -18,4 +18,8 @@ public sealed interface AssetAttribute permits ConsoleAsset.Attributes, GroupAss
     default Integer toIconResource() {
         return SymbolUtils.ICONS.get(SymbolUtils.DEFAULT_SYMBOL);
     }
+
+    default Integer toTintResource() {
+        return SymbolUtils.TINTS.get(SymbolUtils.DEFAULT_SYMBOL);
+    }
 }

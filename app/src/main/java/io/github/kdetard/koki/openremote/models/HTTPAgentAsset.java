@@ -44,6 +44,9 @@ public record HTTPAgentAsset(
         public Integer toIconResource() {
             return SymbolUtils.ICONS.get(SymbolUtils.HTTP_SYMBOL);
         }
+
+        @Override
+        public Integer toTintResource() { return SymbolUtils.TINTS.get(SymbolUtils.HTTP_SYMBOL); }
     }
 
     public record DataMetadata(

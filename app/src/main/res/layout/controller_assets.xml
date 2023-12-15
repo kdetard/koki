@@ -9,11 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-        <!--<com.google.android.material.bottomsheet.BottomSheetDragHandleView
-            android:id="@+id/drag_handle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>-->
-
     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
         android:id="@+id/assets_overview_container"
         android:layout_width="match_parent"

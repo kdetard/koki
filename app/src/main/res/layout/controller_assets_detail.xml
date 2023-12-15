@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        style="@style/Widget.Material3.BottomSheet"
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:behavior_halfExpandedRatio="0.2"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/padding_16"
+            >
+
+            <ImageView
+                android:id="@+id/assets_detail_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:contentDescription="@string/assets_detail_icon"
+                tools:src="@drawable/ic_partly_cloudy_day_outline_24dp"
+                tools:tint="@color/or_weather_symbol"
+                android:layout_marginVertical="@dimen/padding_8"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Material3.TitleLarge"
+                android:id="@+id/assets_detail_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                tools:text="@string/assets_title"
+                android:layout_marginVertical="@dimen/padding_8"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/assets_detail_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/description"
+                android:layout_marginVertical="@dimen/padding_8"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_title"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <RelativeLayout
+                android:id="@+id/assets_detail_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/padding_16"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/assets_detail_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    />
+
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

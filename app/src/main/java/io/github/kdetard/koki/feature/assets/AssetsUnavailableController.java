@@ -16,10 +16,11 @@ public class AssetsUnavailableController extends BottomSheetController {
     @Override
     public void onViewCreated(View view) {
         binding = ControllerAssetsUnavailableBinding.bind(view);
-        super.onViewCreated(view);
+
+        super.onViewCreated(view, binding.bottomSheet);
+
         RxView.layoutChanges(binding.assetsUnavailableContainer)
-                .skip(1)
-                .doOnNext(u -> behavior.setMaxHeight(binding.assetsUnavailableContainer.getMeasuredHeight()))
+                .doOnNext(u -> getBehavior().setMaxHeight(binding.assetsUnavailableContainer.getMeasuredHeight()))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
     }
