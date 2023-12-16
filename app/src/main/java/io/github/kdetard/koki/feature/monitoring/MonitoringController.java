@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -17,6 +18,7 @@ import com.google.android.material.timepicker.TimeFormat;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jakewharton.rxbinding4.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding4.widget.RxTextView;
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel;
 import com.patrykandpatrick.vico.core.entry.FloatEntry;
 
 import java.text.SimpleDateFormat;
@@ -57,6 +59,7 @@ public class MonitoringController extends BaseController {
     SimpleDateFormat chartTimeFormat;
     long endingDateMillis;
     long timeMillis;
+    MutableLiveData<ChartEntryModel> chartData;
 
     public MonitoringController() { super(R.layout.controller_monitoring); }
 
@@ -85,6 +88,13 @@ public class MonitoringController extends BaseController {
                 .setTitleText("Select hour of day")
                 .build();
 
+        if (chartData == null)
+            chartData = new MutableLiveData<>();
+
+        if (chartData.getValue() != null) {
+            binding.monitorChart.setModel(chartData.getValue());
+        }
+
         timePicker.addOnPositiveButtonClickListener(this::setTime);
         timePicker.addOnCancelListener(this::setDefaultTime);
         timePicker.addOnNegativeButtonClickListener(this::setDefaultTime);
@@ -97,8 +107,10 @@ public class MonitoringController extends BaseController {
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe(unit -> datePicker.show(getSupportFragmentManager() , ""));
 
-        binding.monitorAttribute.setSimpleItems(Arrays.stream(WeatherAttributes.values()).map(a -> a.getText(view.getContext())).toArray(String[]::new));
-        binding.monitorTimeFrame.setSimpleItems(Arrays.stream(TimeFrameOptions.values()).map(a -> a.getText(view.getContext())).toArray(String[]::new));
+        binding.monitorAttribute.setSimpleItems(
+                Arrays.stream(WeatherAttributes.values()).map(a -> a.getText(view.getContext())).toArray(String[]::new));
+        binding.monitorTimeFrame.setSimpleItems(
+                Arrays.stream(TimeFrameOptions.values()).map(a -> a.getText(view.getContext())).toArray(String[]::new));
 
         Observable.combineLatest(
             RxAutoCompleteTextView.itemClickEvents(binding.monitorAttribute),
@@ -143,11 +155,16 @@ public class MonitoringController extends BaseController {
                     Toast.makeText(view.getContext(), "Not enough datapoints", Toast.LENGTH_LONG).show();
                     return;
                 }
-                binding.monitorChart.setModel(
-                        entryModelOf(datapoints.stream()
-                                .map(d -> new FloatEntry(d.timestamp(), d.value()))
-                                .collect(Collectors.toList()))
-                );
+
+                var entries = entryModelOf(
+                        datapoints.stream()
+                            .map(d -> new FloatEntry(d.timestamp(), d.value()))
+                            .collect(Collectors.toList()));
+
+                chartData.setValue(entries);
+
+                binding.monitorChart.setModel(chartData.getValue());
+
                 binding.monitorChart.animate();
             })
             .to(autoDisposable(getScopeProvider()))
