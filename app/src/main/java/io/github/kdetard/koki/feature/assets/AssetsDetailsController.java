@@ -81,9 +81,9 @@ public class AssetsDetailsController extends BottomSheetController implements On
         }
 
         RxView.clicks(binding.assetsDetailId)
-                .debounce(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(u -> {
+                    binding.assetsDetailId.setEnabled(false);
+
                     var clipboard = ContextCompat.getSystemService(view.getContext(), ClipboardManager.class);
                     var toast = "Failed to copy asset id to clipboard";
                     if (clipboard != null) {
@@ -93,6 +93,8 @@ public class AssetsDetailsController extends BottomSheetController implements On
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || clipboard == null) {
                         Toast.makeText(view.getContext(), toast, Toast.LENGTH_SHORT).show();
                     }
+
+                    binding.assetsDetailId.setEnabled(true);
                 })
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
