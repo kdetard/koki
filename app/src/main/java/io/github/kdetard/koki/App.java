@@ -2,6 +2,7 @@ package io.github.kdetard.koki;
 
 import android.app.Application;
 
+import com.mapbox.mapboxsdk.Mapbox;
 import com.tencent.mmkv.MMKV;
 
 import dagger.hilt.android.HiltAndroidApp;
@@ -15,7 +16,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Timber.plant(new Timber.DebugTree());
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
         // Better error handling when accidental `onError` happens
         RxDogTag.builder()
@@ -24,5 +27,7 @@ public class App extends Application {
 
         // Initialise app database
         MMKV.initialize(this);
+
+        Mapbox.getInstance(this);
     }
 }

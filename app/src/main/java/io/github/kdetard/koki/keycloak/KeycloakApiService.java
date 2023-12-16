@@ -47,6 +47,14 @@ public interface KeycloakApiService {
 
     @POST
     @FormUrlEncoded
+    Single<Response<ResponseBody>> resetPassword(
+            @Url String url,
+            @Field("username") String usernameOrEmail,
+            @Field("login") String login // default is empty
+    );
+
+    @POST
+    @FormUrlEncoded
     Completable endSession(
             @Url String url,
             @Field("client_id") String clientId,

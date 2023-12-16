@@ -33,13 +33,17 @@ public class AuthController extends BaseController {
 
         RxView
                 .clicks(binding.authControllerSignUpBtn)
-                .doOnNext(v -> getRouter().pushController(RouterTransaction.with(new SignUpController())))
+                .doOnNext(v -> getRouter().pushController(
+                        RouterTransaction.with(new SignUpController())
+                ))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
         RxView
                 .clicks(binding.authControllerSignInBtn)
-                .doOnNext(v -> getRouter().pushController(RouterTransaction.with(new SignInController())))
+                .doOnNext(v -> getRouter().pushController(
+                        RouterTransaction.with(new SignInController())
+                ))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
     }

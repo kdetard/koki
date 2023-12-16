@@ -71,19 +71,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/colorSurfaceBright"
-        android:background="@drawable/action_container_background"
+        android:background="@drawable/bg_action_container"
         app:layout_anchor="@id/onboardController_appBarLayout"
         app:layout_anchorGravity="bottom"
         >
 
-        <FrameLayout
-            android:id="@+id/onboardController_actionLayout_containerView"
+        <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+            android:id="@+id/onboardController_actionLayout_controllerContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_gravity="fill"
             android:layout_marginVertical="@dimen/padding_16"
-            />
+            >
+
+            <ImageView
+                android:id="@+id/back_shadow"
+                android:layout_width="6dp"
+                android:alpha="0.25"
+                android:visibility="gone"
+                android:layout_height="match_parent"
+                android:src="@drawable/shape_gradient_start_shadow"
+                android:importantForAccessibility="no" />
+
+        </com.bluelinelabs.conductor.ChangeHandlerFrameLayout>
 
     </androidx.core.widget.NestedScrollView>
 

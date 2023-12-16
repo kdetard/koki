@@ -3,13 +3,13 @@ package io.github.kdetard.koki.feature.auth;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.datastore.rxjava3.RxDataStore;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding4.view.RxView;
+import com.squareup.moshi.JsonAdapter;
 import com.tencent.mmkv.MMKV;
 
 import java.util.Objects;
@@ -27,8 +27,9 @@ import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
-import io.github.kdetard.koki.utils.FormUtils;
-import io.github.kdetard.koki.utils.SignInFormResult;
+import io.github.kdetard.koki.keycloak.models.KeycloakToken;
+import io.github.kdetard.koki.form.FormUtils;
+import io.github.kdetard.koki.form.SignInFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -37,6 +38,7 @@ public class SignInController extends BaseController {
     @EntryPoint
     @InstallIn(SingletonComponent.class)
     interface SignInEntryPoint {
+        JsonAdapter<KeycloakToken> keycloakTokenJsonAdapter();
         KeycloakApiService apiService();
         RxDataStore<Settings> settings();
     }
@@ -73,7 +75,7 @@ public class SignInController extends BaseController {
 
         RxView
                 .clicks(binding.signInControllerResetPasswordBtn)
-                .doOnNext(v -> Toast.makeText(getApplicationContext(), "Function not implemented", Toast.LENGTH_SHORT).show())
+                .doOnNext(v -> getRouter().pushController(RouterTransaction.with(new ResetPasswordController())))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
@@ -97,11 +99,11 @@ public class SignInController extends BaseController {
                         SignInFormResult<TextInputLayout>::new
                 )
                 .doOnNext(result -> {
-                    final boolean validSignIn = result.getUserName().isSuccess() && (result.getPassword().isSuccess() || result.getPassword().isStrict());
+                    final boolean validSignIn = result.userName().isSuccess() && (result.password().isSuccess() || result.password().isStrict());
                     binding.signInControllerLoginBtn.setEnabled(validSignIn);
                     if (validSignIn) {
-                        mUsername = result.getUserName().getText();
-                        mPassword = result.getPassword().getText();
+                        mUsername = result.userName().getText();
+                        mPassword = result.password().getText();
                     }
                 })
                 .to(autoDisposable(getScopeProvider()))
@@ -133,9 +135,10 @@ public class SignInController extends BaseController {
 
                 // Populate result with the parsed token body:
                 .doOnNext(r -> {
+                    final var keycloakToken = entryPoint.keycloakTokenJsonAdapter().toJson(r);
                     binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logged_in));
                     entryPoint.settings().updateDataAsync(s ->
-                            Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
+                            Single.just(s.toBuilder().setKeycloakTokenJson(keycloakToken).build()));
                 })
 
                 .to(autoDisposable(getScopeProvider()))

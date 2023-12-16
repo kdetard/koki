@@ -9,17 +9,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.ControllerChangeType;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.Objects;
+
 import autodispose2.lifecycle.LifecycleScopeProvider;
 import dev.chrisbanes.insetter.Insetter;
-import io.github.kdetard.koki.utils.InsetUtils;
+import io.github.kdetard.koki.conductor.ControllerEvent;
+import io.github.kdetard.koki.conductor.ControllerScopeProvider;
+import io.github.kdetard.koki.conductor.ControllerUtils;
+import io.github.kdetard.koki.conductor.OnConfigurationChangeListener;
+import io.github.kdetard.koki.inset.InsetUtils;
 
-public abstract class BaseController extends Controller implements NavigationProvider, OnConfigurationListener {
+public abstract class BaseController extends Controller implements ActivityLayoutProvider, OnConfigurationChangeListener {
     private final int layoutRes;
 
     public BaseController(int layoutRes) {
@@ -46,7 +54,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     public LifecycleScopeProvider<ControllerEvent> getScopeProvider() { return ControllerScopeProvider.from(this); }
 
     public View getRoot() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getRoot();
         }
@@ -54,7 +62,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public Toolbar getToolbar() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getToolbar();
         }
@@ -62,7 +70,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public ExpandedAppBarLayout getAppBarLayout() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getAppBarLayout();
         }
@@ -70,7 +78,7 @@ public abstract class BaseController extends Controller implements NavigationPro
     }
 
     public NavigationBarView getNavBar() {
-        final var provider = ((NavigationProvider)getActivity());
+        final var provider = ((ActivityLayoutProvider)getActivity());
         if (provider != null) {
             return provider.getNavBar();
         }
@@ -97,6 +105,10 @@ public abstract class BaseController extends Controller implements NavigationPro
                 configureMenu(getToolbar());
             }
         }
+    }
+
+    public FragmentManager getSupportFragmentManager() {
+        return ((FragmentActivity) Objects.requireNonNull(getActivity())).getSupportFragmentManager();
     }
 
     public void configureToolbar(Toolbar toolbar) {

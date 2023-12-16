@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/or_light_symbol_24dp"
+        android:id="@+id/bg"
+        android:width="96dp"
+        android:height="96dp"
+        />
+    <item android:drawable="@drawable/ic_lightbulb_filled_24dp"
+        android:id="@+id/fg"
+        android:width="50dp"
+        android:height="50dp"
+        android:top="10dp"
+        android:left="23dp"
+        />
+</layer-list>

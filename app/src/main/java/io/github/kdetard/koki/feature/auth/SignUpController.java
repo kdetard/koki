@@ -2,7 +2,6 @@ package io.github.kdetard.koki.feature.auth;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
-import android.os.Build;
 import android.view.View;
 import android.view.autofill.AutofillManager;
 
@@ -11,6 +10,7 @@ import androidx.datastore.rxjava3.RxDataStore;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jakewharton.rxbinding4.widget.RxTextView;
+import com.squareup.moshi.JsonAdapter;
 import com.tencent.mmkv.MMKV;
 
 import java.util.Objects;
@@ -28,8 +28,9 @@ import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
-import io.github.kdetard.koki.utils.FormUtils;
-import io.github.kdetard.koki.utils.SignUpFormResult;
+import io.github.kdetard.koki.keycloak.models.KeycloakToken;
+import io.github.kdetard.koki.form.FormUtils;
+import io.github.kdetard.koki.form.SignUpFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -38,6 +39,7 @@ public class SignUpController extends BaseController {
     @EntryPoint
     @InstallIn(SingletonComponent.class)
     interface SignUpEntryPoint {
+        JsonAdapter<KeycloakToken> keycloakTokenJsonAdapter();
         KeycloakApiService apiService();
         RxDataStore<Settings> settings();
     }
@@ -119,15 +121,15 @@ public class SignUpController extends BaseController {
                 )
                 .doOnNext(result -> {
                     final var confirmPasswordTxt = confirmPasswordLayout.getEditText().getText().toString();
-                    final boolean validSignUp = result.getUsername().isSuccess()
-                            && result.getEmail().isSuccess()
-                            && result.getPassword().isSuccess()
-                            && confirmPasswordTxt.equals(result.getPassword().getText());
+                    final boolean validSignUp = result.username().isSuccess()
+                            && result.email().isSuccess()
+                            && result.password().isSuccess()
+                            && confirmPasswordTxt.equals(result.password().getText());
 
                     if (validSignUp) {
-                        mUsername = result.getUsername().getText();
-                        mEmail = result.getEmail().getText();
-                        mPassword = result.getPassword().getText();
+                        mUsername = result.username().getText();
+                        mEmail = result.email().getText();
+                        mPassword = result.password().getText();
                         mConfirmPassword = confirmPasswordTxt;
                     }
 
@@ -151,7 +153,12 @@ public class SignUpController extends BaseController {
                 // Start sign up
                 .flatMapSingle(v ->
                         RxRestKeycloak.createUser(entryPoint.apiService(), mKeycloakConfig, mUsername, mEmail, mPassword, mConfirmPassword)
-                                .observeOn(AndroidSchedulers.mainThread()))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(throwable -> {
+                                    setAllError(binding, "Cannot sign up. Error: " + throwable.getMessage());
+                                    binding.signUpControllerSignupBtn.setText(R.string.sign_up);
+                                })
+                                .onErrorResumeNext(throwable -> Single.never()))
 
                 // Handle sign up
                 .flatMapSingle(r -> {
@@ -169,7 +176,7 @@ public class SignUpController extends BaseController {
                         }
                         case USERNAME_EXISTS -> binding.signUpControllerUsernameLayout.setError(r.getText(getApplicationContext()));
                         case EMAIL_EXISTS -> binding.signUpControllerEmailLayout.setError(r.getText(getApplicationContext()));
-                        default -> setAllError(binding, r.toString());
+                        default -> setAllError(binding, r.getText(getApplicationContext()));
                     }
 
                     binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.sign_up));
@@ -179,12 +186,13 @@ public class SignUpController extends BaseController {
 
                 // Handle login with new session
                 .doOnNext(r -> {
+                    final var keycloakToken = entryPoint.keycloakTokenJsonAdapter().toJson(r);
+
                     binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.logging_in));
                     entryPoint.settings().updateDataAsync(s ->
-                            Single.just(s.toBuilder().setAccessToken(r.accessToken).setRefreshToken(r.refreshToken).setLoggedOut(false).build()));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        view.getContext().getSystemService(AutofillManager.class).commit();
-                    }
+                            Single.just(s.toBuilder().setKeycloakTokenJson(keycloakToken).build()));
+
+                    view.getContext().getSystemService(AutofillManager.class).commit();
                 })
 
                 .to(autoDisposable(getScopeProvider()))
@@ -193,9 +201,9 @@ public class SignUpController extends BaseController {
     }
 
     private static void setAllError(ControllerSignUpBinding binding, String error) {
-        binding.signUpControllerUsernameLayout.setError("");
-        binding.signUpControllerEmailLayout.setError("");
-        binding.signUpControllerPasswordLayout.setError("");
+        binding.signUpControllerUsernameLayout.setError(" ");
+        binding.signUpControllerEmailLayout.setError(" ");
+        binding.signUpControllerPasswordLayout.setError(" ");
         binding.signUpControllerConfirmPasswordLayout.setError(error);
     }
 }

@@ -5,8 +5,8 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_variant</item>
         <item name="android:colorAccent">@color/accent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="o_mr1">@bool/light_status_nav</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/light_status_nav</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="27">@bool/light_status_nav</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/light_status_nav</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/navigation_bar</item>
         <item name="colorControlActivated">@color/accent</item>
@@ -16,19 +16,19 @@
     <style name="Theme.Koki" parent="NightAdjusted.Theme.Koki" />
 
     <style name="NightAdjusted.Widget.Koki.IntroImageView" parent="Theme.Koki">
-        <item name="srcCompat">@drawable/light_background</item>
-        <item name="android:src">@drawable/light_background</item>
+        <item name="srcCompat">@drawable/bg_light</item>
+        <item name="android:src">@drawable/bg_light</item>
     </style>
 
     <style name="Widget.Koki.IntroLayout" parent="NightAdjusted.Widget.Koki.IntroImageView" />
 
     <style name="Widget.Koki.TextInputLayout" parent="">
         <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
-        <item name="android:autofilledHighlight" tools:targetApi="o">@drawable/round_autofill_highlight</item>
+        <item name="android:autofilledHighlight">@drawable/round_autofill_highlight</item>
     </style>
 
     <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
-        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 

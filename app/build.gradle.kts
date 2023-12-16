@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.application)
     alias(libs.plugins.hilt.android)
@@ -21,6 +23,7 @@ android {
         multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "MAPTILER_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("MAPTILER_API_KEY")}\"")
     }
 
     buildTypes {
@@ -49,6 +52,7 @@ android {
         aidl = false
         renderScript = false
         shaders = false
+        buildConfig = true
     }
 
     afterEvaluate {
@@ -75,6 +79,7 @@ dependencies {
     implementation(libs.androidx.palette)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.transition)
     implementation(libs.appauth)
     implementation(libs.autodispose)
@@ -87,12 +92,24 @@ dependencies {
     implementation(libs.fastadapter)
     implementation(libs.fastadapter.extensions.binding)
     implementation(libs.fastadapter.extensions.expandable)
+    implementation(libs.fastadapter.extensions.ui)
+    implementation(libs.fastadapter.extensions.utils)
     implementation(libs.hilt.android)
     implementation(libs.insetter)
     implementation(libs.jsoup)
+
+    implementation(libs.maplibre.android.sdk) {
+        exclude(libs.timber.get().group, libs.timber.get().name)
+    }
+
+    implementation(libs.maplibre.android.plugin.annotation.v9) {
+        exclude(libs.timber.get().group, libs.timber.get().name)
+    }
+
     implementation(libs.material)
     implementation(libs.mmkv)
     implementation(libs.moshi)
+    implementation(libs.moshi.polymorphic.adapter)
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.protobuf.javalite)
     implementation(libs.retrofit)
@@ -101,12 +118,18 @@ dependencies {
     implementation(libs.rxdogtag)
     implementation(libs.rxdogtag.autodispose)
     implementation(libs.rxbinding)
-    implementation(libs.rxbinding.core)
     implementation(libs.rxbinding.appcompat)
+    implementation(libs.rxbinding.core)
+    implementation(libs.rxbinding.drawerlayout)
     implementation(libs.rxbinding.material)
     implementation(libs.rxbinding.recyclerview)
+    implementation(libs.rxbinding.slidingpanelayout)
+    implementation(libs.rxbinding.swiperefreshlayout)
     implementation(libs.rxjava)
+    implementation(libs.rxpm)
     implementation(libs.timber)
+    implementation(libs.vico.core)
+    implementation(libs.vico.views)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

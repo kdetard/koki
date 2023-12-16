@@ -4,6 +4,8 @@
     <color name="ic_launcher_foreground_gradient_stop">#FF0A4277</color>
     <color name="ic_foreground_gradient_start">#FFCA82A4</color>
     <color name="ic_foreground_gradient_stop">#FF3B97EF</color>
+    <color name="appbar_home_gradient_start">#CB87D3</color>
+    <color name="appbar_home_gradient_stop">#C1C2CA</color>
 
     <color name="window_background">#ffffff</color>
     <color name="accent">#03A9F4</color>
@@ -13,4 +15,13 @@
     <color name="navigation_bar">?attr/colorOnPrimary</color>
 
     <color name="md_black_1000_54">#8A000000</color>
+
+    <color name="or_weather_symbol">#49b0d8</color>
+    <color name="or_light_symbol">#e6688a</color>
+    <color name="or_http_symbol">#f5a623</color>
+    <color name="or_mqtt_symbol">#7ed321</color>
+    <color name="or_group_symbol">#4a90e2</color>
+
+    <color name = "bgcolor">#474D71</color>
+    <color name = "btnstart">#7B7EA4</color>
 </resources>

@@ -2,10 +2,13 @@ package io.github.kdetard.koki.di;
 
 import android.content.Context;
 
+import androidx.datastore.rxjava3.RxDataStore;
+
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import com.tencent.mmkv.MMKV;
 
 import java.io.File;
+import java.util.Objects;
 
 import javax.inject.Singleton;
 
@@ -14,13 +17,22 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
+import io.github.kdetard.koki.BuildConfig;
+import io.github.kdetard.koki.Settings;
+import io.github.kdetard.koki.aqicn.AqicnService;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
+import io.github.kdetard.koki.keycloak.models.KeycloakToken;
+import io.github.kdetard.koki.network.CacheInterceptor;
 import io.github.kdetard.koki.network.MMKVCookieJar;
+import io.github.kdetard.koki.network.NetworkUtils;
+import io.github.kdetard.koki.network.StrictAuthenticator;
+import io.github.kdetard.koki.openmeteo.OpenMeteoService;
 import io.github.kdetard.koki.openremote.OpenRemoteService;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.CookieJar;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -43,7 +55,7 @@ public abstract class NetworkModule {
     @Singleton
     public static HttpLoggingInterceptor provideHttpLoggingInterceptor() {
         return new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
+                .setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
     }
 
     @Provides
@@ -58,34 +70,89 @@ public abstract class NetworkModule {
             final Cache cache,
             final CookieJar cookieJar,
             final HttpLoggingInterceptor logging,
-            final Authenticator authenticator
+            final Authenticator laxAuthenticator,
+            final @StrictAuthenticator Interceptor strictAuthenticator,
+            final @CacheInterceptor Interceptor cacheInterceptor
     ) {
         return new OkHttpClient.Builder()
                 .cache(cache)
                 .cookieJar(cookieJar)
                 .addInterceptor(logging)
-                .authenticator(authenticator)
+                .authenticator(laxAuthenticator)
+                .addInterceptor(strictAuthenticator)
+                .addInterceptor(cacheInterceptor)
                 .build();
     }
 
     @Provides
     @Singleton
-    public static Authenticator provideAuthenticator() {
-        final var kv = MMKV.defaultMMKV(MMKV.MULTI_PROCESS_MODE, null);
+    public static Authenticator provideLaxAuthenticator(
+            final JsonAdapter<KeycloakToken> keycloakTokenJsonAdapter,
+            final RxDataStore<Settings> settings
+    ) {
+        return (route, response) ->
+            NetworkUtils.commonAuthenticator(
+                keycloakTokenJsonAdapter,
+                settings,
+                route == null ? null : route.address().url().host(),
+                response.request(),
+                response
+            );
+    }
 
-        return (route, response) -> {
-            final var accessToken = kv.getString("accessToken", "");
+    @Provides
+    @Singleton
+    @StrictAuthenticator
+    public static Interceptor provideStrictAuthenticator(
+            final JsonAdapter<KeycloakToken> keycloakTokenJsonAdapter,
+            final RxDataStore<Settings> settings
+    ) {
+        return chain -> chain.proceed(
+            Objects.requireNonNull(NetworkUtils.commonAuthenticator(
+                keycloakTokenJsonAdapter,
+                settings,
+                chain.request().url().host(),
+                chain.request(),
+                null
+            ))
+        );
+    }
 
-            if (accessToken.isEmpty()) {
-                return response.request();
+    @Provides
+    @Singleton
+    @CacheInterceptor
+    public static Interceptor provideCacheInterceptor(final @ApplicationContext Context context) {
+        return chain -> {
+            // Get the request from the chain.
+            var request = chain.request();
+
+            /*
+             *  Leveraging the advantage of using Kotlin,
+             *  we initialize the request and change its header depending on whether
+             *  the device is connected to Internet or not.
+             */
+            if (NetworkUtils.hasNetwork(context)) {
+                /*
+                 *  If there is Internet, get the cache that was stored 5 seconds ago.
+                 *  If the cache is older than 5 seconds, then discard it,
+                 *  and indicate an error in fetching the response.
+                 *  The 'max-age' attribute is responsible for this behavior.
+                 */
+                request = request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build();
+            } else
+            /*
+             *  If there is no Internet, get the cache that was stored 7 days ago.
+             *  If the cache is older than 7 days, then discard it,
+             *  and indicate an error in fetching the response.
+             *  The 'max-stale' attribute is responsible for this behavior.
+             *  The 'only-if-cached' attribute indicates to not retrieve new data; fetch the cache only instead.
+             */ {
+                request = request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
             }
+            // End of if-else statement
 
-            /// TODO: Refresh your access token if expired
-
-            // Add new header to rejected request and retry it
-            return response.request().newBuilder()
-                    .header("Authorization", String.format("Bearer %s", accessToken))
-                    .build();
+            // Add the modified request to the chain.
+            return chain.proceed(request);
         };
     }
 
@@ -110,5 +177,17 @@ public abstract class NetworkModule {
     @Singleton
     public static OpenRemoteService provideOpenRemoteService(final Retrofit retrofit) {
         return retrofit.create(OpenRemoteService.class);
+    }
+
+    @Provides
+    @Singleton
+    public static OpenMeteoService provideOpenMeteoService(final Retrofit retrofit) {
+        return retrofit.create(OpenMeteoService.class);
+    }
+
+    @Provides
+    @Singleton
+    public static AqicnService provideAqicnService(final Retrofit retrofit) {
+        return retrofit.create(AqicnService.class);
     }
 }

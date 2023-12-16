@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_up_with_email"
-        app:icon="@drawable/ic_mail_outline_48dp"
+        app:icon="@drawable/ic_mail_outline_24dp"
         app:iconGravity="textStart"
 
         android:layout_marginBottom="@dimen/padding_8"

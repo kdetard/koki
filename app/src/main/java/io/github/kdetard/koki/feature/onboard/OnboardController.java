@@ -21,10 +21,10 @@ import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.databinding.ControllerOnboardBinding;
 import io.github.kdetard.koki.feature.auth.AuthController;
 import io.github.kdetard.koki.feature.base.BaseController;
-import io.github.kdetard.koki.feature.base.OnConfigurationListener;
-import io.github.kdetard.koki.utils.InsetUtils;
+import io.github.kdetard.koki.conductor.OnConfigurationChangeListener;
+import io.github.kdetard.koki.inset.InsetUtils;
 
-public class OnboardController extends BaseController implements OnConfigurationListener {
+public class OnboardController extends BaseController implements OnConfigurationChangeListener {
     ControllerOnboardBinding binding;
     Drawable actionLayoutBackground;
     View.OnLayoutChangeListener actionLayoutChangeListener = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -48,7 +48,7 @@ public class OnboardController extends BaseController implements OnConfiguration
     public void onViewCreated(View view) {
         binding = ControllerOnboardBinding.bind(view);
 
-        final var childRouter = getChildRouter(binding.onboardControllerActionLayoutContainerView)
+        final var childRouter = getChildRouter(binding.onboardControllerActionLayoutControllerContainer)
                 .setPopRootControllerMode(PopRootControllerMode.POP_ROOT_CONTROLLER_BUT_NOT_VIEW);
 
         if (!childRouter.hasRootController()) {
