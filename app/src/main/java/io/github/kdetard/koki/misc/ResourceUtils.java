@@ -8,6 +8,6 @@ public class ResourceUtils {
     }
 
     public static float toDp(float px) {
-        return (float) (px * Resources.getSystem().getDisplayMetrics().density + 0.5f);
+        return px * Resources.getSystem().getDisplayMetrics().density + 0.5f;
     }
 }
