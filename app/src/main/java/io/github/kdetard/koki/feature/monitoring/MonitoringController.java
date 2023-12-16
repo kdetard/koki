@@ -24,7 +24,6 @@ import com.patrykandpatrick.vico.core.chart.values.ChartValues;
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel;
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer;
 import com.patrykandpatrick.vico.core.entry.FloatEntry;
-import com.patrykandpatrick.vico.core.entry.diff.MutableExtraStore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
