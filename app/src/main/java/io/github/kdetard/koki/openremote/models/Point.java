@@ -25,4 +25,6 @@ public record Point(
         return SymbolUtils.defaultSymbolOptions()
                 .withLatLng(new LatLng(latitude(), longitude()));
     }
+
+    public LatLng toLatLng() { return new LatLng(latitude(), longitude()); }
 }

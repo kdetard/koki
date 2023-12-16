@@ -23,5 +23,10 @@ public class AssetsUnavailableController extends BottomSheetController {
                 .doOnNext(u -> getBehavior().setMaxHeight(binding.assetsUnavailableContainer.getMeasuredHeight()))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
+
+        RxView.clicks(binding.assetsUnavailableRetryBtn)
+                .doOnNext(u -> getRouter().popToRoot())
+                .to(autoDisposable(getScopeProvider()))
+                .subscribe();
     }
 }

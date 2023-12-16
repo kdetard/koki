@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bluelinelabs.conductor.Router;
 
-import io.github.kdetard.koki.controller.OnConfigurationChangeListener;
-import io.github.kdetard.koki.controller.OnLowMemoryListener;
+import io.github.kdetard.koki.conductor.OnConfigurationChangeListener;
+import io.github.kdetard.koki.conductor.OnLowMemoryListener;
 
 public class BaseActivity extends AppCompatActivity {
     protected Router router;

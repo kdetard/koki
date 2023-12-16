@@ -21,7 +21,7 @@ import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.databinding.ControllerOnboardBinding;
 import io.github.kdetard.koki.feature.auth.AuthController;
 import io.github.kdetard.koki.feature.base.BaseController;
-import io.github.kdetard.koki.controller.OnConfigurationChangeListener;
+import io.github.kdetard.koki.conductor.OnConfigurationChangeListener;
 import io.github.kdetard.koki.inset.InsetUtils;
 
 public class OnboardController extends BaseController implements OnConfigurationChangeListener {

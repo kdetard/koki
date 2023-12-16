@@ -1,4 +1,4 @@
-package io.github.kdetard.koki.controller;
+package io.github.kdetard.koki.conductor;
 
 import android.content.Context;
 import android.view.View;

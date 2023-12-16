@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 
 import java.util.Objects;
@@ -19,7 +20,7 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
 import io.github.kdetard.koki.feature.base.BaseController;
-import io.github.kdetard.koki.controller.OnLowMemoryListener;
+import io.github.kdetard.koki.conductor.OnLowMemoryListener;
 import io.github.kdetard.koki.map.SatelliteStyleBuilder;
 import io.github.kdetard.koki.map.StreetsDarkStyleBuilder;
 import io.github.kdetard.koki.map.StreetsLightStyleBuilder;
@@ -64,11 +65,17 @@ public abstract class MapController extends BaseController implements OnLowMemor
         getMapView().getMapAsync(mapboxMap -> mapboxMap.setStyle(styleBuilder, style -> {
             this.mapboxMap = mapboxMap;
             symbolManager = new SymbolManager(getMapView(), mapboxMap, style);
-            onMapReady(mapboxMap, style);
+
+            getSymbolManager().removeClickListener(this::onSymbolClick);
+            getSymbolManager().addClickListener(this::onSymbolClick);
+            onMapReady();
         }));
     }
 
     public SymbolManager getSymbolManager() { return symbolManager; }
+    public MapboxMap getMapboxMap() { return mapboxMap; }
+
+    public boolean onSymbolClick(@NonNull Symbol symbol) { return false; }
 
     @Override
     protected void onActivityStarted(@NonNull Activity activity) {
@@ -101,8 +108,12 @@ public abstract class MapController extends BaseController implements OnLowMemor
 
     @Override
     protected void onDestroyView(@NonNull View view) {
+        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
+            getSymbolManager().removeClickListener(this::onSymbolClick);
+            getSymbolManager().onDestroy();
+            getMapView().onDestroy();
+        }
         super.onDestroyView(view);
-        getMapView().onDestroy();
     }
 
     @Override

@@ -14,10 +14,16 @@
         app:layout_behavior="@string/bottom_sheet_behavior"
         >
 
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/padding_16"
+            android:paddingTop="@dimen/padding_16"
             >
 
             <ImageView
@@ -27,22 +33,27 @@
                 android:contentDescription="@string/assets_detail_icon"
                 tools:src="@drawable/ic_partly_cloudy_day_outline_24dp"
                 tools:tint="@color/or_weather_symbol"
+                android:layout_marginStart="28dp"
                 android:layout_marginVertical="@dimen/padding_8"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/assets_detail_description"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/assets_detail_title"
                 />
-
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/TextAppearance.Material3.TitleLarge"
                 android:id="@+id/assets_detail_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 tools:text="@string/assets_title"
-                android:layout_marginVertical="@dimen/padding_8"
-                app:layout_constraintTop_toBottomOf="@id/assets_detail_icon"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/padding_16"
+                android:layout_marginEnd="20dp"
+                android:layout_marginVertical="4dp"
+                app:layout_constraintTop_toTopOf="@id/assets_detail_icon"
+                app:layout_constraintBottom_toBottomOf="@id/assets_detail_icon"
+                app:layout_constraintStart_toEndOf="@id/assets_detail_icon"
                 />
 
             <com.google.android.material.textview.MaterialTextView
@@ -50,17 +61,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="@string/description"
-                android:layout_marginVertical="@dimen/padding_8"
-                app:layout_constraintTop_toBottomOf="@id/assets_detail_title"
+                android:layout_marginVertical="4dp"
+                android:layout_marginHorizontal="20dp"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_icon"
+                app:layout_constraintBottom_toTopOf="@id/assets_detail_id"
                 app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/assets_detail_id"
+                style="@style/Widget.Material3.Chip.Input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/assets_id"
+                android:layout_marginVertical="4dp"
+                android:layout_marginHorizontal="20dp"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_description"
+                app:layout_constraintBottom_toTopOf="@id/assets_detail_divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:closeIcon="@drawable/ic_content_copy_24dp"
+                android:checkable="false"
+                />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/assets_detail_divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="4dp"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_id"
+                app:layout_constraintBottom_toTopOf="@id/assets_detail_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 />
 
             <RelativeLayout
                 android:id="@+id/assets_detail_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/padding_16"
-                app:layout_constraintTop_toBottomOf="@id/assets_detail_description"
+                app:layout_constraintTop_toBottomOf="@id/assets_detail_divider"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

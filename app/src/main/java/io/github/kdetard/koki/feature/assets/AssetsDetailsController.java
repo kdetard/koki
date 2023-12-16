@@ -2,11 +2,17 @@ package io.github.kdetard.koki.feature.assets;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.os.Build;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
 import com.jakewharton.rxbinding4.view.RxView;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.squareup.moshi.JsonAdapter;
 
 import java.util.Date;
@@ -19,11 +25,14 @@ import dagger.hilt.android.EntryPointAccessors;
 import dagger.hilt.components.SingletonComponent;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.databinding.ControllerAssetsDetailBinding;
+import io.github.kdetard.koki.feature.map.OnMapListener;
+import io.github.kdetard.koki.map.MapUtils;
 import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public class AssetsDetailsController extends BottomSheetController {
+public class AssetsDetailsController extends BottomSheetController implements OnMapListener {
     @EntryPoint
     @InstallIn(SingletonComponent.class)
     interface AssetsDetailsEntryPoint {
@@ -58,6 +67,7 @@ public class AssetsDetailsController extends BottomSheetController {
 
         binding.assetsDetailIcon.setImageResource(asset.attributes().toIconResource());
         binding.assetsDetailIcon.setImageTintList(ContextCompat.getColorStateList(view.getContext(), asset.attributes().toTintResource()));
+        binding.assetsDetailId.setText(asset.id());
         binding.assetsDetailTitle.setText(asset.name());
         binding.assetsDetailDescription.setText(String.format("Created: %s", new Date(asset.createdOn())));
 
@@ -70,9 +80,46 @@ public class AssetsDetailsController extends BottomSheetController {
             }
         }
 
+        RxView.clicks(binding.assetsDetailId)
+                .debounce(500, java.util.concurrent.TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(u -> {
+                    var clipboard = ContextCompat.getSystemService(view.getContext(), ClipboardManager.class);
+                    var toast = "Failed to copy asset id to clipboard";
+                    if (clipboard != null) {
+                        toast = "Copied asset id to clipboard";
+                        clipboard.setPrimaryClip(ClipData.newPlainText("Asset id", asset.id()));
+                    }
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || clipboard == null) {
+                        Toast.makeText(view.getContext(), toast, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .to(autoDisposable(getScopeProvider()))
+                .subscribe();
+
         RxView.layoutChanges(binding.assetsDetailRecycler)
                 .doOnNext(u -> getBehavior().setMaxHeight(binding.assetsDetailRecycler.getMeasuredHeight()))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
     }
+
+    @Override
+    public void onMapReady(MapboxMap mapboxMap) {
+        Timber.d("onMapReady");
+
+        var cameraBuilder = new CameraPosition.Builder().target(MapUtils.DEFAULT_CENTER)
+                .zoom(15.0)
+                .tilt(mapboxMap.getCameraPosition().tilt)
+                .bearing(mapboxMap.getCameraPosition().bearing);
+
+        if (asset.attributes().location() != null && asset.attributes().location().value() != null) {
+            cameraBuilder.target(asset.attributes().location().value().toLatLng())
+                    .zoom(17.0);
+        }
+
+        mapboxMap.animateCamera(_mapboxMap -> cameraBuilder.build());
+    }
+
+    @Override
+    public void onSymbolClick(MapboxMap mapboxMap) { onMapReady(mapboxMap); }
 }

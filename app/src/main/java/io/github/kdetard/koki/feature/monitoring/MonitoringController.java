@@ -20,6 +20,8 @@ import com.jakewharton.rxbinding4.widget.RxTextView;
 import com.patrykandpatrick.vico.core.entry.FloatEntry;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
@@ -154,7 +156,8 @@ public class MonitoringController extends BaseController {
 
     private<T> void setDefaultEndingDate(T listener) {
         if (endingDateMillis != 0) return;
-        endingDateMillis = Calendar.getInstance().getTimeInMillis();
+        var startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault());
+        endingDateMillis = startOfToday.toEpochSecond() * 1000;
         timePicker.show(getSupportFragmentManager(), "");
     }
 

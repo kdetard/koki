@@ -21,10 +21,10 @@ import java.util.Objects;
 
 import autodispose2.lifecycle.LifecycleScopeProvider;
 import dev.chrisbanes.insetter.Insetter;
-import io.github.kdetard.koki.controller.ControllerEvent;
-import io.github.kdetard.koki.controller.ControllerScopeProvider;
-import io.github.kdetard.koki.controller.ControllerUtils;
-import io.github.kdetard.koki.controller.OnConfigurationChangeListener;
+import io.github.kdetard.koki.conductor.ControllerEvent;
+import io.github.kdetard.koki.conductor.ControllerScopeProvider;
+import io.github.kdetard.koki.conductor.ControllerUtils;
+import io.github.kdetard.koki.conductor.OnConfigurationChangeListener;
 import io.github.kdetard.koki.inset.InsetUtils;
 
 public abstract class BaseController extends Controller implements ActivityLayoutProvider, OnConfigurationChangeListener {

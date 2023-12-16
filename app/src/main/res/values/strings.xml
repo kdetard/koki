@@ -129,4 +129,5 @@
     <string name="description">Description</string>
     <string name="assets_detail_icon">Asset icon</string>
     <string name="assets_title">Asset title</string>
+    <string name="assets_id">Assets id</string>
 </resources>
