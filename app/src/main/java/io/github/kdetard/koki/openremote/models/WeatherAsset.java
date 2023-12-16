@@ -1,6 +1,7 @@
 package io.github.kdetard.koki.openremote.models;
 
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+import com.squareup.moshi.Json;
 
 import java.util.List;
 
@@ -23,14 +24,24 @@ public record WeatherAsset(
 
     public record Attributes(
         PositiveNumber sunIrradiance,
+        @Json(name = "NO") Number noIndex,
         PositiveNumber rainfall,
         Text notes,
         PositiveNumber uVIndex,
+        @Json(name = "O3") Number ozoneIndex,
+        @Json(name = "PM25") Number pm25Index,
         PositiveNumber sunAzimuth,
+        @Json(name = "CO2") Number co2Index,
+        @Json(name = "CO2_average") Number averageCo2Index,
         PositiveNumber sunZenith,
+        @Json(name = "NO2") Number no2Index,
+        @Json(name = "AQI_predict") Number aqiPredictIndex,
+        @Json(name = "SO2") Number so2Index,
         TextList tags,
         Text manufacturer,
         Number temperature,
+        @Json(name = "AQI") Number aqiIndex,
+        @Json(name = "PM10") Number pm10Index,
         PositiveInteger humidity,
         GeoJsonPoint location,
         Text place,

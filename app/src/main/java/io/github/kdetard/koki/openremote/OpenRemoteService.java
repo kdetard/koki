@@ -16,6 +16,9 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface OpenRemoteService {
+    @GET("/api/master/asset/{assetId}")
+    Single<Asset<AssetAttribute>> getAsset(@Path("assetId") String assetId);
+
     @POST("/api/master/asset/query")
     @Headers({
             "accept: application/json",
