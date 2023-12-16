@@ -34,7 +34,7 @@
                 android:id="@+id/assets_unavailable_retry_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/retry_label"
+                android:text="@string/retry"
                 app:layout_constraintTop_toBottomOf="@id/assets_unavailable_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

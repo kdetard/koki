@@ -25,7 +25,6 @@ import io.github.kdetard.koki.databinding.ControllerSignInBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
-import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
@@ -34,7 +33,6 @@ import io.github.kdetard.koki.form.SignInFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import timber.log.Timber;
 
 public class SignInController extends BaseController {
     @EntryPoint
@@ -119,7 +117,7 @@ public class SignInController extends BaseController {
                 // Clear results
                 .doOnNext(v -> {
                     binding.signInControllerLoginBtn.setEnabled(false);
-                    binding.signInControllerLoginBtn.setText("Logging in...");
+                    binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logging_in));
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -128,19 +126,17 @@ public class SignInController extends BaseController {
                         RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(throwable -> {
-                                    setAllError(binding, "Cannot sign in. Error: " + throwable.getMessage());
-                                    binding.signInControllerLoginBtn.setText("Log in");
+                                    binding.signInControllerUsernameLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
+                                    binding.signInControllerPasswordLayout.setError(getApplicationContext().getString(R.string.wrong_username_password));
+                                    binding.signInControllerLoginBtn.setEnabled(true);
+                                    binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.sign_in));
                                 })
                                 .onErrorResumeNext(throwable -> Single.never()))
 
                 // Populate result with the parsed token body:
                 .doOnNext(r -> {
-                    final var accessTokenJwt = new JWT(r.accessToken);
-                    Timber.d("Access token JWT: %s", accessTokenJwt);
-
-                    binding.signInControllerLoginBtn.setText("Logged in...");
-
                     final var keycloakToken = entryPoint.keycloakTokenJsonAdapter().toJson(r);
+                    binding.signInControllerLoginBtn.setText(getApplicationContext().getString(R.string.logged_in));
                     entryPoint.settings().updateDataAsync(s ->
                             Single.just(s.toBuilder().setKeycloakTokenJson(keycloakToken).build()));
                 })
@@ -148,10 +144,5 @@ public class SignInController extends BaseController {
                 .to(autoDisposable(getScopeProvider()))
 
                 .subscribe();
-    }
-
-    private static void setAllError(ControllerSignInBinding binding, String error) {
-        binding.signInControllerUsernameLayout.setError(" ");
-        binding.signInControllerPasswordLayout.setError(error);
     }
 }

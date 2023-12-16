@@ -86,32 +86,33 @@ public class RxRestKeycloak extends RxKeycloak {
                 .flatMap(r -> {
                     var result = SignUpResult.UNKNOWN;
 
-                    if (r.body() == null) {
-                        result = SignUpResult.NULL;
-                    }
-                    else {
-                        final var body = r.body().string();
-                        r.body().close();
-                        if (body.isEmpty()) {
-                            result = SignUpResult.EMPTY;
+                    try (var rawBody = r.body()) {
+                        if (rawBody == null) {
+                            result = SignUpResult.NULL;
                         }
-                        if (body.contains("Invalid")) {
-                            result = SignUpResult.INVALID;
-                        }
-                        if (body.contains("specify")) {
-                            result = SignUpResult.SPECIFY;
-                        }
-                        if (body.contains("timed out")) {
-                            result = SignUpResult.TIMEOUT;
-                        }
-                        if (body.contains("Username already")) {
-                            result = SignUpResult.USERNAME_EXISTS;
-                        }
-                        if (body.contains("Email already")) {
-                            result = SignUpResult.EMAIL_EXISTS;
-                        }
-                        if (body.contains("UiOt - Map")) {
-                            result = SignUpResult.SUCCESS;
+                        else {
+                            final var body = rawBody.string();
+                            if (body.isEmpty()) {
+                                result = SignUpResult.EMPTY;
+                            }
+                            if (body.contains("Invalid")) {
+                                result = SignUpResult.INVALID;
+                            }
+                            if (body.contains("specify")) {
+                                result = SignUpResult.SPECIFY;
+                            }
+                            if (body.contains("timed out")) {
+                                result = SignUpResult.TIMEOUT;
+                            }
+                            if (body.contains("Username already")) {
+                                result = SignUpResult.USERNAME_EXISTS;
+                            }
+                            if (body.contains("Email already")) {
+                                result = SignUpResult.EMAIL_EXISTS;
+                            }
+                            if (body.contains("/manager/")) {
+                                result = SignUpResult.SUCCESS;
+                            }
                         }
                     }
 
@@ -161,26 +162,27 @@ public class RxRestKeycloak extends RxKeycloak {
                 .flatMap(r -> {
                     var result = ResetPasswordResult.UNKNOWN;
 
-                    if (r.body() == null) {
-                        result = ResetPasswordResult.NULL;
-                    }
-                    else {
-                        final var body = r.body().string();
-                        r.body().close();
-                        if (body.isEmpty()) {
-                            result = ResetPasswordResult.EMPTY;
+                    try (var rawBody = r.body()) {
+                        if (rawBody == null) {
+                            result = ResetPasswordResult.NULL;
                         }
-                        if (body.contains("Failed to send mail")) {
-                            result = ResetPasswordResult.FAILED_TO_SEND_MAIL;
-                        }
-                        if (body.contains("specify")) {
-                            result = ResetPasswordResult.SPECIFY;
-                        }
-                        if (body.contains("timed out")) {
-                            result = ResetPasswordResult.TIMEOUT;
-                        }
-                        if (body.contains("should receive")) {
-                            result = ResetPasswordResult.SUCCESS;
+                        else {
+                            final var body = rawBody.string();
+                            if (body.isEmpty()) {
+                                result = ResetPasswordResult.EMPTY;
+                            }
+                            if (body.contains("Failed to send mail")) {
+                                result = ResetPasswordResult.FAILED_TO_SEND_MAIL;
+                            }
+                            if (body.contains("specify")) {
+                                result = ResetPasswordResult.SPECIFY;
+                            }
+                            if (body.contains("timed out")) {
+                                result = ResetPasswordResult.TIMEOUT;
+                            }
+                            if (body.contains("should receive")) {
+                                result = ResetPasswordResult.SUCCESS;
+                            }
                         }
                     }
 

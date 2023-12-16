@@ -26,7 +26,6 @@ import io.github.kdetard.koki.databinding.ControllerSignUpBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.di.NetworkModule;
 import io.github.kdetard.koki.keycloak.RxRestKeycloak;
-import io.github.kdetard.koki.keycloak.models.JWT;
 import io.github.kdetard.koki.keycloak.models.KeycloakConfig;
 import io.github.kdetard.koki.keycloak.KeycloakApiService;
 import io.github.kdetard.koki.keycloak.models.KeycloakToken;
@@ -35,7 +34,6 @@ import io.github.kdetard.koki.form.SignUpFormResult;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import timber.log.Timber;
 
 public class SignUpController extends BaseController {
     @EntryPoint
@@ -148,7 +146,7 @@ public class SignUpController extends BaseController {
                 // Clear results
                 .doOnNext(v -> {
                     binding.signUpControllerSignupBtn.setEnabled(false);
-                    binding.signUpControllerSignupBtn.setText("Signing up...");
+                    binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.signing_up));
                     MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                 })
 
@@ -158,7 +156,7 @@ public class SignUpController extends BaseController {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(throwable -> {
                                     setAllError(binding, "Cannot sign up. Error: " + throwable.getMessage());
-                                    binding.signUpControllerSignupBtn.setText("Sign up");
+                                    binding.signUpControllerSignupBtn.setText(R.string.sign_up);
                                 })
                                 .onErrorResumeNext(throwable -> Single.never()))
 
@@ -166,34 +164,31 @@ public class SignUpController extends BaseController {
                 .flatMapSingle(r -> {
                     switch (r) {
                         case SUCCESS -> {
-                            binding.signUpControllerSignupBtn.setText("Sign up success!");
+                            binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.signup_success));
                             MMKV.mmkvWithID(NetworkModule.COOKIE_STORE_NAME).clearAll();
                             return RxRestKeycloak.newSession(entryPoint.apiService(), mKeycloakConfig, mUsername, mPassword)
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .doOnError(throwable -> {
                                         setAllError(binding, "Cannot sign in with new account. Error: " + throwable.getMessage());
-                                        binding.signUpControllerSignupBtn.setText("Sign up");
+                                        binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.sign_up));
                                     })
                                     .onErrorResumeNext(throwable -> Single.never());
                         }
-                        case USERNAME_EXISTS -> binding.signUpControllerUsernameLayout.setError(r.toString());
-                        case EMAIL_EXISTS -> binding.signUpControllerEmailLayout.setError(r.toString());
-                        default -> setAllError(binding, r.toString());
+                        case USERNAME_EXISTS -> binding.signUpControllerUsernameLayout.setError(r.getText(getApplicationContext()));
+                        case EMAIL_EXISTS -> binding.signUpControllerEmailLayout.setError(r.getText(getApplicationContext()));
+                        default -> setAllError(binding, r.getText(getApplicationContext()));
                     }
 
-                    binding.signUpControllerSignupBtn.setText("Sign up");
+                    binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.sign_up));
 
                     return Single.never();
                 })
 
                 // Handle login with new session
                 .doOnNext(r -> {
-                    final var accessTokenJwt = new JWT(r.accessToken);
-                    Timber.d("Access token JWT: %s", accessTokenJwt);
-
-                    binding.signUpControllerSignupBtn.setText("Logged in...");
-
                     final var keycloakToken = entryPoint.keycloakTokenJsonAdapter().toJson(r);
+
+                    binding.signUpControllerSignupBtn.setText(getApplicationContext().getString(R.string.logging_in));
                     entryPoint.settings().updateDataAsync(s ->
                             Single.just(s.toBuilder().setKeycloakTokenJson(keycloakToken).build()));
 
