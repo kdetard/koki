@@ -8,8 +8,10 @@ import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.WindowCompat;
 import androidx.datastore.rxjava3.RxDataStore;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Controller;
@@ -71,6 +73,12 @@ public class MainActivity extends BaseActivity implements ActivityLayoutProvider
                                     .stream().findFirst().map(RouterTransaction::controller)
                                     .orElse(null) instanceof OnboardController))
                                 return;
+                            // Check if no view has focus:
+                            var view = getCurrentFocus();
+                            if (view != null) {
+                                var imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            }
                             getNavBar().setVisibility(View.VISIBLE);
                             setRoot(new MainController());
                         }
