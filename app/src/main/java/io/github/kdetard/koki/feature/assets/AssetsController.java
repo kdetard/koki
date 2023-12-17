@@ -141,9 +141,7 @@ public class AssetsController extends MapController {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
-            locationAssetsSubject.onComplete();
-        }
+        locationAssetsSubject.onComplete();
         super.onDestroyView(view);
     }
 

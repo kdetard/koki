@@ -135,9 +135,7 @@ public class AssetsOverviewController extends BottomSheetController implements O
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
-            assetsSubject.onComplete();
-        }
+        assetsSubject.onComplete();
         super.onDestroyView(view);
     }
 

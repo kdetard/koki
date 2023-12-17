@@ -108,11 +108,9 @@ public abstract class MapController extends BaseController implements OnLowMemor
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
-            getSymbolManager().removeClickListener(this::onSymbolClick);
-            getSymbolManager().onDestroy();
-            getMapView().onDestroy();
-        }
+        getSymbolManager().removeClickListener(this::onSymbolClick);
+        getSymbolManager().onDestroy();
+        getMapView().onDestroy();
         super.onDestroyView(view);
     }
 
