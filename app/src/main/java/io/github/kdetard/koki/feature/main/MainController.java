@@ -9,6 +9,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.bluelinelabs.conductor.viewpager2.RouterStateAdapter;
 
+import java.util.Map;
 import java.util.Objects;
 
 import io.github.kdetard.koki.R;
@@ -21,7 +22,15 @@ import io.github.kdetard.koki.feature.settings.SettingsController;
 
 public class MainController extends BaseController {
     ControllerMainBinding binding;
+
     RouterStateAdapter pagerAdapter;
+
+    private static final Map<Integer, Integer> navBarMap = Map.of(
+            R.id.nav_home, 0,
+            R.id.nav_assets, 1,
+            R.id.nav_monitoring, 2,
+            R.id.nav_settings, 3
+    );
 
     public MainController() {
         super(R.layout.controller_main);
@@ -62,13 +71,9 @@ public class MainController extends BaseController {
         binding.getRoot().setCurrentItem(0, false);
 
         getNavBar().setOnItemSelectedListener(item -> {
-            var order = switch (Objects.requireNonNull(item.getTitle()).toString()) {
-                case "Home" -> 0;
-                case "Assets" -> 1;
-                case "Monitor" -> 2;
-                case "Settings" -> 3;
-                default -> throw new IllegalStateException("Unexpected value: " + item.getTitle());
-            };
+            var order = navBarMap.get(item.getItemId());
+
+            if (order == null) throw new IllegalStateException("Unexpected value: " + item.getItemId());
 
             getAppBarLayout().setVisibility(order == 3 ? View.VISIBLE : View.GONE);
 

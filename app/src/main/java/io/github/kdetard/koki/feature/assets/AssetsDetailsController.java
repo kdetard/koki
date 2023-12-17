@@ -29,7 +29,6 @@ import io.github.kdetard.koki.feature.map.OnMapListener;
 import io.github.kdetard.koki.map.MapUtils;
 import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class AssetsDetailsController extends BottomSheetController implements OnMapListener {
@@ -100,6 +99,7 @@ public class AssetsDetailsController extends BottomSheetController implements On
                 .subscribe();
 
         RxView.layoutChanges(binding.assetsDetailRecycler)
+                .skip(1)
                 .doOnNext(u -> getBehavior().setMaxHeight(binding.assetsDetailRecycler.getMeasuredHeight()))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();

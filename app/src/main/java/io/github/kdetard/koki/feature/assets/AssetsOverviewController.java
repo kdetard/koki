@@ -4,6 +4,7 @@ import static autodispose2.AutoDispose.autoDisposable;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +30,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 public class AssetsOverviewController extends BottomSheetController implements OnAssetsAvailableListener, OnMapListener {
-    final BehaviorSubject<List<Asset<AssetAttribute>>> assetsSubject;
+    BehaviorSubject<List<Asset<AssetAttribute>>> assetsSubject;
 
     ControllerAssetsOverviewBinding binding;
 
@@ -38,16 +39,17 @@ public class AssetsOverviewController extends BottomSheetController implements O
 
     GridLayoutManager gridLayoutManager;
 
-    public AssetsOverviewController() {
-        super(R.layout.controller_assets_overview);
-        assetsSubject = BehaviorSubject.create();
-    }
+    public AssetsOverviewController() { super(R.layout.controller_assets_overview); }
 
     @Override
     public void onViewCreated(View view) {
         binding = ControllerAssetsOverviewBinding.bind(view);
 
         super.onViewCreated(view, binding.bottomSheet);
+
+        if (assetsSubject == null) {
+            assetsSubject = BehaviorSubject.create();
+        }
 
         if (adapter == null)
             adapter = new FastItemAdapter<>();
@@ -69,6 +71,7 @@ public class AssetsOverviewController extends BottomSheetController implements O
         binding.assetsOverviewRecycler.setAdapter(adapter);
 
         RxView.layoutChanges(binding.assetsOverviewRecycler)
+                .skip(1)
                 .doOnNext(u -> getBehavior().setMaxHeight(binding.assetsOverviewRecycler.getMeasuredHeight()))
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
@@ -128,6 +131,14 @@ public class AssetsOverviewController extends BottomSheetController implements O
     @Override
     public void configureMenu(Toolbar toolbar) {
         super.configureMenu(toolbar);
+    }
+
+    @Override
+    protected void onDestroyView(@NonNull View view) {
+        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
+            assetsSubject.onComplete();
+        }
+        super.onDestroyView(view);
     }
 
     @Override

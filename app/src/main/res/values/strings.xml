@@ -90,4 +90,9 @@
     <string name="assets_title">Asset title</string>
     <string name="assets_id">Assets id</string>
     <string name="retry">Retry</string>
+    <string name="home_provider_toggle">Toggle between OpenRemote (off)\nor custom provider (on)</string>
+    <string name="hour_selection">Select hour of the day</string>
+    <string name="ending_date_selection">Select ending date</string>
+    <string name="invalid_date">Invalid date</string>
+    <string name="datapoints_not_enough">Not enough datapoints</string>
 </resources>
