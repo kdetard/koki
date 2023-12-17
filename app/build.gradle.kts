@@ -28,6 +28,8 @@ plugins {
     alias(libs.plugins.protobuf)
 }
 
+val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+
 android {
     namespace = "io.github.kdetard.koki"
 
@@ -44,6 +46,19 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "MAPTILER_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("MAPTILER_API_KEY")}\"")
+
+        ndk {
+            abiFilters += supportedAbis
+        }
+    }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include(*supportedAbis.toTypedArray())
+            isUniversalApk = true
+        }
     }
 
     signingConfigs {
