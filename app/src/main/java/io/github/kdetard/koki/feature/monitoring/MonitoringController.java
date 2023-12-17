@@ -212,6 +212,14 @@ public class MonitoringController extends BaseController {
         entryPoint.service()
             .getDatapoint("5zI6XqkQVSfdgOrZ1MyWEf", openRemoteString, datapointQuery)
             .doOnSuccess(datapoints -> {
+                startAxis = (VerticalAxis<AxisPosition.Vertical.Start>) binding.monitorChart.getStartAxis();
+                assert startAxis != null;
+                startAxis.setHorizontalLabelPosition(VerticalAxis.HorizontalLabelPosition.Inside);
+
+                bottomAxis = (HorizontalAxis<AxisPosition.Horizontal.Bottom>) binding.monitorChart.getBottomAxis();
+                assert bottomAxis != null;
+                bottomAxis.setLabelRotationDegrees(-75f);
+
                 if (datapoints.size() < 2)
                     return;
 
@@ -241,13 +249,6 @@ public class MonitoringController extends BaseController {
                     }
                 };
 
-                startAxis = (VerticalAxis<AxisPosition.Vertical.Start>) binding.monitorChart.getStartAxis();
-                assert startAxis != null;
-                startAxis.setHorizontalLabelPosition(VerticalAxis.HorizontalLabelPosition.Inside);
-
-                bottomAxis = (HorizontalAxis<AxisPosition.Horizontal.Bottom>) binding.monitorChart.getBottomAxis();
-                assert bottomAxis != null;
-                bottomAxis.setLabelRotationDegrees(-75f);
                 bottomAxis.setValueFormatter(horizontalAxisValueFormatter);
             })
             .observeOn(AndroidSchedulers.mainThread())
@@ -263,14 +264,19 @@ public class MonitoringController extends BaseController {
             .doOnSuccess(datapoints -> {
                 if (datapoints.size() < 2)
                     Toast.makeText(getApplicationContext(), R.string.datapoints_not_enough, Toast.LENGTH_LONG).show();
+
                 binding.monitorChart.setStartAxis(startAxis);
                 binding.monitorChart.setBottomAxis(bottomAxis);
-                if (chartEntryModelProducer == null) {
-                    chartEntryModelProducer = new ChartEntryModelProducer(chartEntryModel.getEntries(), Dispatchers.getDefault());
-                    binding.monitorChart.setEntryProducer(chartEntryModelProducer);
-                } else {
-                    chartEntryModelProducer.setEntries(chartEntryModel.getEntries(), mutableExtraStore -> null);
+
+                if (chartEntryModel != null) {
+                    if (chartEntryModelProducer == null) {
+                        chartEntryModelProducer = new ChartEntryModelProducer(chartEntryModel.getEntries(), Dispatchers.getDefault());
+                        binding.monitorChart.setEntryProducer(chartEntryModelProducer);
+                    } else {
+                        chartEntryModelProducer.setEntries(chartEntryModel.getEntries(), mutableExtraStore -> null);
+                    }
                 }
+
                 binding.monitorSwipeRefresh.setRefreshing(false);
                 binding.monitorAttribute.setEnabled(true);
                 binding.monitorTimeFrame.setEnabled(true);
