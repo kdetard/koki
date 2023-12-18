@@ -14,11 +14,11 @@ import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import autodispose2.ObservableSubscribeProxy;
 import io.github.kdetard.koki.R;
 import io.github.kdetard.koki.databinding.ControllerAssetsOverviewBinding;
 import io.github.kdetard.koki.feature.base.GridSpacingItemDecoration;
@@ -30,12 +30,13 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 public class AssetsOverviewController extends BottomSheetController implements OnAssetsAvailableListener, OnMapListener {
-    BehaviorSubject<List<Asset<AssetAttribute>>> assetsSubject;
+    BehaviorSubject<List<Asset<AssetAttribute>>> assets;
+    ObservableSubscribeProxy<List<AssetItem>> assetsSubscription;
 
     ControllerAssetsOverviewBinding binding;
 
     FastItemAdapter<AssetItem> adapter;
-    ArrayList<AssetItem> items;
+    List<AssetItem> items;
 
     GridLayoutManager gridLayoutManager;
 
@@ -47,12 +48,13 @@ public class AssetsOverviewController extends BottomSheetController implements O
 
         super.onViewCreated(view, binding.bottomSheet);
 
-        if (assetsSubject == null) {
-            assetsSubject = BehaviorSubject.create();
+        if (assets == null) {
+            assets = BehaviorSubject.create();
         }
 
-        if (adapter == null)
+        if (adapter == null) {
             adapter = new FastItemAdapter<>();
+        }
 
         gridLayoutManager = new GridLayoutManager(view.getContext(), 2) {
             @Override
@@ -76,48 +78,50 @@ public class AssetsOverviewController extends BottomSheetController implements O
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
 
-        if (items != null) {
-            setAdapterItems(null);
-            return;
-        }
+        invalidate();
+    }
 
-        assetsSubject
-                .map(assets -> {
-                    var items = new ArrayList<AssetItem>();
-
-                    assets
+    private void invalidate() {
+        if (assetsSubscription == null) {
+            assetsSubscription = assets
+                    .map(assets -> assets
                             .stream()
                             .collect(Collectors.groupingByConcurrent(asset -> asset.path().stream().findFirst().orElse("other")))
-                            .forEach((group, groupAssets) -> {
+                            .values()
+                            .stream()
+                            .map(groupAssets -> {
                                 var mainAssets = groupAssets
                                         .stream()
                                         .filter(asset -> asset.path().size() == 1)
                                         .findFirst()
                                         .orElse(null);
 
-                                if (mainAssets == null) return;
+                                if (mainAssets == null) return null;
 
-                                var item = new AssetItem()
+                                return new AssetItem()
                                         .withIconId(mainAssets.attributes().toIconResource())
                                         .withName(mainAssets.name())
                                         .withIdentifier(assets.indexOf(mainAssets))
                                         .withDescription(String.format("%s assets", groupAssets.size()));
+                            })
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList()))
+                    .doOnNext(items -> {
+                        if (items != null) {
+                            this.items = items;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(adapter::set)
+                    .to(autoDisposable(getScopeProvider()));
+        }
 
-                                items.add(item);
-                            });
+        if (items != null) {
+            adapter.set(items);
+            return;
+        }
 
-                    return items;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::setAdapterItems)
-                .to(autoDisposable(getScopeProvider()))
-                .subscribe();
-
-    }
-
-    private void setAdapterItems(ArrayList<AssetItem> items) {
-        if (items != null) this.items = items;
-        adapter.set(this.items);
+        assetsSubscription.subscribe();
     }
 
     @Override
@@ -134,13 +138,7 @@ public class AssetsOverviewController extends BottomSheetController implements O
     }
 
     @Override
-    protected void onDestroyView(@NonNull View view) {
-        assetsSubject.onComplete();
-        super.onDestroyView(view);
-    }
-
-    @Override
-    public void setAssets(List<Asset<AssetAttribute>> assetsSubject) {
-        this.assetsSubject.onNext(assetsSubject);
+    public void setAssets(List<Asset<AssetAttribute>> assets) {
+        this.assets.onNext(assets);
     }
 }

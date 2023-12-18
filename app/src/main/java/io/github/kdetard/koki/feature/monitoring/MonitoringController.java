@@ -123,7 +123,11 @@ public class MonitoringController extends BaseController {
         RxView
                 .clicks(binding.monitorEnding)
                 .to(autoDisposable(getScopeProvider()))
-                .subscribe(unit -> datePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName()));
+                .subscribe(unit -> {
+                    if (getSupportFragmentManager().findFragmentByTag("datePicker") != null)
+                        return;
+                    datePicker.show(getSupportFragmentManager(), "datePicker");
+                });
 
         RxView.attaches(binding.monitorAttribute)
                 .doOnNext(u -> binding.monitorAttribute.setSimpleItems(
@@ -179,12 +183,15 @@ public class MonitoringController extends BaseController {
     }
 
     private void invalidate() {
+        binding.monitorSwipeRefresh.setRefreshing(false);
         toggleInput(false);
 
         if (weatherAttribute == null || timeFrameOption == null || endingDate == null || endingDate.isEmpty()) {
             toggleInput(true);
             return;
         }
+
+        binding.monitorSwipeRefresh.setRefreshing(true);
 
         var openRemoteString = weatherAttribute.getOpenRemoteString();
 
@@ -231,18 +238,7 @@ public class MonitoringController extends BaseController {
                         .collect(Collectors.toList());
 
                 bottomAxis.setValueFormatter((timestamp, _chartValues) ->
-                        chartTimeFormat.format(timestamps.get((int) timestamp)));
-            })
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError(throwable -> {
-                Timber.d(throwable, "An error occurred");
-                Toast.makeText(getApplicationContext(), String.format("An error occurred: %s", throwable.getMessage()), Toast.LENGTH_LONG).show();
-                toggleInput(true);
-            })
-            .onErrorResumeNext(throwable -> Single.just(Collections.emptyList()))
-            .doOnSuccess(datapoints -> {
-                if (datapoints.size() < 2)
-                    Toast.makeText(getApplicationContext(), R.string.datapoints_not_enough, Toast.LENGTH_SHORT).show();
+                        chartTimeFormat.format(timestamps.stream().skip((int) timestamp).findFirst().orElse(0L)));
 
                 if (chartEntryModel != null) {
                     chartEntryModelProducer = (ChartEntryModelProducer)binding.monitorChart.getEntryProducer();
@@ -254,15 +250,33 @@ public class MonitoringController extends BaseController {
 
                     chartEntryModelProducer.setEntries(chartEntryModel.getEntries(), mutableExtraStore -> null);
                 }
-
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError(throwable -> {
+                Timber.d(throwable, "An error occurred");
+                Toast.makeText(getApplicationContext(), String.format("An error occurred: %s", throwable.getMessage()), Toast.LENGTH_LONG).show();
+                binding.monitorNoData.setVisibility(View.VISIBLE);
+                binding.monitorChart.setVisibility(View.INVISIBLE);
                 toggleInput(true);
+                binding.monitorSwipeRefresh.setRefreshing(false);
+            })
+            .onErrorResumeNext(throwable -> Single.just(Collections.emptyList()))
+            .doOnSuccess(datapoints -> {
+                if (datapoints.size() < 2) {
+                    binding.monitorNoData.setVisibility(View.VISIBLE);
+                    binding.monitorChart.setVisibility(View.INVISIBLE);
+                } else {
+                    binding.monitorNoData.setVisibility(View.INVISIBLE);
+                    binding.monitorChart.setVisibility(View.VISIBLE);
+                }
+                toggleInput(true);
+                binding.monitorSwipeRefresh.setRefreshing(false);
             })
             .to(autoDisposable(getScopeProvider()))
             .subscribe();
     }
 
     private void toggleInput(boolean predicate) {
-        binding.monitorSwipeRefresh.setRefreshing(!predicate);
         binding.monitorAttribute.setEnabled(predicate);
         binding.monitorTimeFrame.setEnabled(predicate);
         binding.monitorEnding.setEnabled(predicate);
@@ -272,12 +286,16 @@ public class MonitoringController extends BaseController {
         if (endingDateMillis != 0) return;
         var startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault());
         endingDateMillis = startOfToday.toEpochSecond() * 1000;
-        timePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag("timePicker") != null)
+            return;
+        timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
     private void setEndingDate(long selection) {
         endingDateMillis = selection - Calendar.getInstance().getTimeZone().getRawOffset();
-        timePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag("timePicker") != null)
+            return;
+        timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
     private<T> void setDefaultTime(T listener) {
@@ -293,10 +311,14 @@ public class MonitoringController extends BaseController {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
-        datePicker = null;
-        timePicker.removeOnPositiveButtonClickListener(this::setTime);
-        timePicker = null;
+        if (datePicker != null) {
+            datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
+            datePicker = null;
+        }
+        if (timePicker != null) {
+            timePicker.removeOnPositiveButtonClickListener(this::setTime);
+            timePicker = null;
+        }
         super.onDestroyView(view);
     }
 

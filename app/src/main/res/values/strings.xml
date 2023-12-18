@@ -115,4 +115,5 @@
     <string name="southwest">South West</string>
     <string name="west">West</string>
     <string name="northwest">North West</string>
+    <string name="no_chart_data">No chart data</string>
 </resources>
