@@ -123,7 +123,11 @@ public class MonitoringController extends BaseController {
         RxView
                 .clicks(binding.monitorEnding)
                 .to(autoDisposable(getScopeProvider()))
-                .subscribe(unit -> datePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName()));
+                .subscribe(unit -> {
+                    if (getSupportFragmentManager().findFragmentByTag("datePicker") != null)
+                        return;
+                    datePicker.show(getSupportFragmentManager(), "datePicker");
+                });
 
         RxView.attaches(binding.monitorAttribute)
                 .doOnNext(u -> binding.monitorAttribute.setSimpleItems(
@@ -272,12 +276,16 @@ public class MonitoringController extends BaseController {
         if (endingDateMillis != 0) return;
         var startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault());
         endingDateMillis = startOfToday.toEpochSecond() * 1000;
-        timePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag("timePicker") != null)
+            return;
+        timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
     private void setEndingDate(long selection) {
         endingDateMillis = selection - Calendar.getInstance().getTimeZone().getRawOffset();
-        timePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag("timePicker") != null)
+            return;
+        timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
     private<T> void setDefaultTime(T listener) {
@@ -293,10 +301,14 @@ public class MonitoringController extends BaseController {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
-        datePicker = null;
-        timePicker.removeOnPositiveButtonClickListener(this::setTime);
-        timePicker = null;
+        if (datePicker != null) {
+            datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
+            datePicker = null;
+        }
+        if (timePicker != null) {
+            timePicker.removeOnPositiveButtonClickListener(this::setTime);
+            timePicker = null;
+        }
         super.onDestroyView(view);
     }
 
