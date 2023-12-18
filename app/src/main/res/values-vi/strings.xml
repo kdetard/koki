@@ -54,7 +54,7 @@
     <string name="asset_group_icon">Biểu tượng nhóm cảm biến</string>
     <string name="asset_group_description">Mô tả nhóm cảm biến</string>
     <string name="asset_group_icon_next">Chuyển đến nhóm cảm biến này</string>
-    <string name="hi_title">Xin chào, admin</string>
+    <string name="greet_user">Xin chào, %s</string>
     <string name="day_title">Thứ hai</string>
     <string name="temperature_txt">19\u00b0</string>
     <string name="Temperature_range">H: 24\u00b0 L: 14\u00b0</string>
@@ -93,10 +93,10 @@
     <string name="ending_date_selection">Chọn ngày kết thúc</string>
     <string name="invalid_date">Thời gian không hợp lệ</string>
     <string name="datapoints_not_enough">Dữ liệu không đủ</string>
-    <string name="aqi_detail_custom">Chỉ số hiện tại là %d</string>
+    <string name="aqi_detail_custom">Chỉ số hiện tại là %.1f</string>
     <string name="temperature_detail_custom">Cảm thấy như %.1f%s</string>
-    <string name="rain_detail_custom">%d%s dự kiến trong thời gian %d phút tới</string>
-    <string name="humidity_detail_custom">Độ ẩm hiện tại %d%s</string>
+    <string name="rain_detail_custom">%.1f%s dự kiến trong thời gian %d phút tới</string>
+    <string name="humidity_detail_custom">Độ ẩm hiện tại %.1f%s</string>
     <string name="aqi_detail">Chỉ số hiện tại là %s</string>
     <string name="rain_detail">Dự kiến %.1f mm</string>
     <string name="humidity_detail">Độ ẩm hiện tại %s%%</string>
@@ -122,4 +122,7 @@
     <string name="west">Tây</string>
     <string name="northwest">Tây Bắc</string>
     <string name="no_chart_data">Không có dữ liệu</string>
+    <string name="user_fail">Không thể lấy thông tin người dùng</string>
+    <string name="greet_default">Xin chào</string>
+    <string name="level_of_air">Mức độ không khí</string>
 </resources>

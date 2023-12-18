@@ -53,7 +53,7 @@
     <string name="asset_group_icon">Asset group icon</string>
     <string name="asset_group_description">Asset group description</string>
     <string name="asset_group_icon_next">Go to this asset group</string>
-    <string name="hi_title">Hi, Admin</string>
+    <string name="greet_user">Hi, %s</string>
     <string name="day_title">Monday</string>
     <string name="temperature_txt">19\u00b0</string>
     <string name="Temperature_range">H: 24\u00b0 L: 14\u00b0</string>
@@ -92,10 +92,10 @@
     <string name="ending_date_selection">Select ending date</string>
     <string name="invalid_date">Invalid date</string>
     <string name="datapoints_not_enough">Not enough datapoints</string>
-    <string name="aqi_detail_custom">Current index is %d</string>
+    <string name="aqi_detail_custom">Current index is %.1f</string>
     <string name="temperature_detail_custom">Feels like %.1f%s</string>
-    <string name="rain_detail_custom">%d%s expected in the next %d minutes</string>
-    <string name="humidity_detail_custom">Humidity is %d%s right now</string>
+    <string name="rain_detail_custom">%.1f%s expected in the next %d minutes</string>
+    <string name="humidity_detail_custom">Humidity is %.1f%s right now</string>
     <string name="aqi_detail">Current index is %s</string>
     <string name="rain_detail">%.1f mm expected</string>
     <string name="humidity_detail">Humidity is %s%% right now</string>
@@ -121,4 +121,7 @@
     <string name="west">West</string>
     <string name="northwest">North West</string>
     <string name="no_chart_data">No chart data</string>
+    <string name="user_fail">Failed to get user</string>
+    <string name="greet_default">Hi</string>
+    <string name="level_of_air">Level of air</string>
 </resources>

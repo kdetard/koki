@@ -12,7 +12,6 @@ import androidx.datastore.rxjava3.RxDataStore;
 import com.jakewharton.rxbinding4.widget.RxCompoundButton;
 import com.squareup.moshi.Moshi;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -21,6 +20,7 @@ import java.util.Objects;
 
 import autodispose2.FlowableSubscribeProxy;
 import autodispose2.MaybeSubscribeProxy;
+import autodispose2.SingleSubscribeProxy;
 import dagger.hilt.EntryPoint;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
@@ -40,8 +40,10 @@ import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
 import io.github.kdetard.koki.openremote.models.HTTPAgentAsset;
 import io.github.kdetard.koki.openremote.models.OpenRemoteWeather;
+import io.github.kdetard.koki.openremote.models.User;
 import io.github.kdetard.koki.openremote.models.WeatherAsset;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class HomeController extends BaseController {
     @EntryPoint
@@ -51,7 +53,6 @@ public class HomeController extends BaseController {
         OpenRemoteService openRemoteService();
         AqicnService aqicnService();
         OpenMeteoService openMeteoService();
-
         Moshi moshi();
     }
 
@@ -59,15 +60,17 @@ public class HomeController extends BaseController {
 
     HomeEntryPoint entryPoint;
 
-    MaybeSubscribeProxy<Asset<AssetAttribute>> weatherSubcribeProxy;
+    SingleSubscribeProxy<User> userSubscription;
 
-    MaybeSubscribeProxy<Asset<AssetAttribute>> aqicnSubscribeProxy;
+    MaybeSubscribeProxy<Asset<AssetAttribute>> weatherSubcription;
+
+    MaybeSubscribeProxy<Asset<AssetAttribute>> aqiSubscription;
 
     MaybeSubscribeProxy<Asset<AssetAttribute>> httpAgentSubscribeProxy;
 
-    FlowableSubscribeProxy<AqicnResponse> aqicnSubscribeProxyCustom;
+    FlowableSubscribeProxy<AqicnResponse> customAqiSubscription;
 
-    MaybeSubscribeProxy<OpenMeteoResponse> openMeteoSubscribeProxy;
+    MaybeSubscribeProxy<OpenMeteoResponse> customWeatherSubscription;
 
     boolean useCustomProvider = false;
 
@@ -83,7 +86,7 @@ public class HomeController extends BaseController {
 
         binding = ControllerHomeBinding.bind(view);
 
-        binding.homeAppbar.homeGreeting.setText("Hello, user"/* + entryPoint.settings().data().map(Settings::getUsername).blockingGet() + "!""*/);
+        binding.homeAppbar.homeGreeting.setText(R.string.greet_default);
         binding.homeAppbar.homeWeekday.setText(LocalDate.now().getDayOfWeek().name());
 
         binding.homeAqCard.itemChartTitle.setText(R.string.air_quality_title);
@@ -138,10 +141,11 @@ public class HomeController extends BaseController {
     }
 
     private void invalidate() {
-        DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE", Locale.getDefault());
+        var dayOfWeek = LocalDate.now().getDayOfWeek();
+        var formatter = DateTimeFormatter.ofPattern("EEEE", Locale.getDefault());
         binding.homeAppbar.homeWeekday.setText(formatter.format(dayOfWeek));
 
+        binding.homeAppbar.homeGreeting.setText("...");
         binding.homeAppbar.homeTemperatureDetail.setText("...");
         binding.homeAqCard.itemIndexDescription.setText("...");
         binding.homeRainCard.itemIndexDescription.setText("...");
@@ -151,24 +155,40 @@ public class HomeController extends BaseController {
         binding.homePressureCard.itemIndexDescription.setText("...");
         binding.homeCloudCard.itemIndexDescription.setText("...");
 
+        if (userSubscription == null) {
+            userSubscription = entryPoint.openRemoteService().getUser()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError(throwable -> {
+                        Toast.makeText(getApplicationContext(), R.string.user_fail, Toast.LENGTH_SHORT).show();
+                        Timber.e(throwable, "Failed to get user");
+                        binding.homeAppbar.homeGreeting.setText(R.string.greet_default);
+                    })
+                    .doOnSuccess(user ->
+                            binding.homeAppbar.homeGreeting.setText(
+                                    String.format(Objects.requireNonNull(getApplicationContext()).getString(R.string.greet_user), user.firstName())))
+                    .to(autoDisposable(getScopeProvider()));
+        }
+
+        userSubscription.subscribe();
+
         if (useCustomProvider) {
-            if (aqicnSubscribeProxyCustom == null) {
-                aqicnSubscribeProxyCustom = entryPoint.settings()
+            if (customAqiSubscription == null) {
+                customAqiSubscription = entryPoint.settings()
                         .data()
                         .map(Settings::getAqicnToken)
                         .map(token -> token == null || token.isEmpty() ? "667e41e2d287e249d41093d8c589f5d2184cc458" : token)
                         .flatMapSingle(token -> entryPoint.aqicnService().fromCityOrStationId("A37081", token))
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(aqicnResponse -> {
-                            var api_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.aqi_detail);
-                            binding.homeAqCard.itemIndexDescription.setText(String.format(Locale.getDefault(), api_detail, (int) aqicnResponse.data().aqi()));
+                            var api_detail_custom = Objects.requireNonNull(getApplicationContext()).getString(R.string.aqi_detail_custom);
+                            binding.homeAqCard.itemIndexDescription.setText(String.format(Locale.getDefault(), api_detail_custom, aqicnResponse.data().aqi()));
                             binding.homeSwipeRefresh.setRefreshing(false);
                         })
                         .to(autoDisposable(getScopeProvider()));
             }
 
-            if (openMeteoSubscribeProxy == null)
-                openMeteoSubscribeProxy = entryPoint.openMeteoService().getWeather()
+            if (customWeatherSubscription == null)
+                customWeatherSubscription = entryPoint.openMeteoService().getWeather()
                         .observeOn(AndroidSchedulers.mainThread())
                         .onErrorComplete(throwable -> {
                             Toast.makeText(getApplicationContext(),
@@ -181,19 +201,18 @@ public class HomeController extends BaseController {
                             var humidity_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.humidity_detail_custom);
                             binding.homeAppbar.homeTemperatureIndex.setText(String.format(Locale.getDefault(), "%.1f%s", openMeteoResponse.current().temperature2m(), openMeteoResponse.currentUnits().temperature2m()));
                             binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openMeteoResponse.current().apparentTemperature(), openMeteoResponse.currentUnits().apparentTemperature()));
-                            binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), rain_detail, (int) openMeteoResponse.current().rain(), openMeteoResponse.currentUnits().rain(), openMeteoResponse.current().interval() / 60));
-                            binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, (int) openMeteoResponse.current().relativeHumidity2m(), openMeteoResponse.currentUnits().relativeHumidity2m()));
-                            binding.homeSwipeRefresh.setRefreshing(false);
+                            binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), rain_detail, openMeteoResponse.current().rain(), openMeteoResponse.currentUnits().rain(), openMeteoResponse.current().interval() / 60));
+                            binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, openMeteoResponse.current().relativeHumidity2m(), openMeteoResponse.currentUnits().relativeHumidity2m()));
                         })
                         .to(autoDisposable(getScopeProvider()));
 
-            aqicnSubscribeProxyCustom.subscribe();
-            openMeteoSubscribeProxy.subscribe();
+            customAqiSubscription.subscribe();
+            customWeatherSubscription.subscribe();
             return;
         }
 
-        if (aqicnSubscribeProxy == null) {
-            weatherSubcribeProxy = entryPoint.openRemoteService()
+        if (weatherSubcription == null) {
+            weatherSubcription = entryPoint.openRemoteService()
                     .getAsset("5zI6XqkQVSfdgOrZ1MyWEf")
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorComplete(throwable -> {
@@ -223,13 +242,12 @@ public class HomeController extends BaseController {
                         binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, humidity == null ? "unknown" : humidity));
                         binding.homeWindCard.itemIndexDescription.setText(String.format(Locale.getDefault(), wind_detail, windSpeed == null ? 0 : windSpeed));
                         binding.homeWindDirectionCard.itemIndexDescription.setText(String.format(Locale.getDefault(), windDirection_detail, windDirection));
-                        binding.homeSwipeRefresh.setRefreshing(false);
                     })
                     .to(autoDisposable(getScopeProvider()));
         }
 
-        if (aqicnSubscribeProxy == null) {
-            aqicnSubscribeProxy = entryPoint.openRemoteService()
+        if (aqiSubscription == null) {
+            aqiSubscription = entryPoint.openRemoteService()
                     .getAsset("6Wo9Lv1Oa1zQleuRVfADP4")
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorComplete(throwable -> {
@@ -262,7 +280,6 @@ public class HomeController extends BaseController {
                         binding.homeAqCard.itemNo2.setText(String.format(Locale.getDefault(), no2_detail, aqi == null ? 0 : no2));
                         binding.homeAqCard.itemSo2.setText(String.format(Locale.getDefault(), so2_detail, aqi == null ? 0 : so2));
                         binding.homeAqCard.itemCo2.setText(String.format(Locale.getDefault(), co2_detail, aqi == null ? 0 : co2));
-                        binding.homeSwipeRefresh.setRefreshing(false);
                     })
                     .to(autoDisposable(getScopeProvider()));
         }
@@ -291,14 +308,13 @@ public class HomeController extends BaseController {
                         }
                         binding.homeCloudCard.itemIndexDescription.setText(String.format(Locale.getDefault(), cloud_detail, openRemoteWeather.clouds().all()));
                         binding.homePressureCard.itemIndexDescription.setText(String.format(Locale.getDefault(), pressure_detail, openRemoteWeather.main().pressure()));
-                        binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openRemoteWeather.main().feels_like()));
+                        binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openRemoteWeather.main().feelsLike()));
                     })
                     .to(autoDisposable(getScopeProvider()));
         }
 
-
-        weatherSubcribeProxy.subscribe();
-        aqicnSubscribeProxy.subscribe();
+        weatherSubcription.subscribe();
+        aqiSubscription.subscribe();
         httpAgentSubscribeProxy.subscribe();
     }
 
