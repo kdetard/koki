@@ -24,79 +24,115 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include layout="@layout/item_chart_cardview"
-                android:id="@+id/home_aq_card"
-                android:layout_width="300dp"
-                android:layout_height="150dp"
-                android:layout_marginVertical="@dimen/padding_16"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
-
-            <include layout="@layout/item_index_cardview"
-                android:id="@+id/home_rain_card"
-                android:layout_width="180dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="@dimen/padding_16"
-                android:layout_marginHorizontal="@dimen/padding_8"
-                app:layout_constraintTop_toBottomOf="@id/home_aq_card"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/home_humidity_card"
-                />
-
-            <include layout="@layout/item_index_cardview"
-                android:id="@+id/home_humidity_card"
-                android:layout_width="180dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="@dimen/padding_16"
-                android:layout_marginHorizontal="@dimen/padding_8"
-                app:layout_constraintTop_toBottomOf="@id/home_aq_card"
-                app:layout_constraintStart_toEndOf="@id/home_rain_card"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
-
-            <include layout="@layout/item_index_cardview"
-                android:id="@+id/home_wind_card"
-                android:layout_width="180dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="@dimen/padding_16"
-                android:layout_marginHorizontal="@dimen/padding_8"
-                app:layout_constraintTop_toBottomOf="@id/home_rain_card"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/home_humidity_card"
-                />
-
-            <include layout="@layout/item_index_cardview"
-                android:id="@+id/home_windDirection_card"
-                android:layout_width="180dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="@dimen/padding_16"
-                android:layout_marginHorizontal="@dimen/padding_8"
-                app:layout_constraintTop_toBottomOf="@id/home_rain_card"
-                app:layout_constraintStart_toEndOf="@id/home_wind_card"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
-
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/home_provider_toggle"
+        <ScrollView android:id="@+id/ScrollViewID"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            >
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/home_provider_toggle"
-                android:layout_marginTop="@dimen/padding_16"
-                android:layout_marginHorizontal="@dimen/padding_16"
-                app:layout_constraintTop_toBottomOf="@id/home_wind_card"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/padding_16"
+                app:layout_constraintTop_toBottomOf="@id/home_appbar"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@android:color/white"
-                />
+                >
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <include layout="@layout/item_chart_cardview"
+                    android:id="@+id/home_aq_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_marginVertical="@dimen/padding_16"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginVertical="@dimen/padding_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+                    <include layout="@layout/item_index_cardview"
+                        android:id="@+id/home_rain_card"
+                        android:layout_width="180dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="@dimen/padding_8"
+
+                        />
+
+                    <include layout="@layout/item_index_cardview"
+                        android:id="@+id/home_humidity_card"
+                        android:layout_width="180dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="@dimen/padding_8"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginVertical="@dimen/padding_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+                    <include layout="@layout/item_index_cardview"
+                        android:id="@+id/home_wind_card"
+                        android:layout_width="180dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="@dimen/padding_8"
+
+                        />
+
+                    <include layout="@layout/item_index_cardview"
+                        android:id="@+id/home_windDirection_card"
+                        android:layout_width="180dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="@dimen/padding_8"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginVertical="@dimen/padding_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+                    <include layout="@layout/item_index_cardview"
+                        android:layout_width="180dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="@dimen/padding_8"
+
+                        />
+
+                    <include layout="@layout/item_index_cardview"
+                        android:layout_width="180dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="@dimen/padding_8"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/home_provider_toggle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/home_provider_toggle"
+                    android:layout_marginTop="@dimen/padding_16"
+                    android:layout_marginHorizontal="@dimen/padding_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textColor="@android:color/white"
+                    />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </ScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -93,11 +93,11 @@ public class HomeController extends BaseController {
 
         binding.homeWindCard.itemIndexTitle.setText(getApplicationContext().getString(R.string.wind_title));
         binding.homeWindCard.itemIndexIcon.setImageResource(R.drawable.ic_wind_power_24dp);
-        binding.homeRainCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
+        binding.homeWindCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
 
         binding.homeWindDirectionCard.itemIndexTitle.setText(getApplicationContext().getString(R.string.windDirection_title));
         binding.homeWindDirectionCard.itemIndexIcon.setImageResource(R.drawable.ic_wind_power_24dp);
-        binding.homeRainCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
+        binding.homeWindDirectionCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
 
         binding.homeProviderToggle.setChecked(useCustomProvider);
 
