@@ -183,7 +183,9 @@ public class MonitoringController extends BaseController {
     }
 
     private void invalidate() {
-        toggleInput(false);
+        binding.monitorAttribute.setEnabled(false);
+        binding.monitorTimeFrame.setEnabled(false);
+        binding.monitorEnding.setEnabled(false);
 
         if (weatherAttribute == null || timeFrameOption == null || endingDate == null || endingDate.isEmpty()) {
             toggleInput(true);
@@ -235,18 +237,7 @@ public class MonitoringController extends BaseController {
                         .collect(Collectors.toList());
 
                 bottomAxis.setValueFormatter((timestamp, _chartValues) ->
-                        chartTimeFormat.format(timestamps.get((int) timestamp)));
-            })
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError(throwable -> {
-                Timber.d(throwable, "An error occurred");
-                Toast.makeText(getApplicationContext(), String.format("An error occurred: %s", throwable.getMessage()), Toast.LENGTH_LONG).show();
-                toggleInput(true);
-            })
-            .onErrorResumeNext(throwable -> Single.just(Collections.emptyList()))
-            .doOnSuccess(datapoints -> {
-                if (datapoints.size() < 2)
-                    Toast.makeText(getApplicationContext(), R.string.datapoints_not_enough, Toast.LENGTH_SHORT).show();
+                        chartTimeFormat.format(timestamps.stream().skip((int) timestamp).findFirst().orElse(0L)));
 
                 if (chartEntryModel != null) {
                     chartEntryModelProducer = (ChartEntryModelProducer)binding.monitorChart.getEntryProducer();
@@ -258,7 +249,24 @@ public class MonitoringController extends BaseController {
 
                     chartEntryModelProducer.setEntries(chartEntryModel.getEntries(), mutableExtraStore -> null);
                 }
-
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError(throwable -> {
+                Timber.d(throwable, "An error occurred");
+                Toast.makeText(getApplicationContext(), String.format("An error occurred: %s", throwable.getMessage()), Toast.LENGTH_LONG).show();
+                binding.monitorNoData.setVisibility(View.VISIBLE);
+                binding.monitorChart.setVisibility(View.INVISIBLE);
+                toggleInput(true);
+            })
+            .onErrorResumeNext(throwable -> Single.just(Collections.emptyList()))
+            .doOnSuccess(datapoints -> {
+                if (datapoints.size() < 2) {
+                    binding.monitorNoData.setVisibility(View.VISIBLE);
+                    binding.monitorChart.setVisibility(View.INVISIBLE);
+                } else {
+                    binding.monitorNoData.setVisibility(View.INVISIBLE);
+                    binding.monitorChart.setVisibility(View.VISIBLE);
+                }
                 toggleInput(true);
             })
             .to(autoDisposable(getScopeProvider()))
