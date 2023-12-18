@@ -94,4 +94,5 @@
     <string name="rain_detail">%d%s dự kiến trong thời gian %d phút tới</string>
     <string name="humidity_detail">Sương mù hiện tại %d%s</string>
     <string name="weather_fail">Không thể nạp dữ liệu thời tiết: %s</string>
+    <string name="no_chart_data">Không có dữ liệu</string>
 </resources>
