@@ -203,6 +203,7 @@ public class HomeController extends BaseController {
                             binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openMeteoResponse.current().apparentTemperature(), openMeteoResponse.currentUnits().apparentTemperature()));
                             binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), rain_detail, openMeteoResponse.current().rain(), openMeteoResponse.currentUnits().rain(), openMeteoResponse.current().interval() / 60));
                             binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, openMeteoResponse.current().relativeHumidity2m(), openMeteoResponse.currentUnits().relativeHumidity2m()));
+                            binding.homeSwipeRefresh.setRefreshing(false);
                         })
                         .to(autoDisposable(getScopeProvider()));
 
@@ -242,6 +243,7 @@ public class HomeController extends BaseController {
                         binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, humidity == null ? "unknown" : humidity));
                         binding.homeWindCard.itemIndexDescription.setText(String.format(Locale.getDefault(), wind_detail, windSpeed == null ? 0 : windSpeed));
                         binding.homeWindDirectionCard.itemIndexDescription.setText(String.format(Locale.getDefault(), windDirection_detail, windDirection));
+                        binding.homeSwipeRefresh.setRefreshing(false);
                     })
                     .to(autoDisposable(getScopeProvider()));
         }
@@ -280,6 +282,7 @@ public class HomeController extends BaseController {
                         binding.homeAqCard.itemNo2.setText(String.format(Locale.getDefault(), no2_detail, aqi == null ? 0 : no2));
                         binding.homeAqCard.itemSo2.setText(String.format(Locale.getDefault(), so2_detail, aqi == null ? 0 : so2));
                         binding.homeAqCard.itemCo2.setText(String.format(Locale.getDefault(), co2_detail, aqi == null ? 0 : co2));
+                        binding.homeSwipeRefresh.setRefreshing(false);
                     })
                     .to(autoDisposable(getScopeProvider()));
         }
@@ -309,6 +312,7 @@ public class HomeController extends BaseController {
                         binding.homeCloudCard.itemIndexDescription.setText(String.format(Locale.getDefault(), cloud_detail, openRemoteWeather.clouds().all()));
                         binding.homePressureCard.itemIndexDescription.setText(String.format(Locale.getDefault(), pressure_detail, openRemoteWeather.main().pressure()));
                         binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openRemoteWeather.main().feelsLike()));
+                        binding.homeSwipeRefresh.setRefreshing(false);
                     })
                     .to(autoDisposable(getScopeProvider()));
         }
