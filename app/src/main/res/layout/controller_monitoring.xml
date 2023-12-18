@@ -32,6 +32,17 @@
             android:layout_height="match_parent"
             >
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/monitor_no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/monitor_selection_field"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/no_chart_data"
+                />
+
             <com.patrykandpatrick.vico.views.chart.ChartView
                 android:id="@+id/monitor_chart"
                 android:layout_width="match_parent"
