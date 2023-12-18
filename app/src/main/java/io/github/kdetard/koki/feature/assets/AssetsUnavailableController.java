@@ -25,7 +25,7 @@ public class AssetsUnavailableController extends BottomSheetController {
                 .subscribe();
 
         RxView.clicks(binding.assetsUnavailableRetryBtn)
-                .doOnNext(u -> getRouter().popToRoot())
+                .doOnNext(u -> getRouter().popCurrentController())
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
     }
