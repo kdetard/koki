@@ -10,11 +10,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.datastore.rxjava3.RxDataStore;
 
 import com.jakewharton.rxbinding4.widget.RxCompoundButton;
+import com.squareup.moshi.Moshi;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import autodispose2.FlowableSubscribeProxy;
@@ -30,13 +32,14 @@ import io.github.kdetard.koki.aqicn.AqicnService;
 import io.github.kdetard.koki.aqicn.models.AqicnResponse;
 import io.github.kdetard.koki.databinding.ControllerHomeBinding;
 import io.github.kdetard.koki.feature.base.BaseController;
-import io.github.kdetard.koki.feature.monitoring.WeatherAttributes;
 import io.github.kdetard.koki.misc.Direction;
 import io.github.kdetard.koki.openmeteo.OpenMeteoService;
 import io.github.kdetard.koki.openmeteo.models.OpenMeteoResponse;
 import io.github.kdetard.koki.openremote.OpenRemoteService;
 import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
+import io.github.kdetard.koki.openremote.models.HTTPAgentAsset;
+import io.github.kdetard.koki.openremote.models.OpenRemoteWeather;
 import io.github.kdetard.koki.openremote.models.WeatherAsset;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
@@ -48,6 +51,8 @@ public class HomeController extends BaseController {
         OpenRemoteService openRemoteService();
         AqicnService aqicnService();
         OpenMeteoService openMeteoService();
+
+        Moshi moshi();
     }
 
     ControllerHomeBinding binding;
@@ -57,6 +62,8 @@ public class HomeController extends BaseController {
     MaybeSubscribeProxy<Asset<AssetAttribute>> weatherSubcribeProxy;
 
     MaybeSubscribeProxy<Asset<AssetAttribute>> aqicnSubscribeProxy;
+
+    MaybeSubscribeProxy<Asset<AssetAttribute>> httpAgentSubscribeProxy;
 
     FlowableSubscribeProxy<AqicnResponse> aqicnSubscribeProxyCustom;
 
@@ -99,6 +106,14 @@ public class HomeController extends BaseController {
         binding.homeWindDirectionCard.itemIndexIcon.setImageResource(R.drawable.ic_wind_power_24dp);
         binding.homeWindDirectionCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
 
+        binding.homePressureCard.itemIndexTitle.setText(getApplicationContext().getString(R.string.pressure_title));
+        binding.homePressureCard.itemIndexIcon.setImageResource(R.drawable.ic_gauge_24dp);
+        binding.homePressureCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
+
+        binding.homeCloudCard.itemIndexTitle.setText(getApplicationContext().getString(R.string.cloud_title));
+        binding.homeCloudCard.itemIndexIcon.setImageResource(R.drawable.ic_cloud_24dp);
+        binding.homeCloudCard.itemIndexInfo.setBackgroundResource(R.drawable.bg_base_card);
+
         binding.homeProviderToggle.setChecked(useCustomProvider);
 
         RxCompoundButton.checkedChanges(binding.homeProviderToggle)
@@ -133,6 +148,8 @@ public class HomeController extends BaseController {
         binding.homeHumidityCard.itemIndexDescription.setText("...");
         binding.homeWindCard.itemIndexDescription.setText("...");
         binding.homeWindDirectionCard.itemIndexDescription.setText("...");
+        binding.homePressureCard.itemIndexDescription.setText("...");
+        binding.homeCloudCard.itemIndexDescription.setText("...");
 
         if (useCustomProvider) {
             if (aqicnSubscribeProxyCustom == null) {
@@ -194,14 +211,14 @@ public class HomeController extends BaseController {
                         var windDirectionDegress = weatherAttributes.windDirection().value();
                         var windDirection = Direction.values()[(int) Math.floor((windDirectionDegress + 22.5) / 45) % 8].getText(Objects.requireNonNull(getApplicationContext()));
 
-                        var temperature_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.temperature_detail);
+                        var temperature_location = Objects.requireNonNull(getApplicationContext()).getString(R.string.temperature_location);
                         var rain_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.rain_detail);
                         var humidity_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.humidity_detail);
                         var wind_detail = getApplicationContext().getString(R.string.wind_detail);
                         var windDirection_detail = getApplicationContext().getString(R.string.windDirection_detail);
 
                         binding.homeAppbar.homeTemperatureIndex.setText(String.format(Locale.getDefault(), "%.1f °C", temperature == null ? 0 : temperature));
-                        binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, place));
+                        binding.homeAppbar.homeTemperatureLocation.setText(String.format(Locale.getDefault(), temperature_location, place));
                         binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), rain_detail, rainfall == null ? 0 : rainfall));
                         binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, humidity == null ? "unknown" : humidity));
                         binding.homeWindCard.itemIndexDescription.setText(String.format(Locale.getDefault(), wind_detail, windSpeed == null ? 0 : windSpeed));
@@ -250,9 +267,39 @@ public class HomeController extends BaseController {
                     .to(autoDisposable(getScopeProvider()));
         }
 
+        if (httpAgentSubscribeProxy == null) {
+            httpAgentSubscribeProxy = entryPoint.openRemoteService()
+                    .getAsset("4EqQeQ0L4YNWNNTzvTOqjy")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorComplete(throwable -> {
+                        Toast.makeText(getApplicationContext(),
+                                String.format(Objects.requireNonNull(getApplicationContext()).getString(R.string.weather_fail), throwable.getMessage()), Toast.LENGTH_SHORT).show();
+                        return true;
+                    })
+                    .doOnSuccess(asset -> {
+                        var attrs = (HTTPAgentAsset.Attributes) asset.attributes();
+                        var jsonValue = attrs.data().value();
+                        var jsonString = entryPoint.moshi().adapter(Map.class).toJson(jsonValue);
+                        var openRemoteWeather = entryPoint.moshi().adapter(OpenRemoteWeather.class).fromJson(jsonString);
+
+                        var cloud_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.cloud_detail);
+                        var pressure_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.pressure_detail);
+                        var temperature_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.temperature_detail);
+
+                        if (openRemoteWeather == null) {
+                            throw new RuntimeException();
+                        }
+                        binding.homeCloudCard.itemIndexDescription.setText(String.format(Locale.getDefault(), cloud_detail, openRemoteWeather.clouds().all()));
+                        binding.homePressureCard.itemIndexDescription.setText(String.format(Locale.getDefault(), pressure_detail, openRemoteWeather.main().pressure()));
+                        binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openRemoteWeather.main().feels_like()));
+                    })
+                    .to(autoDisposable(getScopeProvider()));
+        }
+
 
         weatherSubcribeProxy.subscribe();
         aqicnSubscribeProxy.subscribe();
+        httpAgentSubscribeProxy.subscribe();
     }
 
     @Override

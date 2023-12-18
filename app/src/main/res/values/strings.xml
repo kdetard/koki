@@ -61,6 +61,8 @@
     <string name="rain_fall_title">Rain fall</string>
     <string name="humidity_title">Humidity</string>
     <string name="wind_title">Wind</string>
+    <string name="pressure_title">Pressure</string>
+    <string name="cloud_title">Cloud</string>
     <string name="windDirection_title">Direction</string>
     <string name="home_appbar_background">Home appbar background</string>
     <string name="item_chart_overview">Chart overview icon</string>
@@ -100,7 +102,10 @@
     <string name="wind_detail">Wind speed is %.1f km/h</string>
     <string name="windDirection_detail">Wind direction is %s</string>
     <string name="weather_fail">Failed to fetch weather data: %s</string>
-    <string name="temperature_detail">Current location: %s</string>\
+    <string name="temperature_location">Current location: %s</string>
+    <string name="cloud_detail">Cloud cover is %d%%</string>
+    <string name="pressure_detail">Pressure is %d hPa</string>
+    <string name="temperature_detail">Feels like %.1f °C</string>
     <string name="pm25"><b>PM2.5:</b> %.2f <i>μg/m³</i></string>
     <string name="pm10"><b>PM10:</b> %.2f <i>μg/m³</i></string>
     <string name="o3"><b>O₃:</b> %.2f <i>μg/m³</i></string>

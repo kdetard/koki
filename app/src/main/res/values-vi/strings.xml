@@ -62,6 +62,8 @@
     <string name="rain_fall_title">Lượng mưa</string>
     <string name="humidity_title">Độ ẩm</string>
     <string name="wind_title">Gió</string>
+    <string name="pressure_title">Áp suất</string>
+    <string name="cloud_title">Mây</string>
     <string name="windDirection_title">Hướng</string>
     <string name="home_appbar_background">Home appbar background</string>
     <string name="item_chart_overview">Chart overview icon</string>
@@ -101,7 +103,10 @@
     <string name="wind_detail">Tốc độ gió hiện tại %.1f km/h</string>
     <string name="windDirection_detail">Hướng gió hiện tại %s</string>
     <string name="weather_fail">Không thể nạp dữ liệu thời tiết: %s</string>
-    <string name="temperature_detail">Vị trí hiện tại: %s</string>
+    <string name="temperature_location">Vị trí hiện tại: %s</string>
+    <string name="cloud_detail">Lượng mây che phủ là %d%%</string>
+    <string name="pressure_detail">Áp suất là %d hPa</string>
+    <string name="temperature_detail">Cảm giác như %.1f °C</string>
     <string name="pm25">PM2.5: %.2f μg/m³</string>
     <string name="pm10">PM10: %.2f μg/m³</string>
     <string name="o3">O₃: %.2f μg/m³</string>
