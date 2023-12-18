@@ -313,10 +313,12 @@ public class MonitoringController extends BaseController {
     protected void onDestroyView(@NonNull View view) {
         if (datePicker != null) {
             datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
+            datePicker.onDestroy();
             datePicker = null;
         }
         if (timePicker != null) {
             timePicker.removeOnPositiveButtonClickListener(this::setTime);
+            timePicker.onDestroy();
             timePicker = null;
         }
         super.onDestroyView(view);
