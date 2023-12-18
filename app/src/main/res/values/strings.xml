@@ -24,7 +24,6 @@
     <string name="sign_in_with_google">Continue with Google</string>
     <string name="reset_password">Reset your password</string>
     <string name="login_reset_password">Forgot Password?</string>
-    <string name="or">OR</string>
     <string name="intro">A beautiful Open Remote client</string>
     <string name="select_app_language">Select app language</string>
     <string name="app_language">App language</string>
@@ -58,15 +57,9 @@
     <string name="day_title">Monday</string>
     <string name="temperature_txt">19\u00b0</string>
     <string name="Temperature_range">H: 24\u00b0 L: 14\u00b0</string>
-    <string name="weather_type">Mid rain</string>
     <string name="air_quality_title">Air quality</string>
-    <string name="level_of_air">Low Health Risk</string>
     <string name="rain_fall_title">Rain fall</string>
-    <string name="rain_fall">18 mm\nin last hour</string>
-    <string name="humidity_value">90%</string>
     <string name="humidity_title">Humidity</string>
-    <string name="dew_value">The dew point is 17 right now</string>
-    <string name="expected_rainfall">1.2 mm expected in next 24h</string>
     <string name="home_appbar_background">Home appbar background</string>
     <string name="item_chart_overview">Chart overview icon</string>
     <string name="select_attribute">Select Attribute</string>
@@ -95,4 +88,9 @@
     <string name="ending_date_selection">Select ending date</string>
     <string name="invalid_date">Invalid date</string>
     <string name="datapoints_not_enough">Not enough datapoints</string>
+    <string name="aqi_detail">Current index is %d</string>
+    <string name="temperature_detail">Feels like %.1f%s</string>
+    <string name="rain_detail">%d%s expected in the next %d minutes</string>
+    <string name="humidity_detail">The dew point is %d%s right now</string>
+    <string name="weather_fail">Failed to fetch weather data: %s</string>
 </resources>

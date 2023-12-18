@@ -124,7 +124,8 @@ public class HomeController extends BaseController {
                         .flatMapSingle(token -> entryPoint.aqicnService().fromCityOrStationId("A37081", token))
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(aqicnResponse -> {
-                            binding.homeAqCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "Current index is %d", (int) aqicnResponse.data().aqi()));
+                            var api_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.aqi_detail);
+                            binding.homeAqCard.itemIndexDescription.setText(String.format(Locale.getDefault(), api_detail, (int) aqicnResponse.data().aqi()));
                             binding.homeSwipeRefresh.setRefreshing(false);
                         })
                         .to(autoDisposable(getScopeProvider()));
@@ -134,14 +135,17 @@ public class HomeController extends BaseController {
                         .observeOn(AndroidSchedulers.mainThread())
                         .onErrorComplete(throwable -> {
                             Toast.makeText(getApplicationContext(),
-                                    String.format("Failed to fetch weather data: %s", throwable.getMessage()), Toast.LENGTH_SHORT).show();
+                                    String.format(Objects.requireNonNull(getApplicationContext()).getString(R.string.weather_fail), throwable.getMessage()), Toast.LENGTH_SHORT).show();
                             return true;
                         })
                         .doOnSuccess(openMeteoResponse -> {
+                            var temperature_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.temperature_detail);
+                            var rain_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.rain_detail);
+                            var humidity_detail = Objects.requireNonNull(getApplicationContext()).getString(R.string.humidity_detail);
                             binding.homeAppbar.homeTemperatureIndex.setText(String.format(Locale.getDefault(), "%.1f%s", openMeteoResponse.current().temperature2m(), openMeteoResponse.currentUnits().temperature2m()));
-                            binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), "Feels like %.1f%s", openMeteoResponse.current().apparentTemperature(), openMeteoResponse.currentUnits().apparentTemperature()));
-                            binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "%d%s expected in the next %d minutes", (int) openMeteoResponse.current().rain(), openMeteoResponse.currentUnits().rain(), openMeteoResponse.current().interval() / 60));
-                            binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), "The dew point is %d%s right now", (int) openMeteoResponse.current().relativeHumidity2m(), openMeteoResponse.currentUnits().relativeHumidity2m()));
+                            binding.homeAppbar.homeTemperatureDetail.setText(String.format(Locale.getDefault(), temperature_detail, openMeteoResponse.current().apparentTemperature(), openMeteoResponse.currentUnits().apparentTemperature()));
+                            binding.homeRainCard.itemIndexDescription.setText(String.format(Locale.getDefault(), rain_detail, (int) openMeteoResponse.current().rain(), openMeteoResponse.currentUnits().rain(), openMeteoResponse.current().interval() / 60));
+                            binding.homeHumidityCard.itemIndexDescription.setText(String.format(Locale.getDefault(), humidity_detail, (int) openMeteoResponse.current().relativeHumidity2m(), openMeteoResponse.currentUnits().relativeHumidity2m()));
                             binding.homeSwipeRefresh.setRefreshing(false);
                         })
                         .to(autoDisposable(getScopeProvider()));
@@ -157,7 +161,7 @@ public class HomeController extends BaseController {
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorComplete(throwable -> {
                         Toast.makeText(getApplicationContext(),
-                                String.format("Failed to fetch weather data: %s", throwable.getMessage()), Toast.LENGTH_SHORT).show();
+                                String.format(Objects.requireNonNull(getApplicationContext()).getString(R.string.weather_fail), throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         return true;
                     })
                     .doOnSuccess(asset -> {
