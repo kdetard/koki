@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/home_appbar_overview"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="@string/hi_title"
+                tools:text="@string/greet_user"
                 />
 
             <androidx.appcompat.widget.LinearLayoutCompat

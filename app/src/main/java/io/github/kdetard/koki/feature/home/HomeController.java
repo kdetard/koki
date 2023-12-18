@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.datastore.rxjava3.RxDataStore;
 
 import com.jakewharton.rxbinding4.widget.RxCompoundButton;
+import com.squareup.moshi.Moshi;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 import autodispose2.FlowableSubscribeProxy;
 import autodispose2.MaybeSubscribeProxy;
+import autodispose2.SingleSubscribeProxy;
 import dagger.hilt.EntryPoint;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
@@ -33,8 +35,10 @@ import io.github.kdetard.koki.openmeteo.models.OpenMeteoResponse;
 import io.github.kdetard.koki.openremote.OpenRemoteService;
 import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
+import io.github.kdetard.koki.openremote.models.User;
 import io.github.kdetard.koki.openremote.models.WeatherAsset;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class HomeController extends BaseController {
     @EntryPoint
@@ -49,6 +53,8 @@ public class HomeController extends BaseController {
     ControllerHomeBinding binding;
 
     HomeEntryPoint entryPoint;
+
+    SingleSubscribeProxy<User> userSubscribeProxy;
 
     MaybeSubscribeProxy<Asset<AssetAttribute>> weatherSubcribeProxy;
 
@@ -70,7 +76,7 @@ public class HomeController extends BaseController {
 
         binding = ControllerHomeBinding.bind(view);
 
-        binding.homeAppbar.homeGreeting.setText("Hello, user"/* + entryPoint.settings().data().map(Settings::getUsername).blockingGet() + "!""*/);
+        binding.homeAppbar.homeGreeting.setText(R.string.greet_default);
         binding.homeAppbar.homeWeekday.setText(LocalDate.now().getDayOfWeek().name());
 
         binding.homeAqCard.itemChartTitle.setText(R.string.air_quality_title);
@@ -109,11 +115,28 @@ public class HomeController extends BaseController {
     }
 
     private void invalidate() {
+        binding.homeAppbar.homeGreeting.setText("...");
         binding.homeAppbar.homeWeekday.setText(LocalDate.now().getDayOfWeek().name());
         binding.homeAppbar.homeTemperatureDetail.setText("...");
         binding.homeAqCard.itemIndexDescription.setText("...");
         binding.homeRainCard.itemIndexDescription.setText("...");
         binding.homeHumidityCard.itemIndexDescription.setText("...");
+
+        if (userSubscribeProxy == null) {
+            userSubscribeProxy = entryPoint.openRemoteService().getUser()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError(throwable -> {
+                        Toast.makeText(getApplicationContext(), R.string.user_fail, Toast.LENGTH_SHORT).show();
+                        Timber.e(throwable, "Failed to get user");
+                        binding.homeAppbar.homeGreeting.setText(R.string.greet_default);
+                    })
+                    .doOnSuccess(user ->
+                            binding.homeAppbar.homeGreeting.setText(
+                                    String.format(Objects.requireNonNull(getApplicationContext()).getString(R.string.greet_user), user.firstName())))
+                    .to(autoDisposable(getScopeProvider()));
+        }
+
+        userSubscribeProxy.subscribe();
 
         if (useCustomProvider) {
             if (aqicnSubscribeProxy == null)

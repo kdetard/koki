@@ -54,7 +54,7 @@
     <string name="asset_group_icon">Biểu tượng nhóm cảm biến</string>
     <string name="asset_group_description">Mô tả nhóm cảm biến</string>
     <string name="asset_group_icon_next">Chuyển đến nhóm cảm biến này</string>
-    <string name="hi_title">Xin chào, admin</string>
+    <string name="greet_user">Xin chào, %s</string>
     <string name="day_title">Thứ hai</string>
     <string name="temperature_txt">19\u00b0</string>
     <string name="Temperature_range">H: 24\u00b0 L: 14\u00b0</string>
@@ -95,4 +95,6 @@
     <string name="humidity_detail">Sương mù hiện tại %d%s</string>
     <string name="weather_fail">Không thể nạp dữ liệu thời tiết: %s</string>
     <string name="no_chart_data">Không có dữ liệu</string>
+    <string name="user_fail">Không thể lấy thông tin người dùng</string>
+    <string name="greet_default">Xin chào</string>
 </resources>

@@ -53,7 +53,7 @@
     <string name="asset_group_icon">Asset group icon</string>
     <string name="asset_group_description">Asset group description</string>
     <string name="asset_group_icon_next">Go to this asset group</string>
-    <string name="hi_title">Hi, Admin</string>
+    <string name="greet_user">Hi, %s</string>
     <string name="day_title">Monday</string>
     <string name="temperature_txt">19\u00b0</string>
     <string name="Temperature_range">H: 24\u00b0 L: 14\u00b0</string>
@@ -94,4 +94,6 @@
     <string name="humidity_detail">The dew point is %d%s right now</string>
     <string name="weather_fail">Failed to fetch weather data: %s</string>
     <string name="no_chart_data">No chart data</string>
+    <string name="user_fail">Failed to get user</string>
+    <string name="greet_default">Hi</string>
 </resources>
