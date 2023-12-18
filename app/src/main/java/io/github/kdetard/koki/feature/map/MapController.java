@@ -64,10 +64,13 @@ public abstract class MapController extends BaseController implements OnLowMemor
 
         getMapView().getMapAsync(mapboxMap -> mapboxMap.setStyle(styleBuilder, style -> {
             this.mapboxMap = mapboxMap;
-            symbolManager = new SymbolManager(getMapView(), mapboxMap, style);
+            if (getMapView() != null)
+                symbolManager = new SymbolManager(getMapView(), mapboxMap, style);
 
-            getSymbolManager().removeClickListener(this::onSymbolClick);
-            getSymbolManager().addClickListener(this::onSymbolClick);
+            if (getSymbolManager() != null) {
+                getSymbolManager().removeClickListener(this::onSymbolClick);
+                getSymbolManager().addClickListener(this::onSymbolClick);
+            }
             onMapReady();
         }));
     }
