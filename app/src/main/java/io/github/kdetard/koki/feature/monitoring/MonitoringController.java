@@ -183,14 +183,15 @@ public class MonitoringController extends BaseController {
     }
 
     private void invalidate() {
-        binding.monitorAttribute.setEnabled(false);
-        binding.monitorTimeFrame.setEnabled(false);
-        binding.monitorEnding.setEnabled(false);
+        binding.monitorSwipeRefresh.setRefreshing(false);
+        toggleInput(false);
 
         if (weatherAttribute == null || timeFrameOption == null || endingDate == null || endingDate.isEmpty()) {
             toggleInput(true);
             return;
         }
+
+        binding.monitorSwipeRefresh.setRefreshing(true);
 
         var openRemoteString = weatherAttribute.getOpenRemoteString();
 
@@ -257,6 +258,7 @@ public class MonitoringController extends BaseController {
                 binding.monitorNoData.setVisibility(View.VISIBLE);
                 binding.monitorChart.setVisibility(View.INVISIBLE);
                 toggleInput(true);
+                binding.monitorSwipeRefresh.setRefreshing(false);
             })
             .onErrorResumeNext(throwable -> Single.just(Collections.emptyList()))
             .doOnSuccess(datapoints -> {
@@ -268,13 +270,13 @@ public class MonitoringController extends BaseController {
                     binding.monitorChart.setVisibility(View.VISIBLE);
                 }
                 toggleInput(true);
+                binding.monitorSwipeRefresh.setRefreshing(false);
             })
             .to(autoDisposable(getScopeProvider()))
             .subscribe();
     }
 
     private void toggleInput(boolean predicate) {
-        binding.monitorSwipeRefresh.setRefreshing(!predicate);
         binding.monitorAttribute.setEnabled(predicate);
         binding.monitorTimeFrame.setEnabled(predicate);
         binding.monitorEnding.setEnabled(predicate);
