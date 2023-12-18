@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -17,10 +18,8 @@ import com.jakewharton.rxbinding4.view.RxView;
 import com.jakewharton.rxbinding4.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 import com.patrykandpatrick.vico.core.axis.AxisPosition;
-import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter;
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis;
 import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis;
-import com.patrykandpatrick.vico.core.chart.values.ChartValues;
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel;
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer;
 import com.patrykandpatrick.vico.core.entry.FloatEntry;
@@ -33,6 +32,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,7 +71,9 @@ public class MonitoringController extends BaseController {
     long endingDateMillis;
     long timeMillis;
 
+    List<Long> timestamps;
     ChartEntryModelProducer chartEntryModelProducer;
+    @Nullable
     ChartEntryModel chartEntryModel;
     HorizontalAxis<AxisPosition.Horizontal.Bottom> bottomAxis;
     VerticalAxis<AxisPosition.Vertical.Start> startAxis;
@@ -114,14 +116,6 @@ public class MonitoringController extends BaseController {
             datePicker.addOnNegativeButtonClickListener(this::setDefaultEndingDate);
         }
 
-        if (startAxis != null) {
-            binding.monitorChart.setStartAxis(startAxis);
-        }
-
-        if (bottomAxis != null) {
-            binding.monitorChart.setBottomAxis(bottomAxis);
-        }
-
         if (chartEntryModel != null) {
             binding.monitorChart.setModel(chartEntryModel);
         }
@@ -129,7 +123,11 @@ public class MonitoringController extends BaseController {
         RxView
                 .clicks(binding.monitorEnding)
                 .to(autoDisposable(getScopeProvider()))
-                .subscribe(unit -> datePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName()));
+                .subscribe(unit -> {
+                    if (getSupportFragmentManager().findFragmentByTag("datePicker") != null)
+                        return;
+                    datePicker.show(getSupportFragmentManager(), "datePicker");
+                });
 
         RxView.attaches(binding.monitorAttribute)
                 .doOnNext(u -> binding.monitorAttribute.setSimpleItems(
@@ -148,6 +146,8 @@ public class MonitoringController extends BaseController {
         RxAutoCompleteTextView.itemClickEvents(binding.monitorAttribute)
                 .doOnNext(attributeEvent -> {
                     weatherAttribute = Arrays.stream(WeatherAttributes.values()).skip(attributeEvent.getId()).findFirst().orElse(null);
+                    assert weatherAttribute != null;
+                    startAxis.setTitle(weatherAttribute.getText(view.getContext()));
                     invalidate();
                 })
                 .to(autoDisposable(getScopeProvider()))
@@ -156,6 +156,8 @@ public class MonitoringController extends BaseController {
         RxAutoCompleteTextView.itemClickEvents(binding.monitorTimeFrame)
                 .doOnNext(timeFrameEvent -> {
                     timeFrameOption = Arrays.stream(TimeFrameOptions.values()).skip(timeFrameEvent.getId()).findFirst().orElse(null);
+                    assert timeFrameOption != null;
+                    bottomAxis.setTitle(timeFrameOption.getText(view.getContext()));
                     invalidate();
                 })
                 .to(autoDisposable(getScopeProvider()))
@@ -168,14 +170,27 @@ public class MonitoringController extends BaseController {
                 })
                 .to(autoDisposable(getScopeProvider()))
                 .subscribe();
+
+        binding.monitorChart.setHorizontalScrollEnabled(true);
+
+        startAxis = (VerticalAxis<AxisPosition.Vertical.Start>) binding.monitorChart.getStartAxis();
+        assert startAxis != null;
+        startAxis.setHorizontalLabelPosition(VerticalAxis.HorizontalLabelPosition.Inside);
+
+        bottomAxis = (HorizontalAxis<AxisPosition.Horizontal.Bottom>) binding.monitorChart.getBottomAxis();
+        assert bottomAxis != null;
+        bottomAxis.setLabelRotationDegrees(-75f);
     }
 
     private void invalidate() {
-        if (weatherAttribute == null || timeFrameOption == null || endingDate == null || endingDate.isEmpty()) return;
+        binding.monitorSwipeRefresh.setRefreshing(false);
+        toggleInput(false);
 
-        binding.monitorAttribute.setEnabled(false);
-        binding.monitorTimeFrame.setEnabled(false);
-        binding.monitorEnding.setEnabled(false);
+        if (weatherAttribute == null || timeFrameOption == null || endingDate == null || endingDate.isEmpty()) {
+            toggleInput(true);
+            return;
+        }
+
         binding.monitorSwipeRefresh.setRefreshing(true);
 
         var openRemoteString = weatherAttribute.getOpenRemoteString();
@@ -186,10 +201,7 @@ public class MonitoringController extends BaseController {
             toTimeFrameDate = dateFormat.parse(endingDate);
         } catch (ParseException e) {
             Toast.makeText(getApplicationContext(), R.string.invalid_date, Toast.LENGTH_LONG).show();
-            binding.monitorAttribute.setEnabled(true);
-            binding.monitorTimeFrame.setEnabled(true);
-            binding.monitorEnding.setEnabled(true);
-            binding.monitorSwipeRefresh.setRefreshing(false);
+            toggleInput(true);
             return;
         }
 
@@ -200,9 +212,9 @@ public class MonitoringController extends BaseController {
         }
 
         chartTimeFormat = new SimpleDateFormat(switch (timeFrameOption) {
-            case HOUR, DAY, WEEK -> "HH:mm";
-            case MONTH -> "dd/MM";
-            case YEAR -> "MMM yy";
+            case HOUR, DAY -> "HH:mm";
+            case WEEK, MONTH -> "dd/MM HH:mm";
+            case YEAR -> "MMM dd yy, HH:mm";
         }, Locale.getDefault());
 
         var fromTimeFrame = toTimeFrame - timeFrameOption.toMillis();
@@ -215,81 +227,75 @@ public class MonitoringController extends BaseController {
                 if (datapoints.size() < 2)
                     return;
 
-                var modifier = switch (timeFrameOption) {
-                    case HOUR, DAY -> 1;
-                    case WEEK -> 4;
-                    case MONTH -> 24;
-                    case YEAR -> 7 * 24;
-                };
-
-                var timestamps = datapoints.stream()
-                        .map(Datapoint::timestamp)
-                        .collect(Collectors.toList());
-
                 var data = IntStream.range(0, datapoints.size())
                         .mapToObj(i -> new FloatEntry(i, datapoints.get(i).value()))
                         .collect(Collectors.toList());
 
                 chartEntryModel = entryModelOf(data);
 
-                var horizontalAxisValueFormatter = new AxisValueFormatter<AxisPosition.Horizontal.Bottom>() {
-                    @NonNull
-                    @Override
-                    public CharSequence formatValue(float timestamp, @NonNull ChartValues _chartValues) {
-                        if (timestamp % modifier != 0) return "";
-                        return chartTimeFormat.format(timestamps.get((int) timestamp));
+                timestamps = datapoints.stream()
+                        .map(Datapoint::timestamp)
+                        .collect(Collectors.toList());
+
+                bottomAxis.setValueFormatter((timestamp, _chartValues) ->
+                        chartTimeFormat.format(timestamps.stream().skip((int) timestamp).findFirst().orElse(0L)));
+
+                if (chartEntryModel != null) {
+                    chartEntryModelProducer = (ChartEntryModelProducer)binding.monitorChart.getEntryProducer();
+
+                    if (chartEntryModelProducer == null) {
+                        chartEntryModelProducer = new ChartEntryModelProducer(chartEntryModel.getEntries(), Dispatchers.getDefault());
+                        binding.monitorChart.setEntryProducer(chartEntryModelProducer);
                     }
-                };
 
-                startAxis = (VerticalAxis<AxisPosition.Vertical.Start>) binding.monitorChart.getStartAxis();
-                assert startAxis != null;
-                startAxis.setHorizontalLabelPosition(VerticalAxis.HorizontalLabelPosition.Inside);
-
-                bottomAxis = (HorizontalAxis<AxisPosition.Horizontal.Bottom>) binding.monitorChart.getBottomAxis();
-                assert bottomAxis != null;
-                bottomAxis.setLabelRotationDegrees(-75f);
-                bottomAxis.setValueFormatter(horizontalAxisValueFormatter);
+                    chartEntryModelProducer.setEntries(chartEntryModel.getEntries(), mutableExtraStore -> null);
+                }
             })
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError(throwable -> {
                 Timber.d(throwable, "An error occurred");
                 Toast.makeText(getApplicationContext(), String.format("An error occurred: %s", throwable.getMessage()), Toast.LENGTH_LONG).show();
+                binding.monitorNoData.setVisibility(View.VISIBLE);
+                binding.monitorChart.setVisibility(View.INVISIBLE);
+                toggleInput(true);
                 binding.monitorSwipeRefresh.setRefreshing(false);
-                binding.monitorAttribute.setEnabled(true);
-                binding.monitorTimeFrame.setEnabled(true);
-                binding.monitorEnding.setEnabled(true);
             })
             .onErrorResumeNext(throwable -> Single.just(Collections.emptyList()))
             .doOnSuccess(datapoints -> {
-                if (datapoints.size() < 2)
-                    Toast.makeText(getApplicationContext(), R.string.datapoints_not_enough, Toast.LENGTH_LONG).show();
-                binding.monitorChart.setStartAxis(startAxis);
-                binding.monitorChart.setBottomAxis(bottomAxis);
-                if (chartEntryModelProducer == null) {
-                    chartEntryModelProducer = new ChartEntryModelProducer(chartEntryModel.getEntries(), Dispatchers.getDefault());
-                    binding.monitorChart.setEntryProducer(chartEntryModelProducer);
+                if (datapoints.size() < 2) {
+                    binding.monitorNoData.setVisibility(View.VISIBLE);
+                    binding.monitorChart.setVisibility(View.INVISIBLE);
                 } else {
-                    chartEntryModelProducer.setEntries(chartEntryModel.getEntries(), mutableExtraStore -> null);
+                    binding.monitorNoData.setVisibility(View.INVISIBLE);
+                    binding.monitorChart.setVisibility(View.VISIBLE);
                 }
+                toggleInput(true);
                 binding.monitorSwipeRefresh.setRefreshing(false);
-                binding.monitorAttribute.setEnabled(true);
-                binding.monitorTimeFrame.setEnabled(true);
-                binding.monitorEnding.setEnabled(true);
             })
             .to(autoDisposable(getScopeProvider()))
             .subscribe();
+    }
+
+    private void toggleInput(boolean predicate) {
+        binding.monitorAttribute.setEnabled(predicate);
+        binding.monitorTimeFrame.setEnabled(predicate);
+        binding.monitorEnding.setEnabled(predicate);
     }
 
     private<T> void setDefaultEndingDate(T listener) {
         if (endingDateMillis != 0) return;
         var startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault());
         endingDateMillis = startOfToday.toEpochSecond() * 1000;
-        timePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag("timePicker") != null)
+            return;
+        timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
     private void setEndingDate(long selection) {
         endingDateMillis = selection - Calendar.getInstance().getTimeZone().getRawOffset();
-        timePicker.show(getSupportFragmentManager(), MonitoringController.class.getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag("timePicker") != null)
+            return;
+        timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
     private<T> void setDefaultTime(T listener) {
@@ -305,9 +311,11 @@ public class MonitoringController extends BaseController {
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
+        if (datePicker != null) {
             datePicker.removeOnPositiveButtonClickListener(this::setEndingDate);
             datePicker = null;
+        }
+        if (timePicker != null) {
             timePicker.removeOnPositiveButtonClickListener(this::setTime);
             timePicker = null;
         }

@@ -32,10 +32,12 @@ public class MainController extends BaseController {
             R.id.nav_settings, 3
     );
 
+    private int currentNavItemId = R.id.nav_home;
+
     public MainController() {
         super(R.layout.controller_main);
 
-        this.pagerAdapter = new RouterStateAdapter(this) {
+        pagerAdapter = new RouterStateAdapter(this) {
             @Override
             public void configureRouter(@NonNull Router router, int i) {
                 if (!router.hasRootController()) {
@@ -68,19 +70,20 @@ public class MainController extends BaseController {
 
         binding.getRoot().setAdapter(pagerAdapter);
 
-        binding.getRoot().setCurrentItem(0, false);
-
         getNavBar().setOnItemSelectedListener(item -> {
-            var order = navBarMap.get(item.getItemId());
-
-            if (order == null) throw new IllegalStateException("Unexpected value: " + item.getItemId());
-
-            getAppBarLayout().setVisibility(order == 3 ? View.VISIBLE : View.GONE);
-
-            binding.getRoot().setCurrentItem(order, false);
-
+            currentNavItemId = item.getItemId();
+            invalidate();
             return true;
         });
+
+        getNavBar().setSelectedItemId(currentNavItemId);
+    }
+
+    private void invalidate() {
+        getAppBarLayout().post(() ->
+                getAppBarLayout().setVisibility(currentNavItemId == R.id.nav_settings ? View.VISIBLE : View.GONE));
+        binding.getRoot().setCurrentItem(
+                Objects.requireNonNull(navBarMap.get(currentNavItemId)), false);
     }
 
     @Override

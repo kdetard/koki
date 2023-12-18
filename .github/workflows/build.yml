@@ -39,7 +39,7 @@ jobs:
 
       - name: Set up local.properties
         run: |
-          echo -e 'signing.storeFilePath=/tmp/keystore\nsigning.keyPassword=${{ secrets.KEYSTORE_PASSWORD }}\nsigning.storePassword=${{ secrets.KEYSTORE_PASSWORD }}\nsigning.keyAlias=tuilakhanh0' > local.properties
+          echo -e 'MAPTILER_API_KEY=${{ secrets.MAPTILER_API_KEY }}\nsigning.storeFilePath=/tmp/keystore\nsigning.keyPassword=${{ secrets.KEYSTORE_PASSWORD }}\nsigning.storePassword=${{ secrets.KEYSTORE_PASSWORD }}\nsigning.keyAlias=tuilakhanh0' > local.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

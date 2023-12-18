@@ -64,10 +64,13 @@ public abstract class MapController extends BaseController implements OnLowMemor
 
         getMapView().getMapAsync(mapboxMap -> mapboxMap.setStyle(styleBuilder, style -> {
             this.mapboxMap = mapboxMap;
-            symbolManager = new SymbolManager(getMapView(), mapboxMap, style);
+            if (getMapView() != null)
+                symbolManager = new SymbolManager(getMapView(), mapboxMap, style);
 
-            getSymbolManager().removeClickListener(this::onSymbolClick);
-            getSymbolManager().addClickListener(this::onSymbolClick);
+            if (getSymbolManager() != null) {
+                getSymbolManager().removeClickListener(this::onSymbolClick);
+                getSymbolManager().addClickListener(this::onSymbolClick);
+            }
             onMapReady();
         }));
     }
@@ -108,9 +111,11 @@ public abstract class MapController extends BaseController implements OnLowMemor
 
     @Override
     protected void onDestroyView(@NonNull View view) {
-        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
+        if (getSymbolManager() != null) {
             getSymbolManager().removeClickListener(this::onSymbolClick);
             getSymbolManager().onDestroy();
+        }
+        if (getMapView() != null) {
             getMapView().onDestroy();
         }
         super.onDestroyView(view);

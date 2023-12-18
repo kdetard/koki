@@ -90,6 +90,15 @@
                     tools:text="@string/Temperature_range"
                     />
 
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.BodyLarge"
+                    android:id="@+id/home_temperature_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    tools:text="Location"
+                    />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.AppCompatImageView

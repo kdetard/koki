@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import autodispose2.MaybeSubscribeProxy;
 import dagger.hilt.EntryPoint;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.EntryPointAccessors;
@@ -29,8 +30,6 @@ import io.github.kdetard.koki.openremote.OpenRemoteService;
 import io.github.kdetard.koki.openremote.models.Asset;
 import io.github.kdetard.koki.openremote.models.AssetAttribute;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.subjects.BehaviorSubject;
-import kotlin.Unit;
 
 public class AssetsController extends MapController {
     @EntryPoint
@@ -46,19 +45,15 @@ public class AssetsController extends MapController {
     Router childRouter;
 
     List<Asset<AssetAttribute>> assets;
-
     List<Asset<AssetAttribute>> locationAssets;
-    BehaviorSubject<Unit> locationAssetsSubject;
+    MaybeSubscribeProxy<List<Asset<AssetAttribute>>> assetsSubscription;
+    MapView mapView;
 
     public AssetsController() { super(R.layout.controller_assets); }
 
     @Override
     public void onViewCreated(View view) {
         binding = ControllerAssetsBinding.bind(view);
-
-        locationAssetsSubject = BehaviorSubject.create();
-
-        super.onViewCreated(view);
 
         entryPoint = EntryPointAccessors.fromApplication(Objects.requireNonNull(getApplicationContext()), AssetsEntryPoint.class);
 
@@ -77,15 +72,22 @@ public class AssetsController extends MapController {
             return;
         }
 
-        entryPoint.service().getAssets()
+        invalidate();
+    }
+
+    private void invalidate() {
+        if (assetsSubscription == null)
+            assetsSubscription = entryPoint.service().getAssets()
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorComplete(throwable -> {
-                    childRouter.pushController(RouterTransaction.with(new AssetsUnavailableController()));
+                    binding.assetsProgressIndicator.hide();
+                    getRouter().pushController(RouterTransaction.with(new AssetsUnavailableController()));
                     return true;
                 })
                 .doOnSuccess(this::onAssetsAvailable)
-                .to(autoDisposable(getScopeProvider()))
-                .subscribe();
+                .to(autoDisposable(getScopeProvider()));
+
+        assetsSubscription.subscribe();
     }
 
     private void onAssetsAvailable(@NonNull List<Asset<AssetAttribute>> assets) {
@@ -96,23 +98,23 @@ public class AssetsController extends MapController {
                     .filter(asset -> asset.attributes().location() != null && asset.attributes().location().value() != null)
                     .collect(Collectors.toList());
 
-        locationAssetsSubject.onNext(Unit.INSTANCE);
-
         childRouter.getBackstack()
                 .stream()
                 .reduce((a, b) -> b)
                 .filter(c -> c.controller() instanceof OnAssetsAvailableListener)
                 .ifPresent(c -> ((OnAssetsAvailableListener) c.controller()).setAssets(assets));
+
+        assert getView() != null;
+        mapView = new MapView(getView().getContext());
+        binding.getRoot().addView(mapView, 0);
+        binding.assetsProgressIndicator.hide();
+        super.onViewCreated(getView());
     }
 
     @Override
     public void onMapReady() {
-        locationAssetsSubject
-                .doOnNext(u -> {
-                    var symbols = locationAssets.stream().map(a -> a.attributes().toSymbol());
-                    getSymbolManager().create(symbols.collect(Collectors.toList()));
-                })
-                .subscribe();
+        var symbols = locationAssets.stream().map(a -> a.attributes().toSymbol());
+        getSymbolManager().create(symbols.collect(Collectors.toList()));
 
         childRouter.getBackstack()
                 .stream()
@@ -123,9 +125,12 @@ public class AssetsController extends MapController {
 
     @Override
     public boolean onSymbolClick(@NonNull Symbol symbol) {
-        if (locationAssets != null && !locationAssets.isEmpty())
+        if (locationAssets != null && !locationAssets.isEmpty()) {
+            if (childRouter.getBackstack().stream().reduce((a, b) -> b).filter(c -> c.controller() instanceof AssetsDetailsController).isPresent())
+                childRouter.popCurrentController();
             childRouter.pushController(RouterTransaction.with(
                     new AssetsDetailsController(locationAssets.stream().skip(symbol.getId()).findFirst().orElse(null))));
+        }
 
         childRouter.getBackstack()
                 .stream()
@@ -137,15 +142,7 @@ public class AssetsController extends MapController {
     }
 
     @Override
-    public MapView getMapView() { return binding.mapView; }
-
-    @Override
-    protected void onDestroyView(@NonNull View view) {
-        if (!Objects.requireNonNull(getActivity()).isChangingConfigurations()) {
-            locationAssetsSubject.onComplete();
-        }
-        super.onDestroyView(view);
-    }
+    public MapView getMapView() { return mapView; }
 
     @Override
     public void configureMenu(Toolbar toolbar) {
