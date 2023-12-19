@@ -5,7 +5,14 @@ option java_multiple_files = true;
 
 message Settings {
   string keycloakTokenJson = 1;
-  bool useSystemDarkMode = 2;
-  string aqicnToken = 3;
-  string aqicnStation = 4;
+  Theme theme = 2;
+  string language = 3;
+  string aqicnToken = 101;
+  string aqicnStation = 102;
+}
+
+enum Theme {
+  AUTO = 0;
+  DARK = 1;
+  LIGHT = 2;
 }

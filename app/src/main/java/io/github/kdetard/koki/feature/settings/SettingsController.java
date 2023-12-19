@@ -1,28 +1,41 @@
 package io.github.kdetard.koki.feature.settings;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
-import io.github.kdetard.koki.R;
-import io.github.kdetard.koki.feature.base.BaseController;
+import java.util.Objects;
 
-public class SettingsController extends BaseController {
-    public SettingsController() { super(R.layout.controller_settings); }
+import io.github.kdetard.koki.feature.base.BasePreferenceController;
+
+public abstract class SettingsController extends BasePreferenceController {
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        var screen = getPreferenceManager().createPreferenceScreen(getThemedContext());
+        setPreferenceScreen(screen);
+    }
+
+    public String getTitle() {
+        var title = getPreferenceScreen().getTitle();
+        if (title == null) {
+            return null;
+        }
+        return title.toString();
+    }
 
     @Override
     public void onViewCreated(View view) {
         super.onViewCreated(view);
+        getListView().setLayoutManager(new LinearLayoutManager(view.getContext()));
     }
 
-    @Override
-    protected void onDestroyView(@NonNull View view) {
-        super.onDestroyView(view);
-    }
-
-    @Override
-    public void configureMenu(Toolbar toolbar) {
-        super.configureMenu(toolbar);
+    private Context getThemedContext() {
+        var tv = new TypedValue();
+        Objects.requireNonNull(getActivity()).getTheme().resolveAttribute(androidx.preference.conductor.R.attr.preferenceTheme, tv, true);
+        return new ContextThemeWrapper(getActivity(), tv.resourceId);
     }
 }

@@ -125,4 +125,18 @@
     <string name="user_fail">Không thể lấy thông tin người dùng</string>
     <string name="greet_default">Xin chào</string>
     <string name="level_of_air">Mức độ không khí</string>
+    <string name="manage_account">Quản lý tài khoản của bạn</string>
+    <string name="account">Tài khoản</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="about">Giới thiệu Koki</string>
+    <string name="about_summary">Mã nguồn, thông tin ứng dụng</string>
+    <string name="confirm_logout">Bạn có muốn đăng xuất?</string>
+    <string name="decline_logout">Không</string>
+    <string name="accept_logout">Đăng xuất</string>
+    <string name="language_system_default">Mặc định hệ thống</string>
+    <string name="cancel">Hủy</string>
+    <string name="theme">Chủ đề</string>
+    <string name="theme_auto">Tự động theo hệ thống</string>
+    <string name="theme_dark">Tối</string>
+    <string name="theme_light">Sáng</string>
 </resources>

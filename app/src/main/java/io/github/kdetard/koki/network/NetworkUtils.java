@@ -51,10 +51,10 @@ public class NetworkUtils {
         final var keycloakToken = keycloakTokenJsonAdapter.fromJson(keycloakTokenJson);
 
         if (keycloakToken != null) {
-            Timber.d("Authenticator called with accessToken: %s", keycloakToken.accessToken);
+            Timber.d("Authenticator called with accessToken: %s", keycloakToken.accessToken());
             // Add new header to rejected request and retry it
             return request.newBuilder()
-                    .header("Authorization", String.format("%s %s", keycloakToken.tokenType, keycloakToken.accessToken))
+                    .header("Authorization", String.format("%s %s", keycloakToken.tokenType(), keycloakToken.accessToken()))
                     .build();
         }
 

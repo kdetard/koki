@@ -21,6 +21,7 @@ androidx-test-ext-junit = "1.1.5"
 appauth = "0.11.1"
 autodispose = "2.2.1"
 conductor = "4.0.0-preview-4"
+conductor-support-preference = "3.1.8"
 espresso-core = "3.5.1"
 fastadapter = "5.7.0"
 hilt = "2.49"
@@ -44,6 +45,7 @@ rxbinding = "4.0.0"
 rxdogtag = "2.0.2"
 rxjava = "3.1.8"
 rxpm = "2.1.2"
+sheets = "2.3.1"
 #noinspection GradleDependency
 timber = "4.7.1"
 vico = "1.13.1"
@@ -74,6 +76,7 @@ autodispose-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-l
 autodispose-androidx-lifecycle = { group = "com.uber.autodispose2", name = "autodispose-androidx-lifecycle", version.ref = "autodispose" }
 conductor = { group = "com.bluelinelabs", name = "conductor", version.ref = "conductor" }
 conductor-androidx-transition = { group = "com.bluelinelabs", name = "conductor-androidx-transition", version.ref = "conductor" }
+conductor-support-preference = { group = "com.github.tachiyomiorg", name = "conductor-support-preference", version.ref = "conductor-support-preference" }
 conductor-viewpager2 = { group = "com.bluelinelabs", name = "conductor-viewpager2", version.ref = "conductor" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 fastadapter = { group = "com.mikepenz", name = "fastadapter", version.ref = "fastadapter" }
@@ -112,6 +115,9 @@ rxdogtag = { group = "com.uber.rxdogtag2", name = "rxdogtag", version.ref = "rxd
 rxdogtag-autodispose = { group = "com.uber.rxdogtag2", name = "rxdogtag-autodispose", version.ref = "rxdogtag" }
 rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
 rxpm = { group = "me.dmdev.rxpm", name = "rxpm", version.ref = "rxpm" }
+sheets-core = { group = "com.maxkeppeler.sheets", name = "core", version.ref = "sheets" }
+sheets-info = { group = "com.maxkeppeler.sheets", name = "info", version.ref = "sheets" }
+sheets-input = { group = "com.maxkeppeler.sheets", name = "input", version.ref = "sheets" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 # Houses the core logic for charts and other elements. Included in all other modules.
 vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }

@@ -56,8 +56,8 @@ public class RxRestKeycloak extends RxKeycloak {
                     service.stepOnSignInPage(
                         // uiot.ixxc.dev/auth/..../auth?client_id=...
                         Objects.requireNonNull(authRequest.configuration.authorizationEndpoint).toString(),
-                        config.client,
-                        config.redirectUri,
+                        config.client(),
+                        config.redirectUri(),
                         "code"
                 ))
 
@@ -132,8 +132,8 @@ public class RxRestKeycloak extends RxKeycloak {
                         service.stepOnSignInPage(
                                 // uiot.ixxc.dev/auth/..../auth?client_id=...
                                 Objects.requireNonNull(authRequest.configuration.authorizationEndpoint).toString(),
-                                config.client,
-                                config.redirectUri,
+                                config.client(),
+                                config.redirectUri(),
                                 "code"
                         ))
 
@@ -197,7 +197,7 @@ public class RxRestKeycloak extends RxKeycloak {
             final @NonNull String attr
     ) {
         try {
-            final var redirectUri = Uri.parse(config.authServerUrl);
+            final var redirectUri = Uri.parse(config.authServerUrl());
             final var baseUri = String.format("%s://%s", redirectUri.getScheme(), redirectUri.getHost());
             final var document = Jsoup.parse(resp.string(), baseUri);
             final var linkSelector = document.selectXpath(String.format("%s[@%s]", xPath, attr)).get(0);
@@ -215,13 +215,14 @@ public class RxRestKeycloak extends RxKeycloak {
 
     public static @NonNull Completable endSession(
             final KeycloakApiService service,
-            final KeycloakConfig config
+            final KeycloakConfig config,
+            final String refreshToken
     ) {
         return buildRequest(config)
                 .flatMapCompletable(authRequest -> service.endSession(
-                        authRequest.configuration.tokenEndpoint.toString(),
+                        Objects.requireNonNull(authRequest.configuration.endSessionEndpoint).toString(),
                         authRequest.clientId,
-                        MMKV.defaultMMKV().getString("refreshToken", "")
+                        refreshToken
                 ));
     }
 

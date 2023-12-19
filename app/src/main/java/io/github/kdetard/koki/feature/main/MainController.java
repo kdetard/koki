@@ -18,7 +18,7 @@ import io.github.kdetard.koki.feature.assets.AssetsController;
 import io.github.kdetard.koki.feature.base.BaseController;
 import io.github.kdetard.koki.feature.home.HomeController;
 import io.github.kdetard.koki.feature.monitoring.MonitoringController;
-import io.github.kdetard.koki.feature.settings.SettingsController;
+import io.github.kdetard.koki.feature.settings.SettingsMainController;
 
 public class MainController extends BaseController {
     ControllerMainBinding binding;
@@ -45,7 +45,7 @@ public class MainController extends BaseController {
                         case 0 -> new HomeController();
                         case 1 -> new AssetsController();
                         case 2 -> new MonitoringController();
-                        case 3 -> new SettingsController();
+                        case 3 -> new SettingsMainController();
                         default -> throw new IllegalStateException("Unexpected value: " + i);
                     };
 
