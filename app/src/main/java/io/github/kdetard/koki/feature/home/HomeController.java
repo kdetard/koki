@@ -137,7 +137,7 @@ public class HomeController extends BaseController {
 
         binding.homeSwipeRefresh.setRefreshing(true);
 
-        invalidate();
+        view.post(this::invalidate);
     }
 
     private void invalidate() {

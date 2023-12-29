@@ -3,6 +3,7 @@ package io.github.kdetard.koki.feature.main;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.WindowCompat;
@@ -19,12 +20,14 @@ import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.google.android.material.navigation.NavigationBarView;
+import com.jakewharton.rxbinding4.view.RxView;
 
 import javax.inject.Inject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.github.kdetard.koki.Settings;
+import io.github.kdetard.koki.Theme;
 import io.github.kdetard.koki.databinding.ActivityMainBinding;
 import io.github.kdetard.koki.feature.base.BaseActivity;
 import io.github.kdetard.koki.feature.base.ExpandedAppBarLayout;
@@ -46,11 +49,19 @@ public class MainActivity extends BaseActivity implements ActivityLayoutProvider
 
     Router router;
 
+    public ActivityMainBinding getBinding() { return binding; }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
+        settings.data()
+                .map(Settings::getTheme)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(this::onThemeEventChanged)
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getLifecycle())))
+                .subscribe();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -60,7 +71,9 @@ public class MainActivity extends BaseActivity implements ActivityLayoutProvider
                 .setPopRootControllerMode(Router.PopRootControllerMode.NEVER)
                 .setOnBackPressedDispatcherEnabled(true);
 
-        binding.getRoot().getViewTreeObserver().addOnPreDrawListener(this::onPreDrawListener);
+        RxView.preDraws(binding.getRoot(), this::onPreDrawListener)
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getLifecycle())))
+                .subscribe();
 
         getAppBarLayout().setVisibility(View.GONE);
 
@@ -84,6 +97,7 @@ public class MainActivity extends BaseActivity implements ActivityLayoutProvider
                         }
                         case LOGGED_OUT -> {
                             getNavBar().setVisibility(View.GONE);
+                            getAppBarLayout().setVisibility(View.GONE);
                             setRoot(new OnboardController());
                         }
                     }
@@ -92,13 +106,17 @@ public class MainActivity extends BaseActivity implements ActivityLayoutProvider
                 .subscribe();
     }
 
+    private void onThemeEventChanged(Theme event) {
+        switch (event) {
+            case LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            case DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            case AUTO -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
+    }
+
     private boolean onPreDrawListener() {
         if (router == null) return false;
-        if (router.hasRootController()) {
-            binding.getRoot().getViewTreeObserver().removeOnDrawListener(this::onPreDrawListener);
-            return true;
-        }
-        return false;
+        return router.hasRootController();
     }
 
     public View getRoot() { return binding.getRoot(); }

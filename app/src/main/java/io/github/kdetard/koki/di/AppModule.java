@@ -31,9 +31,15 @@ public class AppModule {
     ) {
         return settings.data()
                 .map(Settings::getKeycloakTokenJson)
-                .map(json -> json.isEmpty() ? "{}" : json)
-                .map(keycloakTokenJsonAdapter::fromJson)
-                .map(keycloakToken -> keycloakToken == null || keycloakToken.accessToken == null ? OnboardEvent.LOGGED_OUT : OnboardEvent.LOGGED_IN);
+                .map(json -> {
+                    KeycloakToken keycloakToken = null;
+                    if (json != null && !json.isEmpty()) {
+                        keycloakToken = keycloakTokenJsonAdapter.fromJson(json);
+                    }
+                    return keycloakToken == null || keycloakToken.accessToken() == null
+                            ? OnboardEvent.LOGGED_OUT
+                            : OnboardEvent.LOGGED_IN;
+                });
     }
 
     @Provides

@@ -44,6 +44,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
 
+        resourceConfigurations.addAll(listOf("en", "vi"))
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "MAPTILER_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("MAPTILER_API_KEY")}\"")
 
@@ -141,6 +143,7 @@ dependencies {
     implementation(libs.autodispose.androidx.lifecycle)
     implementation(libs.conductor)
     implementation(libs.conductor.androidx.transition)
+    implementation(libs.conductor.support.preference)
     implementation(libs.conductor.viewpager2)
     implementation(libs.fastadapter)
     implementation(libs.fastadapter.extensions.binding)
@@ -180,6 +183,9 @@ dependencies {
     implementation(libs.rxbinding.swiperefreshlayout)
     implementation(libs.rxjava)
     implementation(libs.rxpm)
+    implementation(libs.sheets.core)
+    implementation(libs.sheets.info)
+    implementation(libs.sheets.input)
     implementation(libs.timber)
     implementation(libs.vico.core)
     implementation(libs.vico.views)

@@ -14,7 +14,7 @@ public abstract class RxKeycloak {
     public static Single<AuthorizationServiceConfiguration> fetchConfig(final KeycloakConfig config) {
         return Single.create(emitter ->
                 AuthorizationServiceConfiguration.fetchFromUrl(
-                        Uri.parse(config.authServerUrl + "/realms/" + config.realm + "/.well-known/openid-configuration"),
+                        Uri.parse(config.authServerUrl() + "/realms/" + config.realm() + "/.well-known/openid-configuration"),
                         (serviceConfiguration, ex) -> {
                             if (serviceConfiguration != null) {
                                 emitter.onSuccess(serviceConfiguration);
@@ -29,8 +29,8 @@ public abstract class RxKeycloak {
 
     public static Single<AuthorizationServiceConfiguration> authConfig(final KeycloakConfig config) {
         return Single.just(new AuthorizationServiceConfiguration(
-                Uri.parse(config.authServerUrl + "/realms/" + config.realm + "/protocol/openid-connect/auth"),
-                Uri.parse(config.authServerUrl + "/realms/" + config.realm + "/protocol/openid-connect/token")
+                Uri.parse(config.authServerUrl() + "/realms/" + config.realm() + "/protocol/openid-connect/auth"),
+                Uri.parse(config.authServerUrl() + "/realms/" + config.realm() + "/protocol/openid-connect/token")
         ));
     }
 
@@ -43,9 +43,9 @@ public abstract class RxKeycloak {
                 .flatMap(authConfig ->
                         Single.just(new AuthorizationRequest.Builder(
                                 authConfig,
-                                config.client,
+                                config.client(),
                                 ResponseTypeValues.CODE,
-                                Uri.parse(config.redirectUri)
+                                Uri.parse(config.redirectUri())
                         ).build())
                 );
     }

@@ -53,7 +53,7 @@
             app:expandedTitleMarginStart="@dimen/toolbar_expanded_title_margin"
             app:expandedTitleMarginEnd="@dimen/toolbar_expanded_title_margin"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:title="@string/app_name">
+            >
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"

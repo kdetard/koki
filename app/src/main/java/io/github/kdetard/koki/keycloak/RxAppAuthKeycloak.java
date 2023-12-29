@@ -37,9 +37,9 @@ public class RxAppAuthKeycloak extends RxKeycloak {
                 .flatMap(authConfig ->
                         Single.just(new AuthorizationRequest.Builder(
                                 authConfig,
-                                config.client,
+                                config.client(),
                                 ResponseTypeValues.CODE,
-                                Uri.parse(config.redirectUri)
+                                Uri.parse(config.redirectUri())
                         ).build())
                 )
                 .flatMap(authRequest -> Single.create(emitter -> {

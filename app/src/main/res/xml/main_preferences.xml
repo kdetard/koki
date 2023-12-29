@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <Preference
+        app:icon="@drawable/ic_account_settings_24dp"
+        app:title="@string/account"
+        app:summary="@string/manage_account"
+        app:fragment="@string/settings_account" />
+
+    <Preference
+        app:icon="@drawable/ic_theme_settings_24dp"
+        app:title="@string/theme"
+        app:fragment="@string/settings_theme" />
+
+    <Preference
+        app:icon="@drawable/ic_language_settings_24dp"
+        app:title="@string/app_language"
+        app:fragment="@string/settings_language" />
+
+    <Preference
+        app:icon="@drawable/ic_logout_settings_24dp"
+        app:title="@string/logout"
+        app:fragment="@string/settings_logout" />
+
+    <PreferenceCategory
+        app:title="@string/app_name"
+        >
+        <Preference
+            app:icon="@drawable/ic_about_settings_24dp"
+            app:title="@string/about"
+            app:summary="@string/about_summary"
+            app:fragment="@string/settings_about" />
+    </PreferenceCategory>
+</PreferenceScreen>

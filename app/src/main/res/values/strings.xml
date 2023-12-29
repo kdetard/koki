@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
     <string name="app_name">Koki</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
@@ -124,4 +124,28 @@
     <string name="user_fail">Failed to get user</string>
     <string name="greet_default">Hi</string>
     <string name="level_of_air">Level of air</string>
+    <string name="manage_account">Manage your account</string>
+    <string name="account">Account</string>
+    <string name="logout">Log out</string>
+    <string name="about">About Koki</string>
+    <string name="about_summary">Repository, app info</string>
+    <string name="settings_account" translatable="false">io.github.kdetard.koki.feature.settings.SettingsAccountController</string>
+    <string name="settings_theme" translatable="false">io.github.kdetard.koki.feature.settings.SettingsThemeController</string>
+    <string name="settings_language" translatable="false">io.github.kdetard.koki.feature.settings.SettingsLanguageController</string>
+    <string name="settings_logout" translatable="false">io.github.kdetard.koki.feature.settings.SettingsLogoutController</string>
+    <string name="settings_about" translatable="false">io.github.kdetard.koki.feature.settings.SettingsAboutController</string>
+    <string name="confirm_logout">Do you want to log out?</string>
+    <string name="decline_logout">No</string>
+    <string name="accept_logout">Yes, sign me out</string>
+    <string name="language_system_default">System default</string>
+    <string name="language_en_us" translatable="false">English (United States)</string>
+    <string name="language_vi_vn" translatable="false">Tiếng Việt (Việt Nam)</string>
+    <string name="cancel">Cancel</string>
+    <string name="theme">Theme</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    <string name="language_en_us_short" translatable="false">en-US</string>
+    <string name="language_vi_vn_short" translatable="false">vi-VN</string>
+    <string name="language_system_default_short" translatable="false">system</string>
 </resources>
